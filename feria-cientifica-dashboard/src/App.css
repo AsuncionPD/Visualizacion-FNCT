@@ -1,0 +1,9 @@
+.app {
+  min-height: 100vh;
+  background-color: #06162f;
+  color: #ffffff;
+}
+
+.dashboard {
+  padding: 20px 34px 40px;
+}

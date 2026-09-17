@@ -1,0 +1,45 @@
+.chart-card {
+  min-width: 0;
+
+  padding: 18px;
+
+  background-color: #071d3d;
+
+  border: 1px solid #1e4775;
+  border-radius: 9px;
+}
+
+.chart-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  margin-bottom: 16px;
+}
+
+.chart-card__icon {
+  color: #c8dcff;
+  font-size: 22px;
+}
+
+.chart-card__title {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.chart-card__subtitle {
+  margin: 4px 0 0;
+
+  color: #a9c3e8;
+
+  font-size: 12px;
+}
+
+.chart-card__content {
+  width: 100%;
+  min-height: 300px;
+}
