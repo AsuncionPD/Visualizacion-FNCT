@@ -24,6 +24,7 @@ function Header() {
         <span className="header__info-icon">ⓘ</span>
       </div>
     </header>
+    
   )
 }
 

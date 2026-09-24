@@ -1,0 +1,136 @@
+.area-modality-heatmap {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  overflow: visible;
+}
+
+.area-modality-heatmap__svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+}
+
+
+/* =========================
+   CELDAS
+========================= */
+
+.heatmap-cell {
+  cursor: pointer;
+
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1;
+
+  transition:
+    opacity 0.15s ease,
+    stroke 0.15s ease;
+}
+
+.heatmap-cell:hover {
+  stroke: #ffffff;
+  stroke-width: 1.5;
+}
+
+
+/* =========================
+   NÚMEROS
+========================= */
+
+.heatmap-value {
+  fill: #ffffff;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  pointer-events: none;
+}
+
+
+/* =========================
+   ÁREAS
+========================= */
+
+.heatmap-y-axis text {
+  fill: #dce9ff;
+
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.heatmap-y-axis .tick {
+  cursor: default;
+}
+
+
+/* =========================
+   MODALIDADES
+========================= */
+
+.heatmap-x-axis text {
+  fill: #b9d3f7;
+  font-size: 10px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+
+
+/* =========================
+   TOOLTIP
+========================= */
+
+.heatmap-tooltip {
+  position: absolute;
+
+  z-index: 9999;
+
+  min-width: 190px;
+  max-width: 280px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+
+  padding: 11px 13px;
+
+  background-color: #10284d;
+  color: #ffffff;
+
+  border: 1px solid #5278a8;
+  border-radius: 8px;
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.35);
+
+  pointer-events: none;
+
+}
+
+.heatmap-tooltip strong {
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.heatmap-tooltip span {
+  color: #b9caeb;
+
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.heatmap-tooltip {
+  transform: translate(14px, -10%);
+  /*transform: translate(14px, -50%);*/
+}
