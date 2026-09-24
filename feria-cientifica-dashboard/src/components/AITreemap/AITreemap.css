@@ -1,0 +1,68 @@
+.treemap {
+  position: relative;
+  width: 100%;
+}
+
+.treemap__svg {
+  display: block;
+
+  width: 100%;
+  height: auto;
+}
+
+.treemap-label {
+  fill: #ffffff;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  pointer-events: none;
+}
+
+.treemap-value {
+  fill: #ffffff;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  pointer-events: none;
+}
+
+/* Tooltip flotante */
+
+.treemap-tooltip {
+  position: absolute;
+  z-index: 20;
+
+  min-width: 150px;
+  max-width: 220px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  padding: 10px 12px;
+
+  color: #dce9ff;
+  background-color: #10284d;
+
+  border: 1px solid #5278a8;
+  border-radius: 8px;
+
+  font-size: 12px;
+
+  pointer-events: none;
+
+  transform: translate(12px, -50%);
+}
+
+.treemap-tooltip strong {
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.treemap-tooltip span {
+  color: #b9caeb;
+}

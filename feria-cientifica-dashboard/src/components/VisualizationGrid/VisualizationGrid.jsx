@@ -1,7 +1,9 @@
 import ChartCard from '../ChartCard/ChartCard.jsx'
 import './VisualizationGrid.css'
+import AITreemap from '../AITreemap/AITreemap.jsx'
+import RegionalMap from '../RegionalMap/RegionalMap.jsx'
 
-function VisualizationGrid() {
+function VisualizationGrid({ data }) {
   return (
     <section className="visualization-grid">
 
@@ -11,9 +13,7 @@ function VisualizationGrid() {
         title="IA × Modalidad"
         subtitle="Cantidad de proyectos que utilizan inteligencia artificial"
       >
-        <div className="visualization-placeholder">
-          Treemap
-        </div>
+        <AITreemap /> 
       </ChartCard>
 
       <ChartCard
@@ -22,9 +22,7 @@ function VisualizationGrid() {
         title="Dirección Regional"
         subtitle="Cantidad de proyectos"
       >
-        <div className="visualization-placeholder">
-          Mapa coroplético
-        </div>
+        <RegionalMap data = {data}/>
       </ChartCard>
 
       <ChartCard
