@@ -11,11 +11,11 @@ function Header({ children }) {
 
         <div>
           <h1 className="header__title">
-            Feria Nacional Científica y Tecnológica
+            Feria Nacional de Científica y Tecnológica
           </h1>
 
           <p className="header__subtitle">
-            Mapa de la ciencia, innovación y talento estudiantil de Costa Rica
+            Visualización interactiva de proyectos presentados en 2025
           </p>
         </div>
       </div>

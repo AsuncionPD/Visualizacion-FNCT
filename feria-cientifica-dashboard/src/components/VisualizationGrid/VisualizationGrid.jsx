@@ -15,8 +15,8 @@ function VisualizationGrid({ data }) {
       <section className="chart-card visualization-grid__map">
 
         <div className="chart-card__header">
-          <h2>● Dirección Regional</h2>
-          <p>Cantidad de proyectos</p>
+          <h2>● Proyectos × Dirección Regional</h2>
+          <p>Mapa coroplético que muestra la cantidad de proyectos por dirección regional (DRE).</p>
         </div>
 
         <div className="chart-card__content">
@@ -36,7 +36,14 @@ function VisualizationGrid({ data }) {
 
           <div className="chart-card__header">
             <h2>▦ Área temática × Modalidad</h2>
-            <p>Cantidad de proyectos</p>
+            <p>Mapa de calor que presenta la cantidad de proyectos por área temática y modalidad educativa. Eje Y: Aréas temáticas - Eje X: Modalidad educativa</p>
+        
+            <div className="chart-card_squares">
+              < span className="square" style={{ backgroundColor: '#10284d' }}></span>
+               Mayor cantidad de proyecto
+              < span className="square" style={{ backgroundColor: '#a9c9f5' }}></span>
+               Menor cantidad de proyectos
+            </div>
           </div>
 
           <div className="chart-card__content">
@@ -54,7 +61,14 @@ function VisualizationGrid({ data }) {
 
             <div className="chart-card__header">
               <h2>♟ Área temática × Sexo</h2>
-              <p>Cantidad de estudiantes</p>
+              <p>Barras verticales a color que muestra la predominancia de hombres y mujeres por área temática. Eje Y: Aréas temáticas - Eje X: Total de estudiantes</p>
+
+              <div className="chart-card_squares">
+              < span className="square" style={{ backgroundColor: '#e0568c' }}></span>
+               Mujeres
+              < span className="square" style={{ backgroundColor: '#2388e8' }}></span>
+               Hombres              
+              </div>
             </div>
 
             <div className="chart-card__content">
@@ -71,8 +85,7 @@ function VisualizationGrid({ data }) {
               <h2>▧ IA × Modalidad</h2>
 
               <p>
-                Cantidad de proyectos que utilizan
-                inteligencia artificial
+                Mapa de árbol donde el tamaño de cada rectángulo es proporcional a la cantidad de proyectos que utilizan inteligencia artificial en cada modalidad educativa.
               </p>
             </div>
 

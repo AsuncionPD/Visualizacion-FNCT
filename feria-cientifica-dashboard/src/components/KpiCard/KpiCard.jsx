@@ -1,29 +1,29 @@
 import './KpiCard.css'
 
-function KpiCard({ icon, title, value, detail }) {
+function KpiCard({
+  icon,
+  value,
+  label,
+}) {
   return (
     <article className="kpi-card">
+
       <div className="kpi-card__icon">
         {icon}
       </div>
 
-      <div className="kpi-card__content">
-        <span className="kpi-card__title">
-          {title}
+      <div className="kpi-card__info">
+
+        <strong className="kpi-card__value">
+          {value}
+        </strong>
+
+        <span className="kpi-card__label">
+          {label}
         </span>
 
-        <div className="kpi-card__value-container">
-          <strong className="kpi-card__value">
-            {value}
-          </strong>
-
-          {detail && (
-            <span className="kpi-card__detail">
-              {detail}
-            </span>
-          )}
-        </div>
       </div>
+
     </article>
   )
 }

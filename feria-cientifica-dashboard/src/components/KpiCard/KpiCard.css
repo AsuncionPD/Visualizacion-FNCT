@@ -1,57 +1,82 @@
 .kpi-card {
   min-width: 0;
-  min-height: 80px;
+  height: 88px;
 
   display: flex;
   align-items: center;
+
   gap: 18px;
 
-  padding: 14px 20px;
+  padding: 14px 26px;
+
+  background-color: #0a2144;
 }
 
+
+/* =========================
+   ESPACIO DEL ICONO
+========================= */
+
 .kpi-card__icon {
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
+
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  background-color: #0e4b87;
+
   border-radius: 50%;
 
-  background-color: #153b67;
-  color: #d7e7ff;
+  color: #eaf3ff;
 
-  font-size: 25px;
+  font-size: 27px;
+  line-height: 1;
 }
 
-.kpi-card__content {
+
+/* =========================
+   INFORMACIÓN
+========================= */
+
+.kpi-card__info {
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
-  gap: 6px;
+
+  justify-content: center;
+
+  gap: 4px;
 }
 
-.kpi-card__title {
-  color: #b9caeb;
-  font-size: 13px;
-}
 
-.kpi-card__value-container {
-  display: flex;
-  align-items: baseline;
-  gap: 7px;
-}
+/* =========================
+   NÚMERO / PORCENTAJE
+========================= */
 
 .kpi-card__value {
   color: #ffffff;
 
-  font-size: 26px;
+  font-size: 27px;
   font-weight: 700;
+
   line-height: 1;
 }
 
-.kpi-card__detail {
-  color: #b9caeb;
-  font-size: 16px;
+
+/* =========================
+   TÍTULO
+========================= */
+
+.kpi-card__label {
+  color: #c4d6f2;
+
+  font-size: 15px;
+  font-weight: 400;
+
+  line-height: 1.2;
 }

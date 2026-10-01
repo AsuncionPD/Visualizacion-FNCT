@@ -85,6 +85,23 @@
   overflow: hidden;
 }
 
+.chart-card_squares{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-top: 5px;
+  color: #ffffff;
+  font-size: 11px;
+}
+
+.square{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
 
 /* ========================================
    MAPA
