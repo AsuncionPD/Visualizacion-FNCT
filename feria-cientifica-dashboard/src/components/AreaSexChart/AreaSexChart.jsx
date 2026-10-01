@@ -60,8 +60,8 @@ function AreaSexChart({ data }) {
     // 3. Tamaño
     // ==========================================
 
-    const width = 760
-    const height = 220
+    const width = 600
+    const height = 320
 
     const margin = {
       top: 8,
@@ -125,10 +125,12 @@ function AreaSexChart({ data }) {
     ]
 
     const color = d3
-      .scaleOrdinal()
-      .domain(sexes)
-      .range(colors)
-
+    .scaleOrdinal()
+    .domain(['Femenino', 'Masculino'])
+    .range([
+      '#e0568c', // Femenino = rosado
+      '#2388e8', // Masculino = azul
+    ])
     // ==========================================
     // 6. Datos apilados
     // ==========================================

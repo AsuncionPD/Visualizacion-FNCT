@@ -15,7 +15,7 @@
     MAPA GRANDE | VISUALIZACIONES
   */
   grid-template-columns:
-    minmax(0, 0.8fr)
+    minmax(0, 0.7fr)
     minmax(0, 1fr);
 
   gap: 12px;

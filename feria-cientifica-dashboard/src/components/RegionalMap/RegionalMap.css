@@ -1,9 +1,5 @@
 /* ========================================
    CONTENEDOR GENERAL
-
-   Este contiene:
-   1. mapa
-   2. leyenda
 ======================================== */
 
 .regional-map {
@@ -12,6 +8,27 @@
   width: 100%;
   height: 100%;
 
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+
+/* ========================================
+   ESPACIO DEL MAPA
+======================================== */
+
+.regional-map__viewport {
+  position: relative;
+
+  width: 100%;
+
+  /* Que el mapa use casi toda la tarjeta */
+  flex: 1;
   min-height: 0;
 
   overflow: hidden;
@@ -19,38 +36,23 @@
 
 
 /* ========================================
-   ZONA DEL MAPA
-
-   El overflow se aplica SOLO aquí.
-======================================== */
-
-.regional-map__viewport {
-  position: relative;
-
-  width: 100%;
-  height: 370px;
-
-  overflow: hidden;
-}
-
-
-/* ========================================
-   SVG
-
-   Este puede ser enorme sin afectar
-   la leyenda.
+   SVG DEL MAPA
 ======================================== */
 
 .regional-map__svg {
   position: absolute;
 
-  width: 200%;
-  height: 200%;
+  /* Más grande dentro de su espacio */
+  width: 230%;
+  height: 230%;
 
-  left: 38%;
-  top: 55%;
+  /*
+    Posición del mapa dentro de la tarjeta
+  */
+  left: 35%;
+  top: 80%;
 
-  transform: translate(-50%, -30%);
+  transform: translate(-50%, -50%);
 
   display: block;
 }
@@ -66,8 +68,7 @@
 
   cursor: pointer;
 
-  transition:
-    opacity 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .regional-map__region:hover {
@@ -80,8 +81,9 @@
 ======================================== */
 
 .regional-map__legend {
-  display: flex;
+  flex-shrink: 0;
 
+  display: flex;
   align-items: center;
   justify-content: center;
 
@@ -89,16 +91,15 @@
 
   width: 100%;
 
-  padding: 8px 20px 4px;
+  padding: 8px 20px 12px;
 
   box-sizing: border-box;
 
-  transform: translateY(60px);
-
+  /* QUITAMOS el translateY(60px) */
 }
 
 
-/* Texto de menor/mayor */
+/* Menor / mayor */
 
 .regional-map__legend-label {
   color: #8fa6c5;
@@ -109,7 +110,7 @@
 }
 
 
-/* Contiene degradado + números */
+/* Degradado + números */
 
 .regional-map__legend-scale {
   width: 180px;
@@ -121,7 +122,7 @@
 }
 
 
-/* Barra azul */
+/* Barra */
 
 .regional-map__legend-gradient {
   width: 100%;
@@ -141,11 +142,10 @@
 }
 
 
-/* Números mínimo/máximo */
+/* 1 — 10 */
 
 .regional-map__legend-values {
   display: flex;
-
   justify-content: space-between;
 
   color: #7086a5;
@@ -186,8 +186,7 @@
 
   pointer-events: none;
 
-  transform:
-    translate(14px, -50%);
+  transform: translate(14px, -50%);
 }
 
 .regional-map__tooltip strong {

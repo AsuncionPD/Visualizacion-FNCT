@@ -120,8 +120,8 @@ function AreaModalityHeatmap({ data }) {
       porque la tarjeta del heatmap es horizontal.
     */
 
-    const width = 900
-    const height = 340
+    const width = 1200
+    const height = 360
 
     const margin = {
       top: 65,
