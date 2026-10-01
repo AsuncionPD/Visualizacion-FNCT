@@ -141,11 +141,12 @@ function App() {
 
   return (
     <div className="app">
-      <Header />
+        <Header>
+            <Filters />
+        </Header>
 
       <main className="dashboard">
-         
-
+        
         <KpiSection data={data} />
 
         <VisualizationGrid data={data} />

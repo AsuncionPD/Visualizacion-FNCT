@@ -1,46 +1,30 @@
+/* ========================================
+   GRID PRINCIPAL
+======================================== */
+
 .visualization-grid {
-  min-height: 0;
+  width: 100%;
   height: 100%;
 
-  display: grid;
-
-  /*
-    Izquierda | Centro | Derecha
-  */
-  grid-template-columns:
-    minmax(280px, 0.95fr)
-    minmax(420px, 1.35fr)
-    minmax(320px, 1fr);
-
-  gap: 12px;
-}
-
-
-/* =========================
-   COLUMNA IZQUIERDA
-   ========================= */
-
-.visualization-grid__left {
   min-width: 0;
   min-height: 0;
 
   display: grid;
 
   /*
-    Treemap un poquito mayor
-    que barras
+    MAPA GRANDE | VISUALIZACIONES
   */
-  grid-template-rows:
-    1.15fr
-    0.85fr;
+  grid-template-columns:
+    minmax(0, 0.8fr)
+    minmax(0, 1fr);
 
-  gap: 10px;
+  gap: 12px;
 }
 
 
-/* =========================
+/* ========================================
    TARJETAS
-   ========================= */
+======================================== */
 
 .chart-card {
   min-width: 0;
@@ -52,36 +36,43 @@
   overflow: hidden;
 
   background: #082044;
+
   border: 1px solid #234e7d;
   border-radius: 12px;
 }
 
 
+/* ========================================
+   HEADER DE LAS TARJETAS
+======================================== */
+
 .chart-card__header {
   flex-shrink: 0;
 
-  padding: 14px 16px 6px;
+  padding: 12px 14px 5px;
 }
-
 
 .chart-card__header h2 {
   margin: 0;
 
   color: #ffffff;
 
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
 }
-
 
 .chart-card__header p {
   margin: 3px 0 0;
 
   color: #a9c9f5;
 
-  font-size: 12px;
+  font-size: 11px;
 }
 
+
+/* ========================================
+   CONTENIDO
+======================================== */
 
 .chart-card__content {
   flex: 1;
@@ -89,28 +80,97 @@
   min-width: 0;
   min-height: 0;
 
-  padding: 6px 10px 10px;
+  padding: 5px 8px 8px;
 
   overflow: hidden;
 }
 
 
-/* =========================
+/* ========================================
    MAPA
-   ========================= */
+======================================== */
 
 .visualization-grid__map {
+  min-width: 0;
   min-height: 0;
+
+  height: 100%;
 }
 
 
-/* =========================
+/* ========================================
+   COLUMNA DERECHA
+======================================== */
+
+.visualization-grid__right {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+
+  /*
+    Heatmap arriba.
+    Barras + Treemap abajo.
+  */
+  grid-template-rows:
+    minmax(0, 1.05fr)
+    minmax(0, 0.95fr);
+
+  gap: 10px;
+}
+
+
+/* ========================================
    HEATMAP
-   ========================= */
+======================================== */
 
 .visualization-grid__heatmap {
+  min-width: 0;
   min-height: 0;
 }
+
+
+/* ========================================
+   PARTE INFERIOR DERECHA
+======================================== */
+
+.visualization-grid__bottom {
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
+  gap: 10px;
+}
+
+
+/* ========================================
+   ÁREA × SEXO
+======================================== */
+
+.visualization-grid__sex {
+  min-width: 0;
+  min-height: 0;
+}
+
+
+/* ========================================
+   IA × MODALIDAD
+======================================== */
+
+.visualization-grid__ai {
+  min-width: 0;
+  min-height: 0;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
 
 @media (max-width: 1100px) {
 
@@ -125,55 +185,39 @@
   }
 
   .visualization-grid {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
     height: auto;
+
+    grid-template-columns: 1fr;
 
     margin-top: 12px;
   }
 
   .visualization-grid__map {
-    min-height: 500px;
+    min-height: 520px;
+  }
+
+  .visualization-grid__right {
+    grid-template-rows: auto auto;
   }
 
   .visualization-grid__heatmap {
-    min-height: 500px;
+    min-height: 430px;
+  }
+
+  .visualization-grid__bottom {
+    min-height: 350px;
   }
 }
 
 
 @media (max-width: 700px) {
 
-  .visualization-grid {
+  .visualization-grid__bottom {
     grid-template-columns: 1fr;
   }
 
-  .visualization-grid__left {
-    display: contents;
+  .visualization-grid__sex,
+  .visualization-grid__ai {
+    min-height: 350px;
   }
-
-  .chart-card {
-    min-height: 400px;
-  }
-
-}
-
-.chart-placeholder {
-  width: 100%;
-  height: 100%;
-
-  min-height: 120px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #6f91bd;
-
-  border: 1px dashed #234e7d;
-  border-radius: 8px;
-
-  font-size: 13px;
 }

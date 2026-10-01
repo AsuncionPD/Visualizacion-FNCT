@@ -60,14 +60,14 @@ function AreaSexChart({ data }) {
     // 3. Tamaño
     // ==========================================
 
-    const width = 600
-    const height = 320
+    const width = 760
+    const height = 220
 
     const margin = {
-      top: 15,
+      top: 8,
       right: 45,
-      bottom: 30,
-      left: 180,
+      bottom: 28,
+      left: 190,
     }
 
     const innerWidth =
@@ -115,7 +115,7 @@ function AreaSexChart({ data }) {
       .scaleBand()
       .domain(chartData.map((d) => d.area))
       .range([0, innerHeight])
-      .padding(0.25)
+      .padding(0.16)
 
     const colors = [
       '#e0568c',
@@ -185,27 +185,29 @@ function AreaSexChart({ data }) {
       .style('cursor', 'pointer')
 
       .on('mouseenter', (event, d) => {
+        const bounds =
+          containerRef.current.getBoundingClientRect()
+
         setTooltip({
           area: d.data.area,
           sex: d.sex,
           cantidad: d[1] - d[0],
-          x: event.clientX,
-          y: event.clientY,
+          x: event.clientX - bounds.left + 12,
+          y: event.clientY - bounds.top,
         })
       })
 
       .on('mousemove', (event, d) => {
+        const bounds =
+          containerRef.current.getBoundingClientRect()
+
         setTooltip({
           area: d.data.area,
           sex: d.sex,
           cantidad: d[1] - d[0],
-          x: event.clientX,
-          y: event.clientY,
+          x: event.clientX - bounds.left + 12,
+          y: event.clientY - bounds.top,
         })
-      })
-
-      .on('mouseleave', () => {
-        setTooltip(null)
       })
 
     // ==========================================

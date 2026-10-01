@@ -17,7 +17,7 @@ function AreaModalityHeatmap({ data }) {
     if (!data || data.length === 0) return
 
     // ==========================================
-    // 1. OBTENER DATOS
+    // 1. DATOS
     // ==========================================
 
     const grouped =
@@ -27,19 +27,11 @@ function AreaModalityHeatmap({ data }) {
 
     const modalidades = Array.from(
       new Set(
-        Object.values(grouped).flatMap((values) =>
-          Object.keys(values)
+        Object.values(grouped).flatMap(
+          (values) => Object.keys(values)
         )
       )
     )
-
-    console.log('=== HEATMAP ===')
-    console.log('Áreas:', areas)
-    console.log('Modalidades:', modalidades)
-
-    // ==========================================
-    // 2. CONVERTIR DATOS PARA D3
-    // ==========================================
 
     const heatmapData = []
 
@@ -55,9 +47,7 @@ function AreaModalityHeatmap({ data }) {
     })
 
     // ==========================================
-    // 3. NOMBRES CORTOS
-    // Solo para mostrarlos visualmente.
-    // El tooltip conserva el nombre completo.
+    // 2. NOMBRES CORTOS
     // ==========================================
 
     const getShortModality = (modalidad) => {
@@ -69,7 +59,7 @@ function AreaModalityHeatmap({ data }) {
         text.includes('secundaria') &&
         text.includes('técnica')
       ) {
-        return 'Secundaria técnica'
+        return 'Sec. técnica'
       }
 
       if (
@@ -79,59 +69,65 @@ function AreaModalityHeatmap({ data }) {
           text.includes('humanística')
         )
       ) {
-        return 'Sec. científica humanística'
+        return 'Sec. científica'
       }
 
       if (
         text.includes('secundaria') &&
         text.includes('epja')
       ) {
-        return 'Secundaria EPJA'
+        return 'Sec. EPJA'
       }
 
       if (
         text.includes('secundaria') &&
         text.includes('académica')
       ) {
-        return 'Secundaria académica'
+        return 'Sec. académica'
       }
 
       if (
         text.includes('primaria') &&
         text.includes('unidocente')
       ) {
-        return 'Primaria unidocente'
+        return 'Prim. unidoc.'
       }
 
       if (
         text.includes('primaria') &&
         text.includes('epja')
       ) {
-        return 'Primaria EPJA'
+        return 'Prim. EPJA'
       }
 
       if (
         text.includes('primaria') &&
         text.includes('académica')
       ) {
-        return 'Primaria académica'
+        return 'Prim. académica'
       }
 
       return modalidad
     }
 
     // ==========================================
-    // 4. TAMAÑO
+    // 3. TAMAÑO
     // ==========================================
 
-    const width = 700
-    const height = 520
+    /*
+      IMPORTANTE:
+      ahora usamos un formato mucho más ancho
+      porque la tarjeta del heatmap es horizontal.
+    */
+
+    const width = 900
+    const height = 340
 
     const margin = {
-      top: 90,
-      right: 10,
-      bottom: 20,
-      left: 150,
+      top: 65,
+      right: 15,
+      bottom: 15,
+      left: 165,
     }
 
     const innerWidth =
@@ -141,7 +137,7 @@ function AreaModalityHeatmap({ data }) {
       height - margin.top - margin.bottom
 
     // ==========================================
-    // 5. SVG
+    // 4. SVG
     // ==========================================
 
     const svg = d3.select(svgRef.current)
@@ -166,7 +162,7 @@ function AreaModalityHeatmap({ data }) {
       )
 
     // ==========================================
-    // 6. ESCALAS
+    // 5. ESCALAS
     // ==========================================
 
     const x = d3
@@ -179,10 +175,10 @@ function AreaModalityHeatmap({ data }) {
       .scaleBand()
       .domain(areas)
       .range([0, innerHeight])
-      .padding(0.04)
+      .padding(0.05)
 
     // ==========================================
-    // 7. COLOR
+    // 6. COLOR
     // ==========================================
 
     const maxValue =
@@ -197,7 +193,7 @@ function AreaModalityHeatmap({ data }) {
       .interpolator(d3.interpolateBlues)
 
     // ==========================================
-    // 8. CELDAS
+    // 7. CELDAS
     // ==========================================
 
     group
@@ -286,7 +282,7 @@ function AreaModalityHeatmap({ data }) {
       })
 
     // ==========================================
-    // 9. NÚMEROS DE LAS CELDAS
+    // 8. NÚMEROS
     // ==========================================
 
     group
@@ -330,7 +326,7 @@ function AreaModalityHeatmap({ data }) {
       .text((d) => d.cantidad)
 
     // ==========================================
-    // 10. EJE Y — ÁREAS TEMÁTICAS
+    // 9. EJE Y
     // ==========================================
 
     group
@@ -343,23 +339,22 @@ function AreaModalityHeatmap({ data }) {
         d3
           .axisLeft(y)
           .tickSize(0)
+          .tickPadding(8)
       )
       .call((g) =>
         g.select('.domain').remove()
       )
 
     // ==========================================
-    // 11. EJE X — MODALIDADES
+    // 10. EJE X
     // ==========================================
 
     const xAxis = group
       .append('g')
-
       .attr(
         'class',
         'heatmap-x-axis'
       )
-
       .call(
         d3
           .axisTop(x)
@@ -372,7 +367,7 @@ function AreaModalityHeatmap({ data }) {
       .remove()
 
     // ==========================================
-    // 12. DIVIDIR MODALIDADES EN VARIAS LÍNEAS
+    // 11. DIVIDIR MODALIDADES
     // ==========================================
 
     xAxis
@@ -387,71 +382,45 @@ function AreaModalityHeatmap({ data }) {
 
         text.text('')
 
-        const lines = []
-        let currentLine = ''
+        /*
+          Máximo dos líneas.
+          Queremos nombres cortos y legibles.
+        */
 
-        words.forEach((word) => {
-          const testLine =
-            currentLine
-              ? `${currentLine} ${word}`
-              : word
+        if (words.length === 1) {
+          text
+            .append('tspan')
+            .attr('x', 0)
+            .attr('dy', '-0.8em')
+            .text(words[0])
 
-          /*
-            Al ser columnas pequeñas,
-            no dejamos líneas demasiado largas.
-          */
-          if (testLine.length <= 11) {
-            currentLine = testLine
-          } else {
-            if (currentLine) {
-              lines.push(currentLine)
-            }
-
-            currentLine = word
-          }
-        })
-
-        if (currentLine) {
-          lines.push(currentLine)
+          return
         }
 
-        // Máximo 3 líneas
-        const visibleLines =
-          lines.slice(0, 3)
+        const middle =
+          Math.ceil(words.length / 2)
 
-        if (lines.length > 3) {
-          const lastIndex =
-            visibleLines.length - 1
+        const firstLine =
+          words
+            .slice(0, middle)
+            .join(' ')
 
-          let lastLine =
-            visibleLines[lastIndex]
+        const secondLine =
+          words
+            .slice(middle)
+            .join(' ')
 
-          if (lastLine.length > 9) {
-            lastLine =
-              lastLine.substring(0, 9)
-          }
+        text
+          .append('tspan')
+          .attr('x', 0)
+          .attr('dy', '-1.5em')
+          .text(firstLine)
 
-          visibleLines[lastIndex] =
-            `${lastLine}...`
-        }
-
-        visibleLines.forEach(
-          (line, index) => {
-            text
-              .append('tspan')
-
-              .attr('x', 0)
-
-              .attr(
-                'dy',
-                index === 0
-                  ? '-2.8em'
-                  : '1.15em'
-              )
-
-              .text(line)
-          }
-        )
+        text
+          .append('tspan')
+          .attr('x', 0)
+          .attr('dy', '1.15em')
+          .text(secondLine)
       })
 
   }, [data])

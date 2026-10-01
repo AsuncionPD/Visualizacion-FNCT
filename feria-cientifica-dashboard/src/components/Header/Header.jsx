@@ -1,8 +1,9 @@
 import './Header.css'
 
-function Header() {
+function Header({ children }) {
   return (
     <header className="header">
+
       <div className="header__brand">
         <div className="header__icon">
           ⚛
@@ -19,12 +20,11 @@ function Header() {
         </div>
       </div>
 
-      <div className="header__info">
-        <span>Visualización interactiva</span>
-        <span className="header__info-icon">ⓘ</span>
+      <div className="header__filters">
+        {children}
       </div>
+
     </header>
-    
   )
 }
 

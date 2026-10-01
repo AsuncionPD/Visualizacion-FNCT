@@ -10,94 +10,81 @@ function VisualizationGrid({ data }) {
     <section className="visualization-grid">
 
       {/* =========================
-          COLUMNA IZQUIERDA
+          IZQUIERDA: MAPA GRANDE
       ========================= */}
-      <div className="visualization-grid__left">
+      <section className="chart-card visualization-grid__map">
 
-        {/* IA × MODALIDAD */}
-        <section className="chart-card">
-          <div className="chart-card__header">
-            <h2>▧ IA × Modalidad</h2>
-
-            <p>
-              Cantidad de proyectos que utilizan
-              inteligencia artificial
-            </p>
-          </div>
-
-          <div className="chart-card__content">
-            <AITreemap data={data} />
-          </div>
-        </section>
-
-
-        {/* ÁREA TEMÁTICA × SEXO */}
-        <section className="chart-card">
-          <div className="chart-card__header">
-            <h2>♟ Área temática × Sexo</h2>
-
-            <p>
-              Cantidad de estudiantes
-            </p>
-          </div>
-
-          <div className="chart-card__content">
-            <AreaSexChart data={data} />
-
-          </div>
-        </section>
-
-      </div>
-
-
-      {/* =========================
-          COLUMNA CENTRAL: MAPA
-      ========================= */}
-      <section
-        className="
-          chart-card
-          visualization-grid__map
-        "
-      >
         <div className="chart-card__header">
           <h2>● Dirección Regional</h2>
-
-          <p>
-            Cantidad de proyectos
-          </p>
+          <p>Cantidad de proyectos</p>
         </div>
 
         <div className="chart-card__content">
           <RegionalMap data={data} />
         </div>
+
       </section>
 
 
       {/* =========================
-          COLUMNA DERECHA: HEATMAP
+          DERECHA
       ========================= */}
-      <section 
-      className="
-      chart-card visualization-grid__heatmap
-      "
-      >
+      <div className="visualization-grid__right">
 
-        <div className="chart-card__header">
-          <h2>
-            ▦ Área temática × Modalidad
-          </h2>
+        {/* HEATMAP */}
+        <section className="chart-card visualization-grid__heatmap">
 
-          <p>
-            Cantidad de proyectos
-          </p>
+          <div className="chart-card__header">
+            <h2>▦ Área temática × Modalidad</h2>
+            <p>Cantidad de proyectos</p>
+          </div>
+
+          <div className="chart-card__content">
+            <AreaModalityHeatMap data={data} />
+          </div>
+
+        </section>
+
+
+        {/* PARTE INFERIOR DERECHA */}
+        <div className="visualization-grid__bottom">
+
+          {/* ÁREA × SEXO */}
+          <section className="chart-card visualization-grid__sex">
+
+            <div className="chart-card__header">
+              <h2>♟ Área temática × Sexo</h2>
+              <p>Cantidad de estudiantes</p>
+            </div>
+
+            <div className="chart-card__content">
+              <AreaSexChart data={data} />
+            </div>
+
+          </section>
+
+
+          {/* IA × MODALIDAD */}
+          <section className="chart-card visualization-grid__ai">
+
+            <div className="chart-card__header">
+              <h2>▧ IA × Modalidad</h2>
+
+              <p>
+                Cantidad de proyectos que utilizan
+                inteligencia artificial
+              </p>
+            </div>
+
+            <div className="chart-card__content">
+              <AITreemap data={data} />
+            </div>
+
+          </section>
+
         </div>
 
-        <div className="chart-card__content">
-
-          <AreaModalityHeatMap data={data} />
-
-        </div>
-      </section>
+      </div>
 
     </section>
   )
