@@ -1,8 +1,10 @@
+
 import { useEffect, useMemo, useState } from 'react'
 import * as d3 from 'd3'
 
 import Header from './components/Header/Header.jsx'
 import Filters from './components/Filters/Filters.jsx'
+import ActiveFilters from './components/ActiveFilters/ActiveFilters.jsx'
 import KpiSection from './components/KpiSection/KpiSection.jsx'
 import VisualizationGrid from './components/VisualizationGrid/VisualizationGrid.jsx'
 
@@ -11,6 +13,40 @@ import proyectosUrl from './data/proyectos.csv?url'
 import './App.css'
 
 function App() {
+
+  // ==========================================
+  // TEMA CLARO / OSCURO
+  // ==========================================
+
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('dashboard-theme') === 'light'
+        ? 'light'
+        : 'dark'
+    } catch {
+      return 'dark'
+    }
+  })
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      'data-theme',
+      theme
+    )
+
+    try {
+      localStorage.setItem('dashboard-theme', theme)
+    } catch {
+      // El dashboard funciona aunque no haya almacenamiento.
+    }
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme((current) =>
+      current === 'dark' ? 'light' : 'dark'
+    )
+  }
+
   // ==========================================
   // DATOS ORIGINALES
   // ==========================================
@@ -29,7 +65,6 @@ function App() {
 
   const [selectedArea, setSelectedArea] =
     useState('Todas')
-
 
   // ==========================================
   // CARGAR CSV
@@ -52,7 +87,6 @@ function App() {
       })
   }, [])
 
-
   // ==========================================
   // OPCIONES DE DIRECCIÓN REGIONAL
   // ==========================================
@@ -73,7 +107,6 @@ function App() {
     )
   }, [data])
 
-
   // ==========================================
   // OPCIONES DE MODALIDAD
   // ==========================================
@@ -91,7 +124,6 @@ function App() {
       a.localeCompare(b, 'es')
     )
   }, [data])
-
 
   // ==========================================
   // OPCIONES DE ÁREA TEMÁTICA
@@ -111,7 +143,6 @@ function App() {
     )
   }, [data])
 
-
   // ==========================================
   // APLICAR LOS 3 FILTROS
   // ==========================================
@@ -130,21 +161,17 @@ function App() {
       const area =
         row['Área temática']?.trim()
 
-
       const matchesRegional =
         selectedRegional === 'Todas' ||
         regional === selectedRegional
-
 
       const matchesModality =
         selectedModality === 'Todas' ||
         modality === selectedModality
 
-
       const matchesArea =
         selectedArea === 'Todas' ||
         area === selectedArea
-
 
       return (
         matchesRegional &&
@@ -159,7 +186,6 @@ function App() {
     selectedArea,
   ])
 
-
   // ==========================================
   // RESTABLECER FILTROS
   // ==========================================
@@ -170,7 +196,6 @@ function App() {
     setSelectedArea('Todas')
   }
 
-
   // ==========================================
   // RENDER
   // ==========================================
@@ -178,8 +203,10 @@ function App() {
   return (
     <div className="app">
 
-      <Header>
-
+      <Header
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      >
         <Filters
           regionalOptions={regionalOptions}
           modalityOptions={modalityOptions}
@@ -189,23 +216,25 @@ function App() {
           selectedModality={selectedModality}
           selectedArea={selectedArea}
 
-          onRegionalChange={
-            setSelectedRegional
-          }
-
-          onModalityChange={
-            setSelectedModality
-          }
-
-          onAreaChange={
-            setSelectedArea
-          }
+          onRegionalChange={setSelectedRegional}
+          onModalityChange={setSelectedModality}
+          onAreaChange={setSelectedArea}
 
           onReset={resetFilters}
         />
-
       </Header>
 
+      <ActiveFilters
+        selectedRegional={selectedRegional}
+        selectedModality={selectedModality}
+        selectedArea={selectedArea}
+
+        onRegionalChange={setSelectedRegional}
+        onModalityChange={setSelectedModality}
+        onAreaChange={setSelectedArea}
+
+        onReset={resetFilters}
+      />
 
       <main className="dashboard">
 
@@ -215,6 +244,7 @@ function App() {
 
         <VisualizationGrid
           data={filteredData}
+          theme={theme}
         />
 
       </main>

@@ -1,4 +1,112 @@
+
+import { useId } from 'react'
+import Select from 'react-select'
+
+import ubicacionIcon from '../../assets/imgs/ubicacion.png'
+import birreteIcon from '../../assets/imgs/birrete.png'
+import cienciasIcon from '../../assets/imgs/ciencias.png'
+
 import './Filters.css'
+
+// ==========================================
+// OPCIONES PARA REACT SELECT
+// ==========================================
+
+const buildOptions = (options = []) => {
+  const values = Array.from(
+    new Set(
+      options.filter(
+        (option) => option && option !== 'Todas'
+      )
+    )
+  )
+
+  return [
+    {
+      value: 'Todas',
+      label: 'Todas',
+    },
+    ...values.map((value) => ({
+      value,
+      label: value,
+    })),
+  ]
+}
+
+// ==========================================
+// COMPONENTE REUTILIZABLE DE FILTRO
+// ==========================================
+
+function FilterSelect({
+  id,
+  label,
+  icon,
+  options,
+  selectedValue,
+  onChange,
+}) {
+  const selectOptions = buildOptions(options)
+
+  const selectedOption =
+    selectOptions.find(
+      (option) => option.value === selectedValue
+    ) || selectOptions[0]
+
+  return (
+    <div className="filter-box">
+
+      <img
+        src={icon}
+        alt=""
+        aria-hidden="true"
+        className="filter-box__icon"
+      />
+
+      <div className="filter-box__content">
+
+        <label htmlFor={id}>
+          {label}
+        </label>
+
+        <Select
+          inputId={id}
+          instanceId={id}
+          className="filter-select"
+          classNamePrefix="filter-select"
+          options={selectOptions}
+          value={selectedOption}
+          onChange={(option) => {
+            onChange(option?.value ?? 'Todas')
+          }}
+          isSearchable
+          isClearable={false}
+          isMulti={false}
+          menuPortalTarget={
+            typeof document !== 'undefined'
+              ? document.body
+              : undefined
+          }
+          menuPosition="fixed"
+          menuPlacement="auto"
+          maxMenuHeight={240}
+          noOptionsMessage={() =>
+            'No se encontraron resultados'
+          }
+          placeholder="Seleccionar..."
+          openMenuOnFocus={false}
+          blurInputOnSelect
+          unstyled
+        />
+
+      </div>
+
+    </div>
+  )
+}
+
+// ==========================================
+// FILTROS PRINCIPALES
+// ==========================================
 
 function Filters({
   regionalOptions,
@@ -15,155 +123,78 @@ function Filters({
 
   onReset,
 }) {
+  const idPrefix = useId().replace(/:/g, '')
+
   return (
-    <section className="filters">
+    <section
+      className="filters"
+      aria-label="Filtros del dashboard"
+    >
 
-      {/* =========================
+      {/* =====================================
           DIRECCIÓN REGIONAL
-      ========================= */}
+      ===================================== */}
 
-      <div className="filter-box">
+      <FilterSelect
+        id={`${idPrefix}-regional`}
+        label="Dirección Regional"
+        icon={ubicacionIcon}
+        options={regionalOptions}
+        selectedValue={selectedRegional}
+        onChange={onRegionalChange}
+      />
 
-        
-        <img src="./src/assets/imgs/ubicacion.png" alt="icono ubicación" className="filter-box__icon"/>
-      
-
-        <div className="filter-box__content">
-
-          <label htmlFor="regional">
-            Dirección Regional
-          </label>
-
-          <select
-            id="regional"
-            value={selectedRegional}
-            onChange={(event) =>
-              onRegionalChange(
-                event.target.value
-              )
-            }
-          >
-            <option value="Todas">
-              Todas
-            </option>
-
-            {regionalOptions.map(
-              (regional) => (
-                <option
-                  key={regional}
-                  value={regional}
-                >
-                  {regional}
-                </option>
-              )
-            )}
-
-          </select>
-
-        </div>
-      </div>
-
-
-      {/* =========================
+      {/* =====================================
           MODALIDAD
-      ========================= */}
+      ===================================== */}
 
-      <div className="filter-box">
+      <FilterSelect
+        id={`${idPrefix}-modalidad`}
+        label="Modalidad"
+        icon={birreteIcon}
+        options={modalityOptions}
+        selectedValue={selectedModality}
+        onChange={onModalityChange}
+      />
 
-        <img src="./src/assets/imgs/birrete.png" alt="icono ubicación" className="filter-box__icon"/>
-      
-        <div className="filter-box__content">
-
-          <label htmlFor="modalidad">
-            Modalidad
-          </label>
-
-          <select
-            id="modalidad"
-            value={selectedModality}
-            onChange={(event) =>
-              onModalityChange(
-                event.target.value
-              )
-            }
-          >
-            <option value="Todas">
-              Todas
-            </option>
-
-            {modalityOptions.map(
-              (modality) => (
-                <option
-                  key={modality}
-                  value={modality}
-                >
-                  {modality}
-                </option>
-              )
-            )}
-
-          </select>
-
-        </div>
-      </div>
-
-
-      {/* =========================
+      {/* =====================================
           ÁREA TEMÁTICA
-      ========================= */}
+      ===================================== */}
 
-      <div className="filter-box">
+      <FilterSelect
+        id={`${idPrefix}-area`}
+        label="Área temática"
+        icon={cienciasIcon}
+        options={areaOptions}
+        selectedValue={selectedArea}
+        onChange={onAreaChange}
+      />
 
-        <img src="./src/assets/imgs/ciencias.png" alt="icono ubicación" className="filter-box__icon"/>
-
-        <div className="filter-box__content">
-
-          <label htmlFor="area">
-            Área temática
-          </label>
-
-          <select
-            id="area"
-            value={selectedArea}
-            onChange={(event) =>
-              onAreaChange(
-                event.target.value
-              )
-            }
-          >
-            <option value="Todas">
-              Todas
-            </option>
-
-            {areaOptions.map(
-              (area) => (
-                <option
-                  key={area}
-                  value={area}
-                >
-                  {area}
-                </option>
-              )
-            )}
-
-          </select>
-
-        </div>
-      </div>
-
-
-      {/* =========================
-          RESTABLECER
-      ========================= */}
+      {/* =====================================
+          RESTABLECER FILTROS
+      ===================================== */}
 
       <button
         className="filters__reset"
         type="button"
         onClick={onReset}
       >
-        <span className="filters__reset-icon">
-          ↻
-        </span>
+
+        <svg
+          className="filters__reset-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M3 11a9 9 0 1 1 2.6 6.4" />
+          <path d="M3 4v7h7" />
+        </svg>
 
         <span>
           Restablecer filtros

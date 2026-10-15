@@ -1,4 +1,6 @@
+
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import * as d3 from 'd3'
 
 import regionalesData from '../../data/geo/direcciones-regionales.json'
@@ -13,61 +15,60 @@ import {
 
 import './RegionalMap.css'
 
-function RegionalMap({ data }) {
+function RegionalMap({ data, theme = 'dark' }) {
   const svgRef = useRef(null)
-  const containerRef = useRef(null)
 
   const [tooltip, setTooltip] = useState(null)
+
   const [range, setRange] = useState({
     min: 0,
     max: 0,
   })
 
   useEffect(() => {
-    // ========================================
-    // 1. Tamaño interno del SVG
-    // ========================================
-
     const width = 700
     const height = 420
 
     const svg = d3.select(svgRef.current)
 
     svg.selectAll('*').remove()
+    setTooltip(null)
+
+    if (!data) return
+
+    // ========================================
+    // 1. SVG
+    // ========================================
 
     svg
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('preserveAspectRatio', 'xMidYMid meet')
 
     // ========================================
-    // 2. Agrupar proyectos por DRE
+    // 2. AGRUPACIÓN POR REGIONAL
     // ========================================
 
     const projectsByRegional =
       getProjectsByRegional(data)
 
-    // ========================================
-    // 3. Obtener cantidad de una DRE
-    // ========================================
+    const normalizedCounts = new Map(
+      Object.entries(projectsByRegional).map(
+        ([name, count]) => [
+          normalizeRegionalName(name),
+          count,
+        ]
+      )
+    )
 
     const getProjectCount = (regionalName) => {
-      const normalizedRegionalName =
+      const normalizedName =
         normalizeRegionalName(regionalName)
 
-      const match = Object.entries(
-        projectsByRegional
-      ).find(([csvRegionalName]) => {
-        return (
-          normalizeRegionalName(csvRegionalName) ===
-          normalizedRegionalName
-        )
-      })
-
-      return match ? match[1] : 0
+      return normalizedCounts.get(normalizedName) ?? 0
     }
 
     // ========================================
-    // 4. Proyección geográfica
+    // 3. PROYECCIÓN
     // ========================================
 
     const projection = d3
@@ -85,18 +86,23 @@ function RegionalMap({ data }) {
       .projection(projection)
 
     // ========================================
-    // 5. Cantidad de proyectos por región
+    // 4. VALORES
     // ========================================
 
     const values = regionalesData.features.map(
       (feature) =>
-        getProjectCount(
-          feature.properties.NOMBRE_DRE
-        )
+        getProjectCount(feature.properties.NOMBRE_DRE)
     )
 
-    const minProjects = d3.min(values) ?? 0
-    const maxProjects = d3.max(values) ?? 0
+    const positiveValues = values.filter(
+      (value) => value > 0
+    )
+
+    const minProjects =
+      d3.min(positiveValues) ?? 0
+
+    const maxProjects =
+      d3.max(positiveValues) ?? 0
 
     setRange({
       min: minProjects,
@@ -104,103 +110,126 @@ function RegionalMap({ data }) {
     })
 
     // ========================================
-    // 6. Escala de azules
+    // 5. ESCALA DE COLOR
     // ========================================
 
     const colorScale = d3
-      .scaleSequential()
-      .domain([minProjects, maxProjects || 1])
-      .interpolator(d3.interpolateBlues)
+      .scaleLinear()
+      .domain([
+        minProjects,
+        minProjects + (maxProjects - minProjects) * 0.35,
+        minProjects + (maxProjects - minProjects) * 0.7,
+        maxProjects || 1,
+      ])
+      .range([
+        '#d7f4ff',
+        '#65d7ff',
+        '#13bdf0',
+        '#0754a3',
+      ])
+      .interpolate(d3.interpolateRgb)
+      .clamp(true)
+
+    const getRegionColor = (count) => {
+      if (count === 0) {
+        return theme === 'light'
+          ? '#e7f1f9'
+          : '#082449'
+      }
+
+      return colorScale(count)
+    }
 
     // ========================================
-    // 7. Grupo principal
+    // 6. TOOLTIP RESPONSIVO
     // ========================================
 
-    const mapGroup = svg
+    const updateTooltip = (event, feature) => {
+      const tooltipWidth = 230
+      const tooltipHeight = 115
+      const offset = 16
+      const padding = 12
+
+      const nombre =
+        feature.properties.NOMBRE_DRE
+
+      const cantidad =
+        getProjectCount(nombre)
+
+      const porcentaje = data.length > 0
+        ? (cantidad / data.length) * 100
+        : 0
+
+      let x = event.clientX + offset
+      let y = event.clientY - tooltipHeight / 2
+
+      if (
+        x + tooltipWidth >
+        window.innerWidth - padding
+      ) {
+        x = event.clientX - tooltipWidth - offset
+      }
+
+      x = Math.max(
+        padding,
+        Math.min(
+          x,
+          window.innerWidth - tooltipWidth - padding
+        )
+      )
+
+      y = Math.max(
+        padding,
+        Math.min(
+          y,
+          window.innerHeight - tooltipHeight - padding
+        )
+      )
+
+      setTooltip({
+        nombre,
+        cantidad,
+        porcentaje,
+        x,
+        y,
+      })
+    }
+
+    // ========================================
+    // 7. DIBUJAR REGIONES
+    // ========================================
+
+    svg
       .append('g')
       .attr('class', 'regional-map__group')
-
-    // ========================================
-    // 8. Dibujar regiones
-    // ========================================
-
-    mapGroup
       .selectAll('path')
       .data(regionalesData.features)
       .join('path')
-
+      .attr('class', 'regional-map__region')
       .attr('d', path)
-
-      .attr(
-        'class',
-        'regional-map__region'
+      .attr('fill', (feature) =>
+        getRegionColor(
+          getProjectCount(
+            feature.properties.NOMBRE_DRE
+          )
+        )
       )
+      .on('mouseenter', updateTooltip)
+      .on('mousemove', updateTooltip)
+      .on('mouseleave', () => setTooltip(null))
 
-      // Azul según cantidad
-      .attr('fill', (d) => {
-        const cantidad =
-          getProjectCount(
-            d.properties.NOMBRE_DRE
-          )
+    return () => {
+      svg.selectAll('*').remove()
+    }
 
-        return colorScale(cantidad)
-      })
-
-      // ======================================
-      // TOOLTIP
-      // ======================================
-
-      .on('mouseenter', (event, d) => {
-        const bounds =
-          containerRef.current
-            .getBoundingClientRect()
-
-        const cantidad =
-          getProjectCount(
-            d.properties.NOMBRE_DRE
-          )
-
-        setTooltip({
-          nombre: d.properties.NOMBRE_DRE,
-          cantidad,
-          x: event.clientX - bounds.left,
-          y: event.clientY - bounds.top,
-        })
-      })
-
-      .on('mousemove', (event, d) => {
-        const bounds =
-          containerRef.current
-            .getBoundingClientRect()
-
-        const cantidad =
-          getProjectCount(
-            d.properties.NOMBRE_DRE
-          )
-
-        setTooltip({
-          nombre: d.properties.NOMBRE_DRE,
-          cantidad,
-          x: event.clientX - bounds.left,
-          y: event.clientY - bounds.top,
-        })
-      })
-
-      .on('mouseleave', () => {
-        setTooltip(null)
-      })
-
-  }, [data])
+  }, [data, theme])
 
   return (
-    <div
-      ref={containerRef}
-      className="regional-map"
-    >
+    <div className="regional-map">
 
-      {/* ==============================
-          ZONA 1: MAPA
-      ============================== */}
+      {/* ========================================
+          MAPA
+      ======================================== */}
 
       <div className="regional-map__viewport">
         <svg
@@ -211,10 +240,9 @@ function RegionalMap({ data }) {
         />
       </div>
 
-
-      {/* ==============================
-          ZONA 2: LEYENDA
-      ============================== */}
+      {/* ========================================
+          LEYENDA
+      ======================================== */}
 
       <div className="regional-map__legend">
 
@@ -223,12 +251,14 @@ function RegionalMap({ data }) {
         </span>
 
         <div className="regional-map__legend-scale">
+
           <div className="regional-map__legend-gradient" />
 
           <div className="regional-map__legend-values">
             <span>{range.min}</span>
             <span>{range.max}</span>
           </div>
+
         </div>
 
         <span className="regional-map__legend-label">
@@ -237,12 +267,11 @@ function RegionalMap({ data }) {
 
       </div>
 
-
-      {/* ==============================
+      {/* ========================================
           TOOLTIP
-      ============================== */}
+      ======================================== */}
 
-      {tooltip && (
+      {tooltip && createPortal(
         <div
           className="regional-map__tooltip"
           style={{
@@ -254,13 +283,22 @@ function RegionalMap({ data }) {
             {tooltip.nombre}
           </strong>
 
-          <span>
+          <span className="regional-map__tooltip-count">
+            <span className="regional-map__tooltip-dot" />
+
             {tooltip.cantidad}{' '}
             {tooltip.cantidad === 1
               ? 'proyecto'
               : 'proyectos'}
           </span>
-        </div>
+
+          <span className="regional-map__tooltip-percentage">
+            {tooltip.porcentaje.toFixed(1)}%
+            {' '}del total de proyectos
+          </span>
+
+        </div>,
+        document.body
       )}
 
     </div>

@@ -1,82 +1,100 @@
+
 .kpi-card {
   min-width: 0;
   height: 88px;
 
   display: flex;
   align-items: center;
-
   gap: 18px;
 
   padding: 14px 26px;
 
-  background-color: #0a2144;
+  background-color: var(--bg-card, #0b2a50);
+
+  border: 1px solid var(--border-color, #27557d);
+  border-radius: var(--radius-card, 14px);
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
-
-/* =========================
-   ESPACIO DEL ICONO
-========================= */
+/* ICONO */
 
 .kpi-card__icon {
   width: 58px;
   height: 58px;
-
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background-color: #0e4b87;
-
+  background-color: var(--color-secondary, #13bdf0);
   border-radius: 50%;
-
-  color: #eaf3ff;
-
-  font-size: 27px;
-  line-height: 1;
 }
 
+.kpi-card__image {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
 
-/* =========================
-   INFORMACIÓN
-========================= */
+/* INFORMACIÓN */
 
 .kpi-card__info {
   min-width: 0;
 
   display: flex;
   flex-direction: column;
-
   justify-content: center;
-
   gap: 4px;
 }
 
-
-/* =========================
-   NÚMERO / PORCENTAJE
-========================= */
-
 .kpi-card__value {
-  color: #ffffff;
+  color: var(--text-primary, #ffffff);
 
   font-size: 27px;
   font-weight: 700;
-
   line-height: 1;
 }
 
-
-/* =========================
-   TÍTULO
-========================= */
-
 .kpi-card__label {
-  color: #c4d6f2;
+  color: var(--text-secondary, #c5d9ed);
 
   font-size: 15px;
   font-weight: 400;
-
   line-height: 1.2;
+}
+
+/* KPI DESTACADO: INTELIGENCIA ARTIFICIAL */
+
+.kpi-card--highlight .kpi-card__icon {
+  background-color: var(--color-accent, #ff891f);
+}
+
+.kpi-card--highlight .kpi-card__value {
+  color: var(--color-accent, #ff891f);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 480px) {
+  .kpi-card {
+    padding: 12px 16px;
+    gap: 14px;
+  }
+
+  .kpi-card__icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .kpi-card__value {
+    font-size: 24px;
+  }
+
+  .kpi-card__label {
+    font-size: 14px;
+  }
 }

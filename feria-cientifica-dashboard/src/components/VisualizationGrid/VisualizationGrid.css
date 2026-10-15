@@ -1,3 +1,4 @@
+
 /* ========================================
    GRID PRINCIPAL
 ======================================== */
@@ -11,16 +12,12 @@
 
   display: grid;
 
-  /*
-    MAPA GRANDE | VISUALIZACIONES
-  */
   grid-template-columns:
     minmax(0, 0.7fr)
     minmax(0, 1fr);
 
   gap: 12px;
 }
-
 
 /* ========================================
    TARJETAS
@@ -35,19 +32,24 @@
 
   overflow: hidden;
 
-  background: #082044;
+  background: var(--bg-card, #0b2a50);
 
-  border: 1px solid #234e7d;
-  border-radius: 12px;
+  border: 1px solid var(--border-color, #27557d);
+  border-radius: var(--radius-card, 14px);
+
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
 }
 
-
 /* ========================================
-   HEADER DE LAS TARJETAS
+   ENCABEZADOS
 ======================================== */
 
 .chart-card__header {
   flex-shrink: 0;
+  min-width: 0;
 
   padding: 12px 14px 5px;
 }
@@ -55,20 +57,47 @@
 .chart-card__header h2 {
   margin: 0;
 
-  color: #ffffff;
+  color: var(--text-primary, #ffffff);
 
   font-size: 15px;
   font-weight: 700;
+  line-height: 1.25;
 }
 
 .chart-card__header p {
   margin: 3px 0 0;
 
-  color: #a9c9f5;
+  color: var(--text-secondary, #c5d9ed);
 
   font-size: 11px;
+  line-height: 1.35;
 }
 
+/* ========================================
+   ICONOS DE ENCABEZADO
+======================================== */
+
+.chart-card__heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  padding-left: 12px;
+}
+
+.chart-card__heading .chart-card__header {
+  flex: 1;
+  padding-left: 0;
+}
+
+.chart-card__heading-icon {
+  width: 25px;
+  height: 25px;
+  flex-shrink: 0;
+
+  margin-top: 10px;
+  object-fit: contain;
+}
 
 /* ========================================
    CONTENIDO
@@ -80,28 +109,49 @@
   min-width: 0;
   min-height: 0;
 
-  padding: 5px 8px 8px;
+  padding: 5px 10px 10px;
 
   overflow: hidden;
 }
 
-.chart-card_squares{
+/* ========================================
+   LEYENDAS
+======================================== */
+
+.chart-card_squares {
   display: flex;
   align-items: center;
-  gap: 6px;
+  flex-wrap: wrap;
 
-  margin-top: 5px;
-  color: #ffffff;
+  gap: 6px 10px;
+
+  margin-top: 6px;
+
+  color: var(--text-secondary, #c5d9ed);
   font-size: 11px;
 }
 
-.square{
+.square {
   display: inline-block;
+
   width: 10px;
   height: 10px;
-  border-radius: 2px;
+
+  flex-shrink: 0;
+  border-radius: 3px;
 }
 
+/* ========================================
+   MODO CLARO: LEYENDAS
+======================================== */
+
+[data-theme="light"] .chart-card_squares {
+  color: #466481;
+}
+
+[data-theme="light"] .chart-card_squares .square {
+  border: 1px solid rgba(8, 36, 73, 0.08);
+}
 
 /* ========================================
    MAPA
@@ -110,10 +160,8 @@
 .visualization-grid__map {
   min-width: 0;
   min-height: 0;
-
   height: 100%;
 }
-
 
 /* ========================================
    COLUMNA DERECHA
@@ -125,17 +173,12 @@
 
   display: grid;
 
-  /*
-    Heatmap arriba.
-    Barras + Treemap abajo.
-  */
   grid-template-rows:
     minmax(0, 1.05fr)
     minmax(0, 0.95fr);
 
   gap: 10px;
 }
-
 
 /* ========================================
    HEATMAP
@@ -146,9 +189,8 @@
   min-height: 0;
 }
 
-
 /* ========================================
-   PARTE INFERIOR DERECHA
+   PARTE INFERIOR
 ======================================== */
 
 .visualization-grid__bottom {
@@ -164,7 +206,6 @@
   gap: 10px;
 }
 
-
 /* ========================================
    ÁREA × SEXO
 ======================================== */
@@ -173,7 +214,6 @@
   min-width: 0;
   min-height: 0;
 }
-
 
 /* ========================================
    IA × MODALIDAD
@@ -184,13 +224,80 @@
   min-height: 0;
 }
 
+/* ========================================
+   ESTADO VACÍO
+======================================== */
+
+.chart-empty {
+  width: 100%;
+  height: 100%;
+  min-height: 120px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+  padding: 20px;
+
+  color: var(--text-primary, #ffffff);
+  text-align: center;
+}
+
+.chart-empty__icon {
+  width: 36px;
+  height: 36px;
+
+  flex-shrink: 0;
+
+  color: var(--text-muted, #9cb8d1);
+  opacity: 0.85;
+}
+
+.chart-empty strong {
+  color: var(--text-primary, #ffffff);
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.chart-empty p {
+  max-width: 290px;
+  margin: 0;
+
+  color: var(--text-secondary, #c5d9ed);
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ========================================
+   ESTADO VACÍO - MODO CLARO
+======================================== */
+
+html[data-theme="light"] .chart-empty {
+  color: #082449;
+}
+
+html[data-theme="light"] .chart-empty__icon {
+  color: #66829c;
+}
+
+html[data-theme="light"] .chart-empty strong {
+  color: #082449;
+}
+
+html[data-theme="light"] .chart-empty p {
+  color: #466481;
+}
 
 /* ========================================
    RESPONSIVE
 ======================================== */
 
 @media (max-width: 1100px) {
-
   .app {
     height: auto;
     min-height: 100vh;
@@ -203,9 +310,7 @@
 
   .visualization-grid {
     height: auto;
-
     grid-template-columns: 1fr;
-
     margin-top: 12px;
   }
 
@@ -226,9 +331,7 @@
   }
 }
 
-
 @media (max-width: 700px) {
-
   .visualization-grid__bottom {
     grid-template-columns: 1fr;
   }

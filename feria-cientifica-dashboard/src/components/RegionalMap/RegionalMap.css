@@ -1,3 +1,4 @@
+
 /* ========================================
    CONTENEDOR GENERAL
 ======================================== */
@@ -17,7 +18,6 @@
   overflow: hidden;
 }
 
-
 /* ========================================
    ESPACIO DEL MAPA
 ======================================== */
@@ -27,13 +27,11 @@
 
   width: 100%;
 
-  /* Que el mapa use casi toda la tarjeta */
   flex: 1;
   min-height: 0;
 
   overflow: hidden;
 }
-
 
 /* ========================================
    SVG DEL MAPA
@@ -42,13 +40,9 @@
 .regional-map__svg {
   position: absolute;
 
-  /* Más grande dentro de su espacio */
   width: 230%;
   height: 230%;
 
-  /*
-    Posición del mapa dentro de la tarjeta
-  */
   left: 35%;
   top: 80%;
 
@@ -57,24 +51,29 @@
   display: block;
 }
 
-
 /* ========================================
    REGIONES
 ======================================== */
 
 .regional-map__region {
-  stroke: #071a35;
-  stroke-width: 1;
+  stroke: #e6f7ff;
+  stroke-width: 0.8;
+
+  stroke-linejoin: round;
 
   cursor: pointer;
 
-  transition: opacity 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    stroke 0.2s ease;
 }
 
 .regional-map__region:hover {
-  opacity: 0.72;
-}
+  opacity: 0.85;
 
+  stroke: #ffffff;
+  stroke-width: 2;
+}
 
 /* ========================================
    LEYENDA
@@ -94,23 +93,16 @@
   padding: 8px 20px 12px;
 
   box-sizing: border-box;
-
-  /* QUITAMOS el translateY(60px) */
 }
 
-
-/* Menor / mayor */
-
 .regional-map__legend-label {
-  color: #8fa6c5;
+  color: var(--text-secondary);
 
   font-size: 11px;
+  font-weight: 500;
 
   white-space: nowrap;
 }
-
-
-/* Degradado + números */
 
 .regional-map__legend-scale {
   width: 180px;
@@ -118,86 +110,181 @@
   display: flex;
   flex-direction: column;
 
-  gap: 3px;
+  gap: 4px;
 }
-
-
-/* Barra */
 
 .regional-map__legend-gradient {
   width: 100%;
-  height: 8px;
+  height: 9px;
 
   border-radius: 20px;
 
-  background:
-    linear-gradient(
-      to right,
-      #f7fbff 0%,
-      #deebf7 25%,
-      #9ecae1 50%,
-      #4292c6 75%,
-      #084594 100%
-    );
+  background: linear-gradient(
+    to right,
+    #d7f4ff 0%,
+    #65d7ff 35%,
+    #13bdf0 70%,
+    #0754a3 100%
+  );
 }
-
-
-/* 1 — 10 */
 
 .regional-map__legend-values {
   display: flex;
   justify-content: space-between;
 
-  color: #7086a5;
+  color: var(--text-secondary);
 
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: 600;
 }
-
 
 /* ========================================
    TOOLTIP
 ======================================== */
 
 .regional-map__tooltip {
-  position: absolute;
+  position: fixed;
 
-  z-index: 100;
+  z-index: 99999;
 
-  min-width: 150px;
-  max-width: 220px;
+  box-sizing: border-box;
+
+  width: max-content;
+  min-width: 175px;
+  max-width: min(230px, calc(100vw - 24px));
 
   display: flex;
   flex-direction: column;
 
-  gap: 4px;
+  gap: 8px;
 
-  padding: 10px 12px;
+  padding: 13px 15px;
 
-  background-color: #10284d;
-  color: #ffffff;
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text);
 
-  border: 1px solid #5278a8;
-  border-radius: 8px;
+  border: 1px solid var(--border-input);
+  border-radius: 10px;
 
   box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.25);
+    0 8px 24px rgba(0, 0, 0, 0.3);
 
   font-size: 12px;
 
   pointer-events: none;
 
-  transform: translate(14px, -50%);
+  overflow-wrap: anywhere;
 }
 
 .regional-map__tooltip strong {
-  color: #ffffff;
+  color: var(--text-primary);
 
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .regional-map__tooltip span {
-  color: #b9caeb;
+  color: var(--text-secondary);
 
   font-size: 12px;
+  line-height: 1.4;
+}
+
+/* ========================================
+   CANTIDAD DE PROYECTOS
+======================================== */
+
+.regional-map__tooltip-count {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  font-weight: 600;
+}
+
+.regional-map__tooltip-dot {
+  display: inline-block;
+
+  width: 9px;
+  height: 9px;
+
+  flex-shrink: 0;
+
+  background-color: var(--color-secondary);
+
+  border-radius: 50%;
+}
+
+/* ========================================
+   PORCENTAJE
+======================================== */
+
+.regional-map__tooltip
+.regional-map__tooltip-percentage {
+  color: var(--text-primary);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ========================================
+   MODO CLARO
+======================================== */
+
+[data-theme="light"] .regional-map__region {
+  stroke: #ffffff;
+  stroke-width: 1;
+}
+
+[data-theme="light"] .regional-map__region:hover {
+  stroke: #082449;
+  stroke-width: 1.5;
+}
+
+[data-theme="light"] .regional-map__tooltip {
+  background: #ffffff;
+  color: #082449;
+
+  border-color: #d2e1ef;
+
+  box-shadow:
+    0 8px 24px rgba(8, 36, 73, 0.16);
+}
+
+[data-theme="light"] .regional-map__tooltip strong {
+  color: #082449;
+}
+
+[data-theme="light"] .regional-map__tooltip span {
+  color: #466481;
+}
+
+[data-theme="light"]
+.regional-map__tooltip
+.regional-map__tooltip-percentage {
+  color: #0754a3;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 600px) {
+  .regional-map__legend {
+    gap: 8px;
+    padding: 8px 10px 12px;
+  }
+
+  .regional-map__legend-label {
+    font-size: 10px;
+  }
+
+  .regional-map__legend-scale {
+    width: 120px;
+  }
+
+  .regional-map__legend-values {
+    font-size: 10px;
+  }
 }

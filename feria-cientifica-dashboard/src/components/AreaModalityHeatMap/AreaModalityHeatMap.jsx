@@ -1,4 +1,6 @@
+
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import * as d3 from 'd3'
 
 import {
@@ -7,21 +9,26 @@ import {
 
 import './AreaModalityHeatmap.css'
 
-function AreaModalityHeatmap({ data }) {
+function AreaModalityHeatmap({ data, theme = 'dark' }) {
   const svgRef = useRef(null)
-  const containerRef = useRef(null)
-
   const [tooltip, setTooltip] = useState(null)
 
   useEffect(() => {
-    if (!data || data.length === 0) return
+    const svg = d3.select(svgRef.current)
+
+    svg.selectAll('*').remove()
+
+    if (!data || data.length === 0) {
+      return
+    }
+
+    const isLight = theme === 'light'
 
     // ==========================================
     // 1. DATOS
     // ==========================================
 
-    const grouped =
-      getProjectsByAreaAndModality(data)
+    const grouped = getProjectsByAreaAndModality(data)
 
     const areas = Object.keys(grouped)
 
@@ -40,24 +47,25 @@ function AreaModalityHeatmap({ data }) {
         heatmapData.push({
           area,
           modalidad,
-          cantidad:
-            grouped[area]?.[modalidad] || 0,
+          cantidad: grouped[area]?.[modalidad] || 0,
         })
       })
     })
 
     // ==========================================
-    // 2. NOMBRES CORTOS
+    // 2. ABREVIAR MODALIDADES
     // ==========================================
 
     const getShortModality = (modalidad) => {
       const text = modalidad
         .trim()
         .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
 
       if (
         text.includes('secundaria') &&
-        text.includes('técnica')
+        text.includes('tecnica')
       ) {
         return 'Sec. técnica'
       }
@@ -65,8 +73,8 @@ function AreaModalityHeatmap({ data }) {
       if (
         text.includes('secundaria') &&
         (
-          text.includes('científica') ||
-          text.includes('humanística')
+          text.includes('cientifica') ||
+          text.includes('humanistica')
         )
       ) {
         return 'Sec. científica'
@@ -81,7 +89,7 @@ function AreaModalityHeatmap({ data }) {
 
       if (
         text.includes('secundaria') &&
-        text.includes('académica')
+        text.includes('academica')
       ) {
         return 'Sec. académica'
       }
@@ -102,7 +110,7 @@ function AreaModalityHeatmap({ data }) {
 
       if (
         text.includes('primaria') &&
-        text.includes('académica')
+        text.includes('academica')
       ) {
         return 'Prim. académica'
       }
@@ -111,14 +119,8 @@ function AreaModalityHeatmap({ data }) {
     }
 
     // ==========================================
-    // 3. TAMAÑO
+    // 3. DIMENSIONES ORIGINALES
     // ==========================================
-
-    /*
-      IMPORTANTE:
-      ahora usamos un formato mucho más ancho
-      porque la tarjeta del heatmap es horizontal.
-    */
 
     const width = 1200
     const height = 360
@@ -140,19 +142,9 @@ function AreaModalityHeatmap({ data }) {
     // 4. SVG
     // ==========================================
 
-    const svg = d3.select(svgRef.current)
-
-    svg.selectAll('*').remove()
-
     svg
-      .attr(
-        'viewBox',
-        `0 0 ${width} ${height}`
-      )
-      .attr(
-        'preserveAspectRatio',
-        'xMidYMid meet'
-      )
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
 
     const group = svg
       .append('g')
@@ -162,7 +154,7 @@ function AreaModalityHeatmap({ data }) {
       )
 
     // ==========================================
-    // 5. ESCALAS
+    // 5. ESCALAS DE POSICIÓN
     // ==========================================
 
     const x = d3
@@ -178,111 +170,150 @@ function AreaModalityHeatmap({ data }) {
       .padding(0.05)
 
     // ==========================================
-    // 6. COLOR
+    // 6. ESCALA DE COLOR SEGÚN TEMA
     // ==========================================
 
     const maxValue =
-      d3.max(
-        heatmapData,
-        (d) => d.cantidad
-      ) || 1
+      d3.max(heatmapData, (d) => d.cantidad) || 1
 
     const color = d3
-      .scaleSequential()
-      .domain([0, maxValue])
-      .interpolator(d3.interpolateBlues)
+      .scaleLinear()
+      .domain([
+        0,
+        maxValue * 0.25,
+        maxValue * 0.5,
+        maxValue * 0.75,
+        maxValue,
+      ])
+      .range(
+        isLight
+          ? [
+              '#edf8ff',
+              '#b9e8fb',
+              '#65c9f0',
+              '#168bd3',
+              '#0754a3',
+            ]
+          : [
+              '#c9f1ff',
+              '#82d9ff',
+              '#13bdf0',
+              '#0874c9',
+              '#0754a3',
+            ]
+      )
+      .interpolate(d3.interpolateRgb)
+      .clamp(true)
+
+    const getCellColor = (cantidad) => {
+      if (cantidad === 0) {
+        return isLight ? '#e7f1f9' : '#082449'
+      }
+
+      return color(cantidad)
+    }
 
     // ==========================================
-    // 7. CELDAS
+    // 7. CONTRASTE DE LOS NÚMEROS
+    // ==========================================
+
+    const getTextColor = (cantidad) => {
+      const background = d3.rgb(
+        getCellColor(cantidad)
+      )
+
+      const toLinear = (value) => {
+        const channel = value / 255
+
+        return channel <= 0.04045
+          ? channel / 12.92
+          : ((channel + 0.055) / 1.055) ** 2.4
+      }
+
+      const luminance =
+        0.2126 * toLinear(background.r) +
+        0.7152 * toLinear(background.g) +
+        0.0722 * toLinear(background.b)
+
+      return luminance > 0.18
+        ? '#082449'
+        : '#ffffff'
+    }
+
+    // ==========================================
+    // 8. TOOLTIP
+    // ==========================================
+
+    const updateTooltip = (event, d) => {
+      const padding = 12
+      const offset = 16
+
+      const tooltipWidth = Math.min(
+        300,
+        window.innerWidth - padding * 2
+      )
+
+      const tooltipHeight = 125
+
+      let xPosition = event.clientX + offset
+      let yPosition = event.clientY + offset
+
+      if (
+        xPosition + tooltipWidth >
+        window.innerWidth - padding
+      ) {
+        xPosition =
+          event.clientX - tooltipWidth - offset
+      }
+
+      xPosition = Math.max(
+        padding,
+        Math.min(
+          xPosition,
+          window.innerWidth - tooltipWidth - padding
+        )
+      )
+
+      yPosition = Math.max(
+        padding,
+        Math.min(
+          yPosition,
+          window.innerHeight - tooltipHeight - padding
+        )
+      )
+
+      setTooltip({
+        area: d.area,
+        modalidad: d.modalidad,
+        cantidad: d.cantidad,
+        x: xPosition,
+        y: yPosition,
+      })
+    }
+
+    // ==========================================
+    // 9. CELDAS
     // ==========================================
 
     group
       .selectAll('.heatmap-cell')
       .data(heatmapData)
       .join('rect')
-
       .attr('class', 'heatmap-cell')
-
-      .attr(
-        'x',
-        (d) => x(d.modalidad)
-      )
-
-      .attr(
-        'y',
-        (d) => y(d.area)
-      )
-
-      .attr(
-        'width',
-        x.bandwidth()
-      )
-
-      .attr(
-        'height',
-        y.bandwidth()
-      )
-
-      .attr('rx', 2)
-
-      .attr('fill', (d) => {
-        if (d.cantidad === 0) {
-          return '#0d2a50'
-        }
-
-        return color(d.cantidad)
-      })
-
-      // ========================================
-      // TOOLTIP
-      // ========================================
-
-      .on('mouseenter', (event, d) => {
-        const bounds =
-          containerRef.current
-            .getBoundingClientRect()
-
-        setTooltip({
-          area: d.area,
-          modalidad: d.modalidad,
-          cantidad: d.cantidad,
-
-          x:
-            event.clientX -
-            bounds.left,
-
-          y:
-            event.clientY -
-            bounds.top,
-        })
-      })
-
-      .on('mousemove', (event, d) => {
-        const bounds =
-          containerRef.current
-            .getBoundingClientRect()
-
-        setTooltip({
-          area: d.area,
-          modalidad: d.modalidad,
-          cantidad: d.cantidad,
-
-          x:
-            event.clientX -
-            bounds.left,
-
-          y:
-            event.clientY -
-            bounds.top,
-        })
-      })
-
+      .attr('x', (d) => x(d.modalidad))
+      .attr('y', (d) => y(d.area))
+      .attr('width', x.bandwidth())
+      .attr('height', y.bandwidth())
+      .attr('rx', 3)
+      .attr('fill', (d) => getCellColor(d.cantidad))
+      .on('mouseenter', updateTooltip)
+      .on('mousemove', updateTooltip)
       .on('mouseleave', () => {
         setTooltip(null)
       })
 
     // ==========================================
-    // 8. NÚMEROS
+    // 10. NÚMEROS
     // ==========================================
 
     group
@@ -293,48 +324,32 @@ function AreaModalityHeatmap({ data }) {
         )
       )
       .join('text')
-
-      .attr(
-        'class',
-        'heatmap-value'
-      )
-
+      .attr('class', 'heatmap-value')
       .attr(
         'x',
         (d) =>
-          x(d.modalidad) +
-          x.bandwidth() / 2
+          x(d.modalidad) + x.bandwidth() / 2
       )
-
       .attr(
         'y',
         (d) =>
-          y(d.area) +
-          y.bandwidth() / 2
+          y(d.area) + y.bandwidth() / 2
       )
-
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle')
       .attr(
-        'text-anchor',
-        'middle'
+        'fill',
+        (d) => getTextColor(d.cantidad)
       )
-
-      .attr(
-        'dominant-baseline',
-        'middle'
-      )
-
       .text((d) => d.cantidad)
 
     // ==========================================
-    // 9. EJE Y
+    // 11. EJE Y
     // ==========================================
 
     group
       .append('g')
-      .attr(
-        'class',
-        'heatmap-y-axis'
-      )
+      .attr('class', 'heatmap-y-axis')
       .call(
         d3
           .axisLeft(y)
@@ -346,15 +361,12 @@ function AreaModalityHeatmap({ data }) {
       )
 
     // ==========================================
-    // 10. EJE X
+    // 12. EJE X
     // ==========================================
 
     const xAxis = group
       .append('g')
-      .attr(
-        'class',
-        'heatmap-x-axis'
-      )
+      .attr('class', 'heatmap-x-axis')
       .call(
         d3
           .axisTop(x)
@@ -362,30 +374,20 @@ function AreaModalityHeatmap({ data }) {
           .tickFormat(getShortModality)
       )
 
-    xAxis
-      .select('.domain')
-      .remove()
+    xAxis.select('.domain').remove()
 
     // ==========================================
-    // 11. DIVIDIR MODALIDADES
+    // 13. DIVIDIR ETIQUETAS
     // ==========================================
 
     xAxis
       .selectAll('text')
       .each(function () {
         const text = d3.select(this)
-
         const label = text.text()
-
-        const words =
-          label.split(' ')
+        const words = label.split(' ')
 
         text.text('')
-
-        /*
-          Máximo dos líneas.
-          Queremos nombres cortos y legibles.
-        */
 
         if (words.length === 1) {
           text
@@ -397,18 +399,15 @@ function AreaModalityHeatmap({ data }) {
           return
         }
 
-        const middle =
-          Math.ceil(words.length / 2)
+        const middle = Math.ceil(words.length / 2)
 
-        const firstLine =
-          words
-            .slice(0, middle)
-            .join(' ')
+        const firstLine = words
+          .slice(0, middle)
+          .join(' ')
 
-        const secondLine =
-          words
-            .slice(middle)
-            .join(' ')
+        const secondLine = words
+          .slice(middle)
+          .join(' ')
 
         text
           .append('tspan')
@@ -423,13 +422,15 @@ function AreaModalityHeatmap({ data }) {
           .text(secondLine)
       })
 
-  }, [data])
+    return () => {
+      svg.selectAll('*').remove()
+    }
+
+  }, [data, theme])
 
   return (
-    <div
-      ref={containerRef}
-      className="area-modality-heatmap"
-    >
+    <div className="area-modality-heatmap">
+
       <svg
         ref={svgRef}
         className="area-modality-heatmap__svg"
@@ -437,7 +438,7 @@ function AreaModalityHeatmap({ data }) {
         aria-label="Cantidad de proyectos por área temática y modalidad"
       />
 
-      {tooltip && (
+      {tooltip && createPortal(
         <div
           className="heatmap-tooltip"
           style={{
@@ -445,13 +446,17 @@ function AreaModalityHeatmap({ data }) {
             top: tooltip.y,
           }}
         >
-          <strong>
+          <strong
+            style={{
+              color: theme === 'light'
+                ? '#082449'
+                : '#ffffff',
+            }}
+          >
             {tooltip.area}
           </strong>
 
-          <span>
-            {tooltip.modalidad}
-          </span>
+          <span>{tooltip.modalidad}</span>
 
           <span>
             {tooltip.cantidad}{' '}
@@ -459,8 +464,10 @@ function AreaModalityHeatmap({ data }) {
               ? 'proyecto'
               : 'proyectos'}
           </span>
-        </div>
+        </div>,
+        document.body
       )}
+
     </div>
   )
 }

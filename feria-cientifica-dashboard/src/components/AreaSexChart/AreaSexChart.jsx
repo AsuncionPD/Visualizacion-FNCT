@@ -1,4 +1,6 @@
+
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import * as d3 from 'd3'
 
 import {
@@ -9,33 +11,74 @@ import './AreaSexChart.css'
 
 function AreaSexChart({ data }) {
   const svgRef = useRef(null)
-  const containerRef = useRef(null)
 
   const [tooltip, setTooltip] = useState(null)
 
   useEffect(() => {
-    if (!data || data.length === 0) return
+    const svg = d3.select(svgRef.current)
+
+    svg.selectAll('*').remove()
+
+    if (!data || data.length === 0) {
+      return
+    }
 
     // ==========================================
-    // 1. Obtener datos
+    // 1. OBTENER DATOS
     // ==========================================
 
     const grouped = getStudentsByAreaAndSex(data)
 
-    console.log('=== ÁREA TEMÁTICA × SEXO ===')
-    console.log(grouped)
+    // ==========================================
+    // 2. IDENTIFICAR SEXOS
+    // ==========================================
 
-    const sexes = Array.from(
+    const normalizeSex = (sex) => {
+      const value = String(sex)
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+
+      if (
+        value === 'femenino' ||
+        value === 'mujer' ||
+        value === 'f'
+      ) {
+        return 'Femenino'
+      }
+
+      if (
+        value === 'masculino' ||
+        value === 'hombre' ||
+        value === 'm'
+      ) {
+        return 'Masculino'
+      }
+
+      return sex
+    }
+
+    const detectedSexes = Array.from(
       new Set(
         Object.values(grouped)
           .flatMap((values) => Object.keys(values))
+          .map(normalizeSex)
       )
     )
 
-    console.log('Sexos encontrados:', sexes)
+    const sexes = [
+      'Femenino',
+      'Masculino',
+      ...detectedSexes.filter(
+        (sex) =>
+          sex !== 'Femenino' &&
+          sex !== 'Masculino'
+      ),
+    ]
 
     // ==========================================
-    // 2. Convertir datos
+    // 3. PREPARAR DATOS
     // ==========================================
 
     const chartData = Object.entries(grouped)
@@ -46,18 +89,27 @@ function AreaSexChart({ data }) {
         }
 
         sexes.forEach((sex) => {
-          item[sex] = values[sex] || 0
-          item.total += values[sex] || 0
+          item[sex] = 0
         })
+
+        Object.entries(values).forEach(
+          ([originalSex, count]) => {
+            const sex = normalizeSex(originalSex)
+            const cantidad = Number(count) || 0
+
+            item[sex] =
+              (item[sex] || 0) + cantidad
+
+            item.total += cantidad
+          }
+        )
 
         return item
       })
       .sort((a, b) => b.total - a.total)
 
-    console.table(chartData)
-
     // ==========================================
-    // 3. Tamaño
+    // 4. DIMENSIONES ORIGINALES
     // ==========================================
 
     const width = 600
@@ -77,12 +129,8 @@ function AreaSexChart({ data }) {
       height - margin.top - margin.bottom
 
     // ==========================================
-    // 4. Preparar SVG
+    // 5. PREPARAR SVG
     // ==========================================
-
-    const svg = d3.select(svgRef.current)
-
-    svg.selectAll('*').remove()
 
     svg
       .attr('viewBox', `0 0 ${width} ${height}`)
@@ -99,7 +147,7 @@ function AreaSexChart({ data }) {
       )
 
     // ==========================================
-    // 5. Escalas
+    // 6. ESCALAS
     // ==========================================
 
     const maxTotal =
@@ -117,22 +165,21 @@ function AreaSexChart({ data }) {
       .range([0, innerHeight])
       .padding(0.16)
 
-    const colors = [
-      '#e0568c',
-      '#2388e8',
-      '#9aa8ba',
-      '#32b6a4',
-    ]
+    // ==========================================
+    // 7. COLORES INSTITUCIONALES
+    // ==========================================
 
     const color = d3
-    .scaleOrdinal()
-    .domain(['Femenino', 'Masculino'])
-    .range([
-      '#e0568c', // Femenino = rosado
-      '#2388e8', // Masculino = azul
-    ])
+      .scaleOrdinal()
+      .domain(sexes)
+      .range([
+        '#ff891f', // Femenino
+        '#13bdf0', // Masculino
+        '#9cb8d1', // Otros valores
+      ])
+
     // ==========================================
-    // 6. Datos apilados
+    // 8. DATOS APILADOS
     // ==========================================
 
     const stack = d3
@@ -142,7 +189,7 @@ function AreaSexChart({ data }) {
     const stackedData = stack(chartData)
 
     // ==========================================
-    // 7. Líneas verticales
+    // 9. CUADRÍCULA Y EJE X
     // ==========================================
 
     group
@@ -157,17 +204,82 @@ function AreaSexChart({ data }) {
           .axisBottom(x)
           .ticks(4)
           .tickSize(-innerHeight)
+          .tickFormat(d3.format('d'))
       )
 
     // ==========================================
-    // 8. Barras
+    // 10. TOOLTIP RESPONSIVO
+    // ==========================================
+
+    const updateTooltip = (event, d) => {
+      const tooltipWidth = 260
+      const tooltipHeight = 110
+      const offset = 16
+      const padding = 12
+
+      const availableWidth =
+        window.innerWidth - padding * 2
+
+      const availableHeight =
+        window.innerHeight - padding * 2
+
+      const effectiveWidth = Math.min(
+        tooltipWidth,
+        availableWidth
+      )
+
+      const effectiveHeight = Math.min(
+        tooltipHeight,
+        availableHeight
+      )
+
+      let xPosition = event.clientX + offset
+      let yPosition = event.clientY - 30
+
+      if (
+        xPosition + effectiveWidth >
+        window.innerWidth - padding
+      ) {
+        xPosition =
+          event.clientX - effectiveWidth - offset
+      }
+
+      xPosition = Math.max(
+        padding,
+        Math.min(
+          xPosition,
+          window.innerWidth - effectiveWidth - padding
+        )
+      )
+
+      yPosition = Math.max(
+        padding,
+        Math.min(
+          yPosition,
+          window.innerHeight - effectiveHeight - padding
+        )
+      )
+
+      setTooltip({
+        area: d.data.area,
+        sex: d.sex,
+        cantidad: d[1] - d[0],
+        x: xPosition,
+        y: yPosition,
+      })
+    }
+
+    // ==========================================
+    // 11. DIBUJAR BARRAS
     // ==========================================
 
     group
       .selectAll('.area-sex-series')
       .data(stackedData)
       .join('g')
+      .attr('class', 'area-sex-series')
       .attr('fill', (d) => color(d.key))
+
       .selectAll('rect')
       .data((series) =>
         series.map((d) => ({
@@ -176,44 +288,29 @@ function AreaSexChart({ data }) {
         }))
       )
       .join('rect')
+
+      .attr('class', 'area-sex-bar')
+
       .attr('x', (d) => x(d[0]))
       .attr('y', (d) => y(d.data.area))
+
       .attr(
         'width',
-        (d) => Math.max(0, x(d[1]) - x(d[0]))
+        (d) =>
+          Math.max(0, x(d[1]) - x(d[0]))
       )
+
       .attr('height', y.bandwidth())
       .attr('rx', 2)
-      .style('cursor', 'pointer')
 
-      .on('mouseenter', (event, d) => {
-        const bounds =
-          containerRef.current.getBoundingClientRect()
-
-        setTooltip({
-          area: d.data.area,
-          sex: d.sex,
-          cantidad: d[1] - d[0],
-          x: event.clientX - bounds.left + 12,
-          y: event.clientY - bounds.top,
-        })
-      })
-
-      .on('mousemove', (event, d) => {
-        const bounds =
-          containerRef.current.getBoundingClientRect()
-
-        setTooltip({
-          area: d.data.area,
-          sex: d.sex,
-          cantidad: d[1] - d[0],
-          x: event.clientX - bounds.left + 12,
-          y: event.clientY - bounds.top,
-        })
+      .on('mouseenter', updateTooltip)
+      .on('mousemove', updateTooltip)
+      .on('mouseleave', () => {
+        setTooltip(null)
       })
 
     // ==========================================
-    // 9. Nombres de áreas
+    // 12. NOMBRES DE ÁREAS
     // ==========================================
 
     group
@@ -229,7 +326,7 @@ function AreaSexChart({ data }) {
       )
 
     // ==========================================
-    // 10. Total al final de cada barra
+    // 13. TOTAL POR ÁREA
     // ==========================================
 
     group
@@ -238,21 +335,25 @@ function AreaSexChart({ data }) {
       .join('text')
       .attr('class', 'area-sex-total')
       .attr('x', (d) => x(d.total) + 7)
+
       .attr(
         'y',
         (d) =>
           y(d.area) + y.bandwidth() / 2
       )
+
       .attr('dominant-baseline', 'middle')
       .text((d) => d.total)
+
+    return () => {
+      svg.selectAll('*').remove()
+    }
 
   }, [data])
 
   return (
-    <div
-      ref={containerRef}
-      className="area-sex-chart"
-    >
+    <div className="area-sex-chart">
+
       <svg
         ref={svgRef}
         className="area-sex-chart__svg"
@@ -260,7 +361,7 @@ function AreaSexChart({ data }) {
         aria-label="Cantidad de estudiantes por área temática y sexo"
       />
 
-      {tooltip && (
+      {tooltip && createPortal(
         <div
           className="area-sex-tooltip"
           style={{
@@ -270,18 +371,34 @@ function AreaSexChart({ data }) {
         >
           <strong>{tooltip.area}</strong>
 
-          <span>
-            {tooltip.sex}
-          </span>
+          <div className="area-sex-tooltip__category">
 
-          <span>
+            <span
+              className="area-sex-tooltip__dot"
+              style={{
+                backgroundColor:
+                  tooltip.sex === 'Femenino'
+                    ? '#ff891f'
+                    : tooltip.sex === 'Masculino'
+                      ? '#13bdf0'
+                      : '#9cb8d1',
+              }}
+            />
+
+            <span>{tooltip.sex}</span>
+
+          </div>
+
+          <span className="area-sex-tooltip__value">
             {tooltip.cantidad}{' '}
             {tooltip.cantidad === 1
               ? 'estudiante'
               : 'estudiantes'}
           </span>
-        </div>
+        </div>,
+        document.body
       )}
+
     </div>
   )
 }

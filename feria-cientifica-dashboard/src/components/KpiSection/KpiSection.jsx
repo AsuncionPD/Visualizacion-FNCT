@@ -59,6 +59,7 @@ function KpiSection({ data }) {
          img= {estrellasIcon}
         value={`${totalAIProjects} (${aiPercentage}%)`}
         label="Proyectos con IA"
+        highlight
       />
 
     </section>

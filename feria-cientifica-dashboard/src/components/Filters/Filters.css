@@ -1,10 +1,16 @@
+
+/* ==========================================
+   CONTENEDOR GENERAL
+========================================== */
+
 .filters {
   width: 100%;
 
   display: grid;
+
   grid-template-columns:
-    repeat(3, minmax(150px, 1fr))
-    auto;
+    repeat(3, minmax(0, 1fr))
+    minmax(150px, auto);
 
   align-items: stretch;
   gap: 12px;
@@ -12,207 +18,499 @@
   padding: 0;
 }
 
-
-/* =========================================
-   CAJA COMPLETA DEL FILTRO
-========================================= */
+/* ==========================================
+   CAJA DE FILTRO
+========================================== */
 
 .filter-box {
   height: 58px;
 
   display: flex;
   align-items: center;
+  gap: 12px;
 
-  gap: 10px;
-
-  padding: 7px 12px;
-
-  background-color: #0b2348;
-
-  border: 1px solid #3970a8;
-  border-radius: 9px;
+  padding: 8px 13px;
 
   min-width: 0;
+
+  background-color: var(--bg-input);
+
+  border: 1px solid var(--border-input);
+  border-radius: 10px;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-
-/* =========================================
-   ICONO
-========================================= */
+/* ==========================================
+   ICONOS
+========================================== */
 
 .filter-box__icon {
+  display: block;
+
+  width: 24px;
+  height: 24px;
+
+  object-fit: contain;
   flex-shrink: 0;
-
-  width: 26px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #dce9ff;
-
-  font-size: 24px;
 }
 
-
-/* =========================================
+/* ==========================================
    CONTENIDO
-========================================= */
+========================================== */
 
 .filter-box__content {
   flex: 1;
 
   min-width: 0;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
-
   justify-content: center;
+
+  gap: 4px;
 }
 
-
-/* TÍTULO */
+/* ==========================================
+   TÍTULO DEL FILTRO
+========================================== */
 
 .filter-box__content label {
-  color: #ffffff;
+  display: block;
+
+  margin: 0;
+
+  color: var(--text-primary);
 
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 14px;
 
-  line-height: 1.1;
-
-  margin-bottom: 2px;
+  flex-shrink: 0;
 }
 
+/* ==========================================
+   REACT SELECT - CONTENEDOR
+========================================== */
 
-/* =========================================
-   SELECT
-========================================= */
-
-.filter-box__content select {
+.filter-select {
   width: 100%;
-  height: 24px;
+  min-width: 0;
 
-  padding: 0 28px 0 0;
+  font-family: inherit;
+  font-size: 13px;
+}
 
-  color: #eaf2ff;
-  background-color: transparent;
+/* ==========================================
+   REACT SELECT - CONTROL
+========================================== */
+
+.filter-select__control {
+  width: 100%;
+  min-width: 0;
+  min-height: 20px;
+  height: 20px;
+
+  display: flex;
+  align-items: center;
+
+  background: transparent;
 
   border: none;
-  outline: none;
+  border-radius: 0;
 
-  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-select__control--is-focused {
+  outline: none;
+}
+
+/* ==========================================
+   REACT SELECT - VALORES
+========================================== */
+
+.filter-select__value-container {
+  flex: 1;
+
+  min-width: 0;
+  min-height: 20px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0;
+
+  overflow: hidden;
+}
+
+.filter-select__single-value {
+  display: block;
+
+  max-width: 100%;
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: var(--text-primary);
+
+  font-size: 13px;
   font-weight: 500;
+  line-height: 20px;
+}
+
+.filter-select__placeholder {
+  color: var(--text-muted);
+
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* ==========================================
+   REACT SELECT - INPUT DE BÚSQUEDA
+========================================== */
+
+.filter-select__input-container {
+  min-width: 2px;
+  max-width: 100%;
+
+  color: var(--text-primary);
+
+  font-size: 13px;
+}
+
+.filter-select__input {
+  color: var(--text-primary) !important;
+  font-family: inherit;
+}
+
+/* ==========================================
+   REACT SELECT - INDICADORES
+========================================== */
+
+.filter-select__indicators {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.filter-select__indicator-separator {
+  display: none;
+}
+
+.filter-select__dropdown-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 0 0 7px;
+
+  color: var(--text-secondary);
 
   cursor: pointer;
 
-  appearance: none;
-
-  /*
-    Flecha personalizada
-  */
-
-  background-image:
-    linear-gradient(
-      45deg,
-      transparent 50%,
-      #b9caeb 50%
-    ),
-    linear-gradient(
-      135deg,
-      #b9caeb 50%,
-      transparent 50%
-    );
-
-  background-position:
-    calc(100% - 9px) 9px,
-    calc(100% - 4px) 9px;
-
-  background-size:
-    5px 5px,
-    5px 5px;
-
-  background-repeat: no-repeat;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
-
-/* Opciones al abrir */
-
-.filter-box__content select option {
-  color: #ffffff;
-  background-color: #0b2348;
+.filter-select__dropdown-indicator svg {
+  width: 16px;
+  height: 16px;
 }
 
+.filter-select__control--menu-is-open
+.filter-select__dropdown-indicator {
+  color: var(--color-secondary);
+  transform: rotate(180deg);
+}
 
-/* =========================================
-   HOVER / FOCUS
-========================================= */
+/* ==========================================
+   REACT SELECT - MENÚ DESPLEGABLE
+========================================== */
+
+.filter-select__menu {
+  z-index: 9999;
+
+  margin-top: 5px;
+
+  overflow: hidden;
+
+  background-color: var(--bg-card);
+
+  border: 1px solid var(--border-input);
+  border-radius: 10px;
+
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.25);
+}
+
+.filter-select__menu-list {
+  max-height: 240px;
+
+  padding: 5px;
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  scrollbar-width: thin;
+  scrollbar-color:
+    var(--border-input)
+    transparent;
+}
+
+/* ==========================================
+   REACT SELECT - OPCIONES
+========================================== */
+
+.filter-select__option {
+  display: block;
+
+  padding: 10px 12px;
+
+  color: var(--text-primary);
+  background-color: transparent;
+
+  border-radius: 7px;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.filter-select__option--is-focused {
+  background-color: var(--bg-hover);
+}
+
+.filter-select__option--is-selected {
+  background-color: var(--color-secondary);
+  color: #082449;
+
+  font-weight: 700;
+}
+
+.filter-select__option--is-selected.filter-select__option--is-focused {
+  background-color: var(--color-secondary);
+  color: #082449;
+}
+
+/* ==========================================
+   REACT SELECT - SIN RESULTADOS
+========================================== */
+
+.filter-select__menu-notice {
+  padding: 12px;
+
+  color: var(--text-secondary);
+
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ==========================================
+   REACT SELECT - PORTAL
+========================================== */
+
+.filter-select__menu-portal {
+  z-index: 99999;
+}
+
+/* ==========================================
+   HOVER
+========================================== */
 
 .filter-box:hover {
-  border-color: #5f91ca;
+  border-color: var(--color-secondary);
+  background-color: var(--bg-hover);
 }
+
+/* ==========================================
+   FOCUS
+========================================== */
 
 .filter-box:focus-within {
-  border-color: #73a9f5;
+  border-color: var(--color-secondary);
+
+  box-shadow:
+    0 0 0 2px rgba(19, 189, 240, 0.15);
 }
 
-
-/* =========================================
-   RESTABLECER FILTROS
-========================================= */
+/* ==========================================
+   BOTÓN RESTABLECER - COMPACTO
+========================================== */
 
 .filters__reset {
-  height: 58px;
+  height: 42px;
+  align-self: center;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  gap: 10px;
+  gap: 7px;
 
-  padding: 0 18px;
+  padding: 0 12px;
 
-  color: #eaf2ff;
-  background-color: #0b2348;
+  color: #082449;
+  background-color: var(--color-secondary);
 
-  border: 1px solid #3970a8;
+  border: 1px solid var(--color-secondary);
   border-radius: 9px;
 
-  font-size: 13px;
-  font-weight: 500;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
 
   white-space: nowrap;
 
   cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
+
+/* ==========================================
+   ICONO RESTABLECER
+========================================== */
 
 .filters__reset-icon {
-  font-size: 22px;
-  line-height: 1;
+  width: 16px;
+  height: 16px;
+
+  flex-shrink: 0;
 }
+
+/* ==========================================
+   HOVER BOTÓN
+========================================== */
 
 .filters__reset:hover {
-  background-color: #102c55;
-  border-color: #5f91ca;
+  background-color: #55d5fa;
+
+  box-shadow:
+    0 4px 14px rgba(19, 189, 240, 0.2);
 }
 
+.filters__reset:active {
+  transform: scale(0.98);
+}
 
-/* =========================================
+.filters__reset:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+
+/* ==========================================
+   MODO CLARO
+========================================== */
+
+[data-theme="light"] .filter-box {
+  background-color: #ffffff;
+  border-color: #d2e1ef;
+
+  box-shadow:
+    0 2px 8px rgba(8, 36, 73, 0.04);
+}
+
+[data-theme="light"] .filter-box:hover {
+  background-color: #f6faff;
+  border-color: #13bdf0;
+}
+
+[data-theme="light"] .filter-box:focus-within {
+  background-color: #ffffff;
+  border-color: #13bdf0;
+}
+
+[data-theme="light"] .filters__reset {
+  background-color: #082449;
+  border-color: #082449;
+  color: #ffffff;
+}
+
+[data-theme="light"] .filters__reset:hover {
+  background-color: #123b66;
+  border-color: #123b66;
+}
+
+/* ==========================================
+   REACT SELECT - MODO CLARO
+========================================== */
+
+[data-theme="light"] .filter-select__single-value,
+[data-theme="light"] .filter-select__input-container {
+  color: #082449;
+}
+
+[data-theme="light"] .filter-select__dropdown-indicator {
+  color: #466481;
+}
+
+[data-theme="light"] .filter-select__menu {
+  background-color: #ffffff;
+  border-color: #d2e1ef;
+
+  box-shadow:
+    0 10px 28px rgba(8, 36, 73, 0.14);
+}
+
+[data-theme="light"] .filter-select__option {
+  color: #082449;
+}
+
+[data-theme="light"] .filter-select__option--is-focused {
+  background-color: #eaf5fc;
+}
+
+[data-theme="light"] .filter-select__option--is-selected {
+  background-color: #082449;
+  color: #ffffff;
+}
+
+[data-theme="light"]
+.filter-select__option--is-selected.filter-select__option--is-focused {
+  background-color: #082449;
+  color: #ffffff;
+}
+
+/* Separación de los títulos respecto al borde superior */
+.filter-box__content > label {
+  position: relative;
+  top: 10px;
+}
+
+/* ==========================================
    RESPONSIVE
-========================================= */
+========================================== */
 
 @media (max-width: 1100px) {
-
   .filters {
     grid-template-columns:
-      repeat(2, 1fr);
+      repeat(2, minmax(0, 1fr));
   }
-
 }
 
-
 @media (max-width: 650px) {
-
   .filters {
     grid-template-columns: 1fr;
   }
@@ -220,5 +518,4 @@
   .filters__reset {
     width: 100%;
   }
-
 }

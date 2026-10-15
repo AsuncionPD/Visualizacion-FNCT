@@ -1,3 +1,8 @@
+
+/* ==========================================
+   CONTENEDOR
+========================================== */
+
 .area-modality-heatmap {
   position: relative;
 
@@ -14,6 +19,9 @@
   overflow: visible;
 }
 
+/* ==========================================
+   SVG
+========================================== */
 
 .area-modality-heatmap__svg {
   display: block;
@@ -27,66 +35,59 @@
   overflow: visible;
 }
 
-
-/* =========================
+/* ==========================================
    CELDAS
-========================= */
+========================================== */
 
 .heatmap-cell {
   cursor: pointer;
 
-  stroke: rgba(255, 255, 255, 0.1);
-  stroke-width: 1;
+  stroke: var(--bg-card, #0b2a50);
+  stroke-width: 1.5;
 
   transition:
-    fill 0.15s ease,
+    opacity 0.15s ease,
     stroke 0.15s ease;
 }
 
-
 .heatmap-cell:hover {
-  stroke: #ffffff;
-  stroke-width: 1.5;
+  stroke: var(--color-accent, #ff891f);
+  stroke-width: 2;
+  opacity: 0.95;
 }
 
-
-/* =========================
+/* ==========================================
    NÚMEROS
-========================= */
+========================================== */
 
 .heatmap-value {
-  fill: #ffffff;
-
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
 
   pointer-events: none;
 }
 
-
-/* =========================
-   ÁREAS TEMÁTICAS
-========================= */
+/* ==========================================
+   ÁREAS TEMÁTICAS - EJE Y
+========================================== */
 
 .heatmap-y-axis text {
-  fill: #dce9ff;
+  fill: var(--text-primary, #ffffff);
 
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
 }
-
 
 .heatmap-y-axis .tick {
   cursor: default;
 }
 
-
-/* =========================
-   MODALIDADES
-========================= */
+/* ==========================================
+   MODALIDADES - EJE X
+========================================== */
 
 .heatmap-x-axis text {
-  fill: #b9d3f7;
+  fill: var(--text-primary, #ffffff);
 
   font-size: 12px;
   font-weight: 600;
@@ -94,55 +95,130 @@
   text-anchor: middle;
 }
 
-
-/* =========================
+/* ==========================================
    TOOLTIP
-========================= */
+========================================== */
 
 .heatmap-tooltip {
-  position: absolute;
+  position: fixed;
 
-  z-index: 9999;
+  z-index: 99999;
+
+  box-sizing: border-box;
 
   width: max-content;
   min-width: 190px;
-  max-width: 300px;
+  max-width: min(300px, calc(100vw - 24px));
 
   display: flex;
   flex-direction: column;
 
-  gap: 6px;
+  gap: 7px;
+  padding: 13px 15px;
 
-  padding: 11px 13px;
+  background: var(--tooltip-bg, #082449);
+  color: var(--tooltip-text, #ffffff);
 
-  background-color: #10284d;
-  color: #ffffff;
-
-  border: 1px solid #5278a8;
-  border-radius: 8px;
+  border: 1px solid var(--border-input, #3970a8);
+  border-radius: 10px;
 
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.35);
+    0 8px 24px rgba(0, 0, 0, 0.3);
 
   pointer-events: none;
 
-  transform: translate(14px, -10%);
+  overflow-wrap: anywhere;
 }
 
+/* ==========================================
+   TÍTULO DEL TOOLTIP
+========================================== */
 
 .heatmap-tooltip strong {
-  color: #ffffff;
+  color: var(--tooltip-text, #ffffff);
 
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
+/* ==========================================
+   MODALIDAD DEL TOOLTIP
+========================================== */
 
 .heatmap-tooltip span {
-  color: #b9caeb;
+  color: var(--text-secondary, #c5d9ed);
 
   font-size: 12px;
-  line-height: 1.35;
+  line-height: 1.4;
+}
+
+/* ==========================================
+   CANTIDAD DE PROYECTOS
+========================================== */
+
+.heatmap-tooltip span:last-child {
+  color: var(--color-secondary, #13bdf0);
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ==========================================
+   MODO CLARO
+========================================== */
+
+html[data-theme="light"] .heatmap-cell {
+  stroke: #ffffff;
+  stroke-width: 1.5;
+}
+
+html[data-theme="light"] .heatmap-cell:hover {
+  stroke: #ff891f;
+  stroke-width: 2;
+}
+
+html[data-theme="light"] .heatmap-y-axis text,
+html[data-theme="light"] .heatmap-x-axis text {
+  fill: #082449;
+  font-weight: 600;
+}
+
+html[data-theme="light"] .heatmap-tooltip {
+  background: #ffffff;
+  color: #082449;
+
+  border-color: #b8d0e5;
+
+  box-shadow:
+    0 8px 24px rgba(8, 36, 73, 0.16);
+}
+
+html[data-theme="light"] .heatmap-tooltip span {
+  color: #466481;
+}
+
+html[data-theme="light"] .heatmap-tooltip span:last-child {
+  color: #0754a3;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 600px) {
+  .heatmap-tooltip {
+    min-width: 150px;
+    max-width: min(240px, calc(100vw - 24px));
+
+    padding: 10px 12px;
+  }
+
+  .heatmap-tooltip strong {
+    font-size: 13px;
+  }
+
+  .heatmap-tooltip span {
+    font-size: 11px;
+  }
 }

@@ -1,3 +1,77 @@
+
+/* ==========================================
+   VARIABLES GLOBALES - MODO OSCURO
+========================================== */
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-primary: #082449;
+  --color-secondary: #13bdf0;
+  --color-accent: #ff891f;
+
+  --bg-page: #061a33;
+  --bg-header: #082449;
+  --bg-card: #0b2a50;
+  --bg-hover: #123b66;
+  --bg-input: #061e3b;
+
+  --text-primary: #ffffff;
+  --text-secondary: #c5d9ed;
+  --text-muted: #9cb8d1;
+
+  --border-color: #27557d;
+  --border-input: #3970a8;
+
+  --chart-grid: #294a72;
+  --chart-empty: #082449;
+
+  --tooltip-bg: #082449;
+  --tooltip-text: #ffffff;
+
+  --spacing-card: 20px;
+  --radius-card: 14px;
+}
+
+/* ==========================================
+   VARIABLES - MODO CLARO
+========================================== */
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --color-primary: #082449;
+  --color-secondary: #13bdf0;
+  --color-accent: #ff891f;
+
+  --bg-page: #f2f7fc;
+  --bg-header: #ffffff;
+  --bg-card: #ffffff;
+  --bg-hover: #eaf5fc;
+  --bg-input: #f6faff;
+
+  --text-primary: #082449;
+  --text-secondary: #466481;
+  --text-muted: #66829c;
+
+  --border-color: #d2e1ef;
+  --border-input: #b8d0e5;
+
+  --chart-grid: #d8e4ee;
+  --chart-empty: #e7f1f9;
+
+  --tooltip-bg: #ffffff;
+  --tooltip-text: #082449;
+
+  --spacing-card: 20px;
+  --radius-card: 14px;
+}
+
+/* ==========================================
+   RESET
+========================================== */
+
 * {
   box-sizing: border-box;
 }
@@ -6,25 +80,45 @@ html,
 body,
 #root {
   width: 100%;
-  min-height: 100%;
+  height: 100%;
   margin: 0;
 }
 
 body {
-  margin: 0;
-  background: #061a38;
+  background: var(--bg-page);
+  color: var(--text-primary);
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
+
+/* ==========================================
+   APP - COMPACTO EN ESCRITORIO
+========================================== */
 
 .app {
   width: 100%;
+
   height: 100vh;
+  height: 100dvh;
+
   overflow: hidden;
 
   display: flex;
   flex-direction: column;
 
-  background: #061a38;
+  background: var(--bg-page);
+  color: var(--text-primary);
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
+
+/* ==========================================
+   DASHBOARD
+========================================== */
 
 .dashboard {
   flex: 1;
@@ -32,11 +126,6 @@ body {
 
   display: grid;
 
-  /*
-    Filtros
-    KPIs
-    Visualizaciones
-  */
   grid-template-rows:
     auto
     minmax(0, 1fr);
@@ -44,4 +133,51 @@ body {
   gap: 10px;
 
   padding: 10px 24px 16px;
+}
+
+/* ==========================================
+   TRANSICIONES DE TARJETAS
+========================================== */
+
+.header,
+.kpi-card,
+.chart-card,
+.filter-box {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+
+/* ==========================================
+   TABLETS
+========================================== */
+
+@media (max-width: 1024px) {
+  .dashboard {
+    padding: 10px 16px 16px;
+  }
+}
+
+/* ==========================================
+   MÓVILES
+========================================== */
+
+@media (max-width: 768px) {
+  .app {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1 0 auto;
+    min-height: 0;
+
+    gap: 14px;
+    padding: 14px;
+  }
 }

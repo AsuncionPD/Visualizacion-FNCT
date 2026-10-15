@@ -1,3 +1,8 @@
+
+/* ========================================
+   CONTENEDOR
+======================================== */
+
 .area-sex-chart {
   position: relative;
 
@@ -9,6 +14,10 @@
 
   overflow: visible;
 }
+
+/* ========================================
+   SVG
+======================================== */
 
 .area-sex-chart__svg {
   display: block;
@@ -22,13 +31,26 @@
   overflow: visible;
 }
 
+/* ========================================
+   BARRAS
+======================================== */
 
-/* =========================
+.area-sex-bar {
+  cursor: pointer;
+
+  transition: opacity 0.2s ease;
+}
+
+.area-sex-bar:hover {
+  opacity: 0.8;
+}
+
+/* ========================================
    NOMBRES DE ÁREAS
-========================= */
+======================================== */
 
 .area-sex-y-axis text {
-  fill: #dce9ff;
+  fill: var(--text-primary, #ffffff);
 
   font-size: 13px;
   font-weight: 500;
@@ -38,33 +60,32 @@
   cursor: default;
 }
 
-
-/* =========================
-   GRID Y EJE INFERIOR
-========================= */
+/* ========================================
+   CUADRÍCULA Y EJE INFERIOR
+======================================== */
 
 .area-sex-grid text {
-  fill: #8fa6c5;
+  fill: var(--text-secondary, #c5d9ed);
 
   font-size: 11px;
+  font-weight: 500;
 }
 
 .area-sex-grid line {
-  stroke: #294a72;
-  stroke-opacity: 0.45;
+  stroke: var(--chart-grid, #294a72);
+  stroke-opacity: 0.65;
 }
 
 .area-sex-grid .domain {
-  stroke: #294a72;
+  stroke: var(--chart-grid, #294a72);
 }
 
-
-/* =========================
-   TOTAL
-========================= */
+/* ========================================
+   TOTALES
+======================================== */
 
 .area-sex-total {
-  fill: #dce9ff;
+  fill: var(--text-primary, #ffffff);
 
   font-size: 12px;
   font-weight: 700;
@@ -72,50 +93,168 @@
   pointer-events: none;
 }
 
-
-/* =========================
+/* ========================================
    TOOLTIP
-========================= */
+======================================== */
 
 .area-sex-tooltip {
-  position: absolute;
+  position: fixed;
 
-  z-index: 9999;
+  z-index: 99999;
 
+  box-sizing: border-box;
+
+  width: max-content;
   min-width: 180px;
-  max-width: 260px;
+  max-width: min(260px, calc(100vw - 24px));
 
   display: flex;
   flex-direction: column;
 
-  gap: 5px;
+  gap: 8px;
 
-  padding: 10px 12px;
+  padding: 13px 15px;
 
-  background: #10284d;
-  color: #ffffff;
+  background: var(--tooltip-bg, #082449);
+  color: var(--tooltip-text, #ffffff);
 
-  border: 1px solid #5278a8;
-  border-radius: 8px;
+  border: 1px solid var(--border-input, #3970a8);
+  border-radius: 10px;
 
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.35);
+    0 8px 24px rgba(0, 0, 0, 0.3);
 
   pointer-events: none;
 
-  transform: translate(0, -50%);
+  overflow-wrap: anywhere;
 }
+
+/* ========================================
+   TÍTULO DEL TOOLTIP
+======================================== */
 
 .area-sex-tooltip strong {
-  color: #ffffff;
+  color: var(--text-primary, #ffffff);
 
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
+
+  line-height: 1.35;
 }
 
-.area-sex-tooltip span {
-  color: #b9caeb;
+/* ========================================
+   CATEGORÍA
+======================================== */
+
+.area-sex-tooltip__category {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.area-sex-tooltip__category span:not(
+  .area-sex-tooltip__dot
+) {
+  color: var(--text-secondary, #c5d9ed);
 
   font-size: 12px;
-  line-height: 1.35;
+  font-weight: 500;
+}
+
+/* ========================================
+   INDICADOR DE COLOR
+======================================== */
+
+.area-sex-tooltip__dot {
+  display: inline-block;
+
+  width: 10px;
+  height: 10px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+}
+
+/* ========================================
+   CANTIDAD
+======================================== */
+
+.area-sex-tooltip__value {
+  color: var(--text-primary, #ffffff);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+/* ========================================
+   MODO CLARO
+======================================== */
+
+[data-theme="light"] .area-sex-y-axis text {
+  fill: #082449;
+  font-weight: 600;
+}
+
+[data-theme="light"] .area-sex-grid text {
+  fill: #466481;
+  font-weight: 500;
+}
+
+[data-theme="light"] .area-sex-grid line {
+  stroke: #d8e4ee;
+  stroke-opacity: 1;
+}
+
+[data-theme="light"] .area-sex-grid .domain {
+  stroke: #b8d0e5;
+}
+
+[data-theme="light"] .area-sex-total {
+  fill: #082449;
+}
+
+[data-theme="light"] .area-sex-tooltip {
+  background: #ffffff;
+  color: #082449;
+
+  border-color: #d2e1ef;
+
+  box-shadow:
+    0 8px 24px rgba(8, 36, 73, 0.16);
+}
+
+[data-theme="light"] .area-sex-tooltip strong {
+  color: #082449;
+}
+
+[data-theme="light"]
+.area-sex-tooltip__category span:not(
+  .area-sex-tooltip__dot
+) {
+  color: #466481;
+}
+
+[data-theme="light"] .area-sex-tooltip__value {
+  color: #0754a3;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 600px) {
+  .area-sex-tooltip {
+    min-width: 150px;
+    max-width: min(240px, calc(100vw - 24px));
+
+    padding: 10px 12px;
+  }
+
+  .area-sex-y-axis text {
+    font-size: 12px;
+  }
 }
