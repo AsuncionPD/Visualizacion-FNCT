@@ -1,4 +1,8 @@
 import KpiCard from '../KpiCard/KpiCard.jsx'
+import coheteIcon from '../../assets/imgs/cohete.png'
+import colegioIcon from '../../assets/imgs/colegio.png'
+import estudianteIcon from '../../assets/imgs/estudiante.png'
+import estrellasIcon from '../../assets/imgs/estrellas.png'
 
 import {
   getTotalProjects,
@@ -34,25 +38,25 @@ function KpiSection({ data }) {
     <section className="kpi-section">
 
       <KpiCard
-        icon="▤"
+        img= {coheteIcon}
         value={totalProjects}
         label="Total de proyectos"
       />
 
       <KpiCard
-        icon="🏫"
+        img= {colegioIcon}
         value={totalSchools}
         label="Centros educativos"
       />
 
       <KpiCard
-        icon="♙"
+        img= {estudianteIcon}
         value={totalStudents}
         label="Estudiantes"
       />
 
       <KpiCard
-        icon="✦"
+         img= {estrellasIcon}
         value={`${totalAIProjects} (${aiPercentage}%)`}
         label="Proyectos con IA"
       />

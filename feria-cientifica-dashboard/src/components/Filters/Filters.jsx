@@ -24,9 +24,9 @@ function Filters({
 
       <div className="filter-box">
 
-        <span className="filter-box__icon">
-          ♧
-        </span>
+        
+        <img src="./src/assets/imgs/ubicacion.png" alt="icono ubicación" className="filter-box__icon"/>
+      
 
         <div className="filter-box__content">
 
@@ -70,10 +70,8 @@ function Filters({
 
       <div className="filter-box">
 
-        <span className="filter-box__icon">
-          ◇
-        </span>
-
+        <img src="./src/assets/imgs/birrete.png" alt="icono ubicación" className="filter-box__icon"/>
+      
         <div className="filter-box__content">
 
           <label htmlFor="modalidad">
@@ -116,9 +114,7 @@ function Filters({
 
       <div className="filter-box">
 
-        <span className="filter-box__icon">
-          ♧
-        </span>
+        <img src="./src/assets/imgs/ciencias.png" alt="icono ubicación" className="filter-box__icon"/>
 
         <div className="filter-box__content">
 

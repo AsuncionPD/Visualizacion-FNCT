@@ -30,8 +30,8 @@
   align-items: center;
   justify-content: center;
 
-  width: 48px;
-  height: 48px;
+  width: 200px;
+  height: auto;
 
   flex-shrink: 0;
 
@@ -39,13 +39,13 @@
   font-size: 42px;
 }
 
-.header__title {
+/*.header__title {
   margin: 0;
 
   font-size: 26px;
   font-weight: 700;
   line-height: 1.2;
-}
+}*/
 
 .header__subtitle {
   margin: 5px 0 0;

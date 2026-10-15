@@ -1,7 +1,7 @@
 import './KpiCard.css'
 
 function KpiCard({
-  icon,
+  img,
   value,
   label,
 }) {
@@ -9,7 +9,7 @@ function KpiCard({
     <article className="kpi-card">
 
       <div className="kpi-card__icon">
-        {icon}
+        <img src={img} alt={label} style={{ width: '30px', height: 'auto'}}/>
       </div>
 
       <div className="kpi-card__info">

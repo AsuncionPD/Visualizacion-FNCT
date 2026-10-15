@@ -5,18 +5,16 @@ function Header({ children }) {
     <header className="header">
 
       <div className="header__brand">
-        <div className="header__icon">
-          ⚛
-        </div>
-
+          
         <div>
-          <h1 className="header__title">
-            Feria Nacional de Científica y Tecnológica
-          </h1>
 
-          <p className="header__subtitle">
+          <div >
+              <img src="./src/assets/imgs/Logo FNCT invertido horizontal.png" alt="Logo de Feria Nacional de Científica y Tecnológica" className="header__icon"/>
+          </div>
+
+          {/* <p className="header__subtitle">
             Visualización interactiva de proyectos presentados en 2025
-          </p>
+          </p> */}
         </div>
       </div>
 

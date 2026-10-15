@@ -14,9 +14,13 @@ function VisualizationGrid({ data }) {
       ========================= */}
       <section className="chart-card visualization-grid__map">
 
-        <div className="chart-card__header">
-          <h2>● Proyectos × Dirección Regional</h2>
-          <p>Mapa coroplético que muestra la cantidad de proyectos por dirección regional (DRE).</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1px', marginLeft: '10px'}}>
+          <img src="./src/assets/imgs/ubicacion.png" alt="icono ubicación" style={{ width: '25px', height: 'auto'}}/>
+
+          <div className="chart-card__header"> 
+             <h2>Proyectos × Dirección Regional</h2>
+              <p>Mapa coroplético que muestra la cantidad de proyectos por dirección regional (DRE).</p>
+          </div>
         </div>
 
         <div className="chart-card__content">
@@ -35,7 +39,7 @@ function VisualizationGrid({ data }) {
         <section className="chart-card visualization-grid__heatmap">
 
           <div className="chart-card__header">
-            <h2>▦ Área temática × Modalidad</h2>
+            <h2>Área temática × Modalidad</h2>
             <p>Mapa de calor que presenta la cantidad de proyectos por área temática y modalidad educativa. Eje Y: Aréas temáticas - Eje X: Modalidad educativa</p>
         
             <div className="chart-card_squares">
@@ -60,7 +64,7 @@ function VisualizationGrid({ data }) {
           <section className="chart-card visualization-grid__sex">
 
             <div className="chart-card__header">
-              <h2>♟ Área temática × Sexo</h2>
+              <h2>Área temática × Sexo</h2>
               <p>Barras verticales a color que muestra la predominancia de hombres y mujeres por área temática. Eje Y: Aréas temáticas - Eje X: Total de estudiantes</p>
 
               <div className="chart-card_squares">
@@ -82,7 +86,7 @@ function VisualizationGrid({ data }) {
           <section className="chart-card visualization-grid__ai">
 
             <div className="chart-card__header">
-              <h2>▧ IA × Modalidad</h2>
+              <h2>IA × Modalidad</h2>
 
               <p>
                 Mapa de árbol donde el tamaño de cada rectángulo es proporcional a la cantidad de proyectos que utilizan inteligencia artificial en cada modalidad educativa.
