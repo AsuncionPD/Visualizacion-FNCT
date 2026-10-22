@@ -54,7 +54,20 @@
   padding: 12px 14px 5px;
 }
 
-.chart-card__header h2 {
+/* ========================================
+   FILA: ÍCONO + TÍTULO
+======================================== */
+
+.chart-card__title-row {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  min-width: 0;
+}
+
+.chart-card__title-row h2 {
   margin: 0;
 
   color: var(--text-primary, #ffffff);
@@ -64,39 +77,32 @@
   line-height: 1.25;
 }
 
+/* ========================================
+   ÍCONOS
+======================================== */
+
+.chart-card__heading-icon {
+  width: 25px;
+  height: 25px;
+
+  flex-shrink: 0;
+
+  margin: 0;
+
+  object-fit: contain;
+}
+
+/* ========================================
+   SUBTÍTULOS
+======================================== */
+
 .chart-card__header p {
-  margin: 3px 0 0;
+  margin: 4px 0 0;
 
   color: var(--text-secondary, #c5d9ed);
 
   font-size: 11px;
   line-height: 1.35;
-}
-
-/* ========================================
-   ICONOS DE ENCABEZADO
-======================================== */
-
-.chart-card__heading {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-
-  padding-left: 12px;
-}
-
-.chart-card__heading .chart-card__header {
-  flex: 1;
-  padding-left: 0;
-}
-
-.chart-card__heading-icon {
-  width: 25px;
-  height: 25px;
-  flex-shrink: 0;
-
-  margin-top: 10px;
-  object-fit: contain;
 }
 
 /* ========================================
@@ -111,7 +117,7 @@
 
   padding: 5px 10px 10px;
 
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* ========================================
@@ -187,6 +193,7 @@
 .visualization-grid__heatmap {
   min-width: 0;
   min-height: 0;
+  height: 100%;
 }
 
 /* ========================================
@@ -293,25 +300,20 @@ html[data-theme="light"] .chart-empty p {
   color: #466481;
 }
 
+html[data-theme="light"] .chart-empty p {
+  color: #466481;
+}
+
 /* ========================================
-   RESPONSIVE
+   RESPONSIVE: TABLETS
 ======================================== */
 
 @media (max-width: 1100px) {
-  .app {
-    height: auto;
-    min-height: 100vh;
-    overflow: visible;
-  }
-
-  .dashboard {
-    display: block;
-  }
-
   .visualization-grid {
     height: auto;
     grid-template-columns: 1fr;
     margin-top: 12px;
+    flex: 1 0 auto;
   }
 
   .visualization-grid__map {
@@ -331,6 +333,10 @@ html[data-theme="light"] .chart-empty p {
   }
 }
 
+/* ========================================
+   RESPONSIVE: CELULARES
+======================================== */
+
 @media (max-width: 700px) {
   .visualization-grid__bottom {
     grid-template-columns: 1fr;
@@ -338,6 +344,18 @@ html[data-theme="light"] .chart-empty p {
 
   .visualization-grid__sex,
   .visualization-grid__ai {
-    min-height: 350px;
+    min-height: 320px;
+  }
+
+  /* Permitir que los dos heatmaps crezcan */
+  .visualization-grid__heatmap {
+    height: auto;
+    min-height: 0;
+  }
+
+  .visualization-grid__heatmap .chart-card__content {
+    flex: 0 0 auto;
+    min-height: 0;
+    overflow: visible;
   }
 }

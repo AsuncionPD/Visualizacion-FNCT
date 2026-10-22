@@ -8,8 +8,11 @@ function ActiveFilters({
   onRegionalChange,
   onModalityChange,
   onAreaChange,
-  onReset,
 }) {
+  // ==========================================
+  // 1. OBTENER FILTROS ACTIVOS
+  // ==========================================
+
   const activeFilters = [
     {
       key: 'regional',
@@ -33,6 +36,10 @@ function ActiveFilters({
     (filter) => filter.value && filter.value !== 'Todas'
   )
 
+  // ==========================================
+  // 2. OCULTAR SI NO HAY FILTROS
+  // ==========================================
+
   if (activeFilters.length === 0) {
     return null
   }
@@ -42,6 +49,10 @@ function ActiveFilters({
       className="active-filters"
       aria-label="Filtros aplicados"
     >
+      {/* ==========================================
+          ENCABEZADO
+      ========================================== */}
+
       <div className="active-filters__heading">
         <svg
           width="16"
@@ -60,12 +71,15 @@ function ActiveFilters({
         <span>Filtros aplicados:</span>
       </div>
 
+      {/* ==========================================
+          ETIQUETAS DE FILTROS
+      ========================================== */}
+
       <div className="active-filters__items">
         {activeFilters.map((filter) => (
           <div
             key={filter.key}
-            className="active-filters__chip"
-            title={`${filter.label}: ${filter.value}`}
+            className={`active-filters__chip active-filters__chip--${filter.key}`}
           >
             <span className="active-filters__chip-text">
               <strong>{filter.label}:</strong>{' '}
@@ -84,14 +98,6 @@ function ActiveFilters({
           </div>
         ))}
       </div>
-
-      <button
-        type="button"
-        className="active-filters__clear"
-        onClick={onReset}
-      >
-        Limpiar todos
-      </button>
     </section>
   )
 }

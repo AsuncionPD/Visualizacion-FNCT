@@ -5,8 +5,10 @@
 
 .area-modality-heatmap {
   position: relative;
+
   width: 100%;
   height: 100%;
+
   min-width: 0;
   min-height: 0;
 }
@@ -16,38 +18,16 @@
 ========================================== */
 
 .area-modality-heatmap__blocks {
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: stretch;
-  justify-content: center;
-}
 
-/* ==========================================
-   BLOQUE
-========================================== */
-
-.heatmap-block {
   width: 100%;
   height: 100%;
+
   min-width: 0;
   min-height: 0;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* ==========================================
-   TÍTULO DE BLOQUES
-========================================== */
-
-.heatmap-block__title {
-  display: none;
 }
 
 /* ==========================================
@@ -94,6 +74,7 @@
 .heatmap-value {
   font-size: 14px;
   font-weight: 700;
+
   pointer-events: none;
 }
 
@@ -148,6 +129,7 @@
 
 .heatmap-tooltip strong {
   color: var(--tooltip-text, #ffffff);
+
   font-size: 14px;
   font-weight: 700;
   line-height: 1.35;
@@ -155,12 +137,14 @@
 
 .heatmap-tooltip span {
   color: var(--text-secondary, #c5d9ed);
+
   font-size: 12px;
   line-height: 1.4;
 }
 
 .heatmap-tooltip span:last-child {
   color: var(--color-secondary, #13bdf0);
+
   font-size: 12px;
   font-weight: 700;
 }
@@ -204,64 +188,57 @@ html[data-theme="light"] .heatmap-tooltip span:last-child {
 }
 
 /* ==========================================
-   TABLET: GRÁFICO COMPLETO
+   TABLETS
 ========================================== */
 
-@media (min-width: 601px) and (max-width: 1100px) {
+@media (max-width: 1100px) {
   .area-modality-heatmap {
     height: 100%;
-  }
-
-  .area-modality-heatmap__blocks {
-    height: 100%;
-  }
-
-  .heatmap-block {
-    height: 100%;
+    min-height: 260px;
   }
 
   .area-modality-heatmap__svg {
     width: 100%;
     height: 100%;
   }
+
+  .heatmap-y-axis text,
+  .heatmap-x-axis text {
+    font-size: clamp(9px, 0.8vw, 12px);
+  }
+
+  .heatmap-value {
+    font-size: clamp(10px, 0.9vw, 14px);
+  }
 }
 
 /* ==========================================
-   CELULAR: DOS BLOQUES MÁS GRANDES
+   CELULARES: DOS HEATMAPS VERTICALES
 ========================================== */
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .area-modality-heatmap {
+    width: 100%;
     height: auto;
     min-height: 0;
+
+    overflow: visible;
   }
 
   .area-modality-heatmap__blocks {
-    height: auto;
-    min-height: 0;
+    display: flex;
+    flex-direction: column;
 
     justify-content: flex-start;
-    gap: 12px;
-  }
+    align-items: stretch;
 
-  .heatmap-block {
+    gap: 10px;
+
+    width: 100%;
     height: auto;
+
+    min-width: 0;
     min-height: 0;
-
-    justify-content: flex-start;
-  }
-
-  .heatmap-block__title {
-    display: block;
-
-    margin: 0 0 4px;
-    padding-left: 3px;
-
-    color: var(--text-primary, #ffffff);
-
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1.3;
   }
 
   .area-modality-heatmap__svg {
@@ -273,34 +250,16 @@ html[data-theme="light"] .heatmap-tooltip span:last-child {
     min-width: 0;
     min-height: 0;
 
-    aspect-ratio: auto;
-
-    overflow: hidden;
+    flex-shrink: 0;
+    overflow: visible;
   }
 
-  .heatmap-y-axis text {
-    font-size: 13px;
-  }
-
+  .heatmap-y-axis text,
   .heatmap-x-axis text {
     font-size: 12px;
   }
 
   .heatmap-value {
-    font-size: 15px;
-  }
-
-  .heatmap-tooltip {
-    min-width: 150px;
-    max-width: min(240px, calc(100vw - 24px));
-    padding: 10px 12px;
-  }
-
-  .heatmap-tooltip strong {
     font-size: 13px;
-  }
-
-  .heatmap-tooltip span {
-    font-size: 11px;
   }
 }

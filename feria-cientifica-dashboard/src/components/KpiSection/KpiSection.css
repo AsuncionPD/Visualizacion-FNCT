@@ -21,13 +21,20 @@
   border-radius: var(--radius-card, 14px);
 }
 
-/* =========================
+/* ==========================================
    RESPONSIVE
-========================= */
+========================================== */
 
 @media (max-width: 900px) {
   .kpi-section {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .kpi-section {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
 }
 

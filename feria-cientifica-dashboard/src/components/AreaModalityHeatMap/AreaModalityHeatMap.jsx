@@ -10,13 +10,34 @@ import {
 import './AreaModalityHeatmap.css'
 
 function AreaModalityHeatmap({ data, theme = 'dark' }) {
-  const svgRef = useRef(null)
+  const containerRef = useRef(null)
   const [tooltip, setTooltip] = useState(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // ==========================================
+  // 1. DETECTAR CELULARES
+  // ==========================================
 
   useEffect(() => {
-    const svg = d3.select(svgRef.current)
+    const mediaQuery = window.matchMedia('(max-width: 700px)')
 
-    svg.selectAll('*').remove()
+    const updateMobile = () => {
+      setIsMobile(mediaQuery.matches)
+    }
+
+    updateMobile()
+
+    mediaQuery.addEventListener('change', updateMobile)
+
+    return () => {
+      mediaQuery.removeEventListener('change', updateMobile)
+    }
+  }, [])
+
+  useEffect(() => {
+    const container = d3.select(containerRef.current)
+
+    container.selectAll('*').remove()
 
     if (!data || data.length === 0) {
       return
@@ -25,7 +46,7 @@ function AreaModalityHeatmap({ data, theme = 'dark' }) {
     const isLight = theme === 'light'
 
     // ==========================================
-    // 1. DATOS
+    // 2. OBTENER DATOS
     // ==========================================
 
     const grouped = getProjectsByAreaAndModality(data)
@@ -53,124 +74,91 @@ function AreaModalityHeatmap({ data, theme = 'dark' }) {
     })
 
     // ==========================================
-    // 2. ABREVIAR MODALIDADES
+    // 3. ABREVIAR MODALIDADES
     // ==========================================
 
     const getShortModality = (modalidad) => {
-      const text = modalidad
+      const text = String(modalidad ?? '')
         .trim()
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
 
       if (
-        text.includes('secundaria') &&
-        text.includes('tecnica')
+        text.includes('centros de educacion especial') ||
+        text.includes('ciclo diversificado vocacional')
       ) {
+        if (text.includes('plan nacional')) {
+          return 'Ed. especial (PN)'
+        }
+
+        if (text.includes('plan de estudios')) {
+          return 'Ed. especial (PE)'
+        }
+
+        return 'Ed. especial / Voc.'
+      }
+
+      if (text.includes('primaria') && text.includes('epja')) {
+        return 'Prim. EPJA'
+      }
+
+      if (text.includes('secundaria') && text.includes('epja')) {
+        return 'Sec. EPJA'
+      }
+
+      if (text.includes('epja')) {
+        return 'EPJA'
+      }
+
+      if (text.includes('secundaria') && text.includes('tecnica')) {
         return 'Sec. técnica'
       }
 
       if (
         text.includes('secundaria') &&
-        (
-          text.includes('cientifica') ||
-          text.includes('humanistica')
-        )
+        (text.includes('cientifica') || text.includes('humanistica'))
       ) {
-        return 'Sec. científica'
+        return 'Sec. cient./hum.'
       }
 
-      if (
-        text.includes('secundaria') &&
-        text.includes('epja')
-      ) {
-        return 'Sec. EPJA'
-      }
-
-      if (
-        text.includes('secundaria') &&
-        text.includes('academica')
-      ) {
+      if (text.includes('secundaria') && text.includes('academica')) {
         return 'Sec. académica'
       }
 
-      if (
-        text.includes('primaria') &&
-        text.includes('unidocente')
-      ) {
+      if (text.includes('primaria') && text.includes('unidocente')) {
         return 'Prim. unidoc.'
       }
 
-      if (
-        text.includes('primaria') &&
-        text.includes('epja')
-      ) {
-        return 'Prim. EPJA'
-      }
-
-      if (
-        text.includes('primaria') &&
-        text.includes('academica')
-      ) {
+      if (text.includes('primaria') && text.includes('academica')) {
         return 'Prim. académica'
       }
 
-      return modalidad
+      return String(modalidad ?? '')
+        .replace(/Educación/gi, 'Ed.')
+        .replace(/Secundaria/gi, 'Sec.')
+        .replace(/Primaria/gi, 'Prim.')
+        .replace(/Académica/gi, 'Acad.')
+        .replace(/Diversificado/gi, 'Divers.')
+        .replace(/Vocacional/gi, 'Voc.')
     }
 
     // ==========================================
-    // 3. DIMENSIONES ORIGINALES
+    // 4. DIVIDIR MODALIDADES EN CELULARES
     // ==========================================
 
-    const width = 1200
-    const height = 360
+    const middle = Math.ceil(modalidades.length / 2)
 
-    const margin = {
-      top: 65,
-      right: 15,
-      bottom: 15,
-      left: 165,
-    }
-
-    const innerWidth =
-      width - margin.left - margin.right
-
-    const innerHeight =
-      height - margin.top - margin.bottom
+    const modalityGroups = isMobile
+      ? [
+          modalidades.slice(0, middle),
+          modalidades.slice(middle),
+        ].filter((group) => group.length > 0)
+      : [modalidades]
 
     // ==========================================
-    // 4. SVG
-    // ==========================================
-
-    svg
-      .attr('viewBox', `0 0 ${width} ${height}`)
-      .attr('preserveAspectRatio', 'xMidYMid meet')
-
-    const group = svg
-      .append('g')
-      .attr(
-        'transform',
-        `translate(${margin.left}, ${margin.top})`
-      )
-
-    // ==========================================
-    // 5. ESCALAS DE POSICIÓN
-    // ==========================================
-
-    const x = d3
-      .scaleBand()
-      .domain(modalidades)
-      .range([0, innerWidth])
-      .padding(0.04)
-
-    const y = d3
-      .scaleBand()
-      .domain(areas)
-      .range([0, innerHeight])
-      .padding(0.05)
-
-    // ==========================================
-    // 6. ESCALA DE COLOR SEGÚN TEMA
+    // 5. ESCALA DE COLOR COMPARTIDA
     // ==========================================
 
     const maxValue =
@@ -214,13 +202,11 @@ function AreaModalityHeatmap({ data, theme = 'dark' }) {
     }
 
     // ==========================================
-    // 7. CONTRASTE DE LOS NÚMEROS
+    // 6. CONTRASTE DE NÚMEROS
     // ==========================================
 
     const getTextColor = (cantidad) => {
-      const background = d3.rgb(
-        getCellColor(cantidad)
-      )
+      const background = d3.rgb(getCellColor(cantidad))
 
       const toLinear = (value) => {
         const channel = value / 255
@@ -241,7 +227,7 @@ function AreaModalityHeatmap({ data, theme = 'dark' }) {
     }
 
     // ==========================================
-    // 8. TOOLTIP
+    // 7. TOOLTIP RESPONSIVO
     // ==========================================
 
     const updateTooltip = (event, d) => {
@@ -292,150 +278,240 @@ function AreaModalityHeatmap({ data, theme = 'dark' }) {
     }
 
     // ==========================================
-    // 9. CELDAS
+    // 8. CREAR UNO O DOS HEATMAPS
     // ==========================================
 
-    group
-      .selectAll('.heatmap-cell')
-      .data(heatmapData)
-      .join('rect')
-      .attr('class', 'heatmap-cell')
-      .attr('x', (d) => x(d.modalidad))
-      .attr('y', (d) => y(d.area))
-      .attr('width', x.bandwidth())
-      .attr('height', y.bandwidth())
-      .attr('rx', 3)
-      .attr('fill', (d) => getCellColor(d.cantidad))
-      .on('mouseenter', updateTooltip)
-      .on('mousemove', updateTooltip)
-      .on('mouseleave', () => {
-        setTooltip(null)
+    modalityGroups.forEach((groupModalities, index) => {
+      const width = isMobile ? 760 : 1200
+      const height = 360
+
+      const margin = {
+        top: 65,
+        right: 15,
+        bottom: 15,
+        left: isMobile ? 190 : 190,
+      }
+
+      const innerWidth =
+        width - margin.left - margin.right
+
+      const innerHeight =
+        height - margin.top - margin.bottom
+
+      const svg = container
+        .append('svg')
+        .attr('class', 'area-modality-heatmap__svg')
+        .attr('viewBox', `0 0 ${width} ${height}`)
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .attr('role', 'img')
+        .attr(
+          'aria-label',
+          isMobile
+            ? `Mapa de calor, sección ${index + 1} de ${modalityGroups.length}`
+            : 'Cantidad de proyectos por área temática y modalidad'
+        )
+
+      const group = svg
+        .append('g')
+        .attr(
+          'transform',
+          `translate(${margin.left}, ${margin.top})`
+        )
+
+      const x = d3
+        .scaleBand()
+        .domain(groupModalities)
+        .range([0, innerWidth])
+        .padding(0.04)
+
+      const y = d3
+        .scaleBand()
+        .domain(areas)
+        .range([0, innerHeight])
+        .padding(0.05)
+
+      const blockData = heatmapData.filter((d) =>
+        groupModalities.includes(d.modalidad)
+      )
+
+      // ==========================================
+      // 9. CELDAS
+      // ==========================================
+
+      group
+        .selectAll('.heatmap-cell')
+        .data(blockData)
+        .join('rect')
+        .attr('class', 'heatmap-cell')
+        .attr('x', (d) => x(d.modalidad))
+        .attr('y', (d) => y(d.area))
+        .attr('width', x.bandwidth())
+        .attr('height', y.bandwidth())
+        .attr('rx', 3)
+        .attr('fill', (d) => getCellColor(d.cantidad))
+        .on('mouseenter', updateTooltip)
+        .on('mousemove', updateTooltip)
+        .on('mouseleave', () => {
+          setTooltip(null)
+        })
+
+      // ==========================================
+      // 10. NÚMEROS
+      // ==========================================
+
+      group
+        .selectAll('.heatmap-value')
+        .data(
+          blockData.filter((d) => d.cantidad > 0)
+        )
+        .join('text')
+        .attr('class', 'heatmap-value')
+        .attr(
+          'x',
+          (d) => x(d.modalidad) + x.bandwidth() / 2
+        )
+        .attr(
+          'y',
+          (d) => y(d.area) + y.bandwidth() / 2
+        )
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', (d) => getTextColor(d.cantidad))
+        .text((d) => d.cantidad)
+
+      // ==========================================
+      // 11. EJE Y - NOMBRES DIVIDIDOS
+      // ==========================================
+
+      const yAxis = group
+        .append('g')
+        .attr('class', 'heatmap-y-axis')
+        .call(
+          d3.axisLeft(y)
+            .tickSize(0)
+            .tickPadding(8)
+        )
+
+      yAxis.select('.domain').remove()
+
+      yAxis.selectAll('.tick text').each(function (area) {
+        const label = d3.select(this)
+        const words = String(area).trim().split(/\s+/)
+        const maxCharacters = isMobile ? 20 : 23
+
+        const lines = ['']
+
+        words.forEach((word) => {
+          const lineIndex = lines.length - 1
+
+          const candidate = lines[lineIndex]
+            ? `${lines[lineIndex]} ${word}`
+            : word
+
+          if (
+            candidate.length > maxCharacters &&
+            lines[lineIndex]
+          ) {
+            lines.push(word)
+          } else {
+            lines[lineIndex] = candidate
+          }
+        })
+
+        label.text(null)
+
+        const lineHeight = 1.1
+        const firstDy =
+          -((lines.length - 1) * lineHeight) / 2
+
+        lines.forEach((line, lineIndex) => {
+          label
+            .append('tspan')
+            .attr('x', -8)
+            .attr(
+              'dy',
+              lineIndex === 0
+                ? `${firstDy}em`
+                : `${lineHeight}em`
+            )
+            .text(line)
+        })
       })
 
-    // ==========================================
-    // 10. NÚMEROS
-    // ==========================================
+      // ==========================================
+      // 12. EJE X - MODALIDADES
+      // ==========================================
 
-    group
-      .selectAll('.heatmap-value')
-      .data(
-        heatmapData.filter(
-          (d) => d.cantidad > 0
+      const xAxis = group
+        .append('g')
+        .attr('class', 'heatmap-x-axis')
+        .call(
+          d3
+            .axisTop(x)
+            .tickSize(0)
+            .tickFormat(getShortModality)
         )
-      )
-      .join('text')
-      .attr('class', 'heatmap-value')
-      .attr(
-        'x',
-        (d) =>
-          x(d.modalidad) + x.bandwidth() / 2
-      )
-      .attr(
-        'y',
-        (d) =>
-          y(d.area) + y.bandwidth() / 2
-      )
-      .attr('text-anchor', 'middle')
-      .attr('dominant-baseline', 'middle')
-      .attr(
-        'fill',
-        (d) => getTextColor(d.cantidad)
-      )
-      .text((d) => d.cantidad)
 
-    // ==========================================
-    // 11. EJE Y
-    // ==========================================
+      xAxis.select('.domain').remove()
 
-    group
-      .append('g')
-      .attr('class', 'heatmap-y-axis')
-      .call(
-        d3
-          .axisLeft(y)
-          .tickSize(0)
-          .tickPadding(8)
-      )
-      .call((g) =>
-        g.select('.domain').remove()
-      )
+      // ==========================================
+      // 13. ETIQUETAS X EN DOS LÍNEAS
+      // ==========================================
 
-    // ==========================================
-    // 12. EJE X
-    // ==========================================
+      xAxis
+        .selectAll('text')
+        .each(function () {
+          const text = d3.select(this)
+          const label = text.text()
+          const words = label.split(' ')
 
-    const xAxis = group
-      .append('g')
-      .attr('class', 'heatmap-x-axis')
-      .call(
-        d3
-          .axisTop(x)
-          .tickSize(0)
-          .tickFormat(getShortModality)
-      )
+          text.text('')
 
-    xAxis.select('.domain').remove()
+          if (words.length === 1) {
+            text
+              .append('tspan')
+              .attr('x', 0)
+              .attr('dy', '-0.8em')
+              .text(words[0])
 
-    // ==========================================
-    // 13. DIVIDIR ETIQUETAS
-    // ==========================================
+            return
+          }
 
-    xAxis
-      .selectAll('text')
-      .each(function () {
-        const text = d3.select(this)
-        const label = text.text()
-        const words = label.split(' ')
+          const middleWords = Math.ceil(words.length / 2)
 
-        text.text('')
+          const firstLine = words
+            .slice(0, middleWords)
+            .join(' ')
 
-        if (words.length === 1) {
+          const secondLine = words
+            .slice(middleWords)
+            .join(' ')
+
           text
             .append('tspan')
             .attr('x', 0)
-            .attr('dy', '-0.8em')
-            .text(words[0])
+            .attr('dy', '-1.5em')
+            .text(firstLine)
 
-          return
-        }
-
-        const middle = Math.ceil(words.length / 2)
-
-        const firstLine = words
-          .slice(0, middle)
-          .join(' ')
-
-        const secondLine = words
-          .slice(middle)
-          .join(' ')
-
-        text
-          .append('tspan')
-          .attr('x', 0)
-          .attr('dy', '-1.5em')
-          .text(firstLine)
-
-        text
-          .append('tspan')
-          .attr('x', 0)
-          .attr('dy', '1.15em')
-          .text(secondLine)
-      })
+          text
+            .append('tspan')
+            .attr('x', 0)
+            .attr('dy', '1.15em')
+            .text(secondLine)
+        })
+    })
 
     return () => {
-      svg.selectAll('*').remove()
+      container.selectAll('*').remove()
     }
 
-  }, [data, theme])
+  }, [data, theme, isMobile])
 
   return (
     <div className="area-modality-heatmap">
-
-      <svg
-        ref={svgRef}
-        className="area-modality-heatmap__svg"
-        role="img"
-        aria-label="Cantidad de proyectos por área temática y modalidad"
+      <div
+        ref={containerRef}
+        className="area-modality-heatmap__blocks"
       />
 
       {tooltip && createPortal(
@@ -467,7 +543,6 @@ function AreaModalityHeatmap({ data, theme = 'dark' }) {
         </div>,
         document.body
       )}
-
     </div>
   )
 }

@@ -204,6 +204,7 @@
   .header {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
+    align-items: start;
   }
 
   .header__title {
@@ -212,6 +213,13 @@
 
   .header__actions {
     min-width: 0;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .header__filters {
+    flex: 1 1 100%;
+    min-width: 0;
   }
 }
 
@@ -219,7 +227,7 @@
    RESPONSIVE - CELULAR
 ========================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 1180px) {
   .header {
     position: relative;
 
@@ -279,7 +287,10 @@
   /* Los filtros ocupan una fila independiente */
 
   .header__actions {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
 
     width: 100%;
     min-width: 0;
@@ -344,7 +355,8 @@
   }
 
   .header__actions {
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
 
   .header__filters {

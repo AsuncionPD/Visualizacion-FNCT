@@ -313,17 +313,68 @@ function AreaSexChart({ data }) {
     // 12. NOMBRES DE ÁREAS
     // ==========================================
 
-    group
+    
+    // ==========================================
+    // 12. NOMBRES DE ÁREAS EN DOS LÍNEAS
+    // ==========================================
+
+    const yAxis = group
       .append('g')
       .attr('class', 'area-sex-y-axis')
       .call(
         d3
           .axisLeft(y)
           .tickSize(0)
+          .tickPadding(8)
       )
-      .call((g) =>
-        g.select('.domain').remove()
-      )
+
+    yAxis.select('.domain').remove()
+
+    yAxis.selectAll('.tick text').each(function (area) {
+      const label = d3.select(this)
+      const words = String(area).trim().split(/\s+/)
+      const maxCharacters = 23
+
+      const lines = ['']
+
+      words.forEach((word) => {
+        const index = lines.length - 1
+
+        const candidate = lines[index]
+          ? `${lines[index]} ${word}`
+          : word
+
+        if (
+          candidate.length > maxCharacters &&
+          lines[index]
+        ) {
+          lines.push(word)
+        } else {
+          lines[index] = candidate
+        }
+      })
+
+      label.text(null)
+
+      // Centrar verticalmente las líneas en cada barra
+      const lineHeight = 1.1
+      const firstDy =
+        -((lines.length - 1) * lineHeight) / 2
+
+      lines.forEach((line, index) => {
+        label
+          .append('tspan')
+          .attr('x', -8)
+          .attr(
+            'dy',
+            index === 0
+              ? `${firstDy}em`
+              : `${lineHeight}em`
+          )
+          .text(line)
+      })
+    })
+
 
     // ==========================================
     // 13. TOTAL POR ÁREA

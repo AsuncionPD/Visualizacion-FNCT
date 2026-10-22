@@ -5,10 +5,12 @@
 
 .active-filters {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
 
+  width: 100%;
   min-width: 0;
+
   padding: 8px 24px;
 
   background: var(--bg-page);
@@ -27,6 +29,7 @@
   gap: 7px;
 
   flex-shrink: 0;
+  padding-top: 6px;
 
   color: var(--text-secondary);
   font-size: 12px;
@@ -44,8 +47,9 @@
 
 .active-filters__items {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
+
   gap: 7px;
 
   flex: 1;
@@ -53,37 +57,56 @@
 }
 
 /* ==========================================
-   ETIQUETA
+   ETIQUETAS
 ========================================== */
 
 .active-filters__chip {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
 
-  max-width: min(360px, 100%);
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
 
-  padding: 5px 7px 5px 10px;
+  padding: 6px 8px 6px 10px;
 
   background: var(--bg-card);
   border: 1px solid var(--border-input);
   border-radius: 7px;
 
   color: var(--text-primary);
+
   font-size: 11px;
-  line-height: 1.3;
+  line-height: 1.45;
 }
+
+/* ==========================================
+   TEXTO COMPLETO, SIN PUNTOS SUSPENSIVOS
+========================================== */
 
 .active-filters__chip-text {
   min-width: 0;
 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .active-filters__chip-text strong {
   font-weight: 700;
+}
+
+/* ==========================================
+   MODALIDAD: APROVECHAR ESPACIO DISPONIBLE
+========================================== */
+
+.active-filters__chip--modality {
+  flex: 0 1 auto;
+  max-width: 100%;
 }
 
 /* ==========================================
@@ -107,6 +130,7 @@
   border-radius: 5px;
 
   color: var(--text-secondary);
+
   font-size: 17px;
   line-height: 1;
 
@@ -118,35 +142,9 @@
   color: var(--color-accent);
 }
 
-.active-filters__remove:focus-visible,
-.active-filters__clear:focus-visible {
+.active-filters__remove:focus-visible {
   outline: 2px solid var(--color-secondary);
   outline-offset: 2px;
-}
-
-/* ==========================================
-   LIMPIAR TODOS
-========================================== */
-
-.active-filters__clear {
-  flex-shrink: 0;
-
-  padding: 5px 8px;
-
-  background: transparent;
-  border: none;
-
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 700;
-
-  cursor: pointer;
-}
-
-.active-filters__clear:hover {
-  color: var(--color-secondary);
-  text-decoration: underline;
 }
 
 /* ==========================================
@@ -165,22 +163,47 @@ html[data-theme="light"] .active-filters__chip {
 }
 
 /* ==========================================
-   RESPONSIVE
+   RESPONSIVE: TABLETS
 ========================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .active-filters {
-    padding: 9px 14px;
-    align-items: flex-start;
+    padding: 9px 16px;
+
     flex-wrap: wrap;
   }
 
   .active-filters__items {
     flex-basis: 100%;
-    order: 2;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE: CELULARES
+========================================== */
+
+@media (max-width: 700px) {
+  .active-filters {
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 10px 14px;
   }
 
-  .active-filters__clear {
-    margin-left: auto;
+  .active-filters__heading {
+    padding-top: 0;
+  }
+
+  .active-filters__items {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .active-filters__chip--modality {
+    width: 100%;
+  }
+
+  .active-filters__chip {
+    font-size: 11px;
   }
 }

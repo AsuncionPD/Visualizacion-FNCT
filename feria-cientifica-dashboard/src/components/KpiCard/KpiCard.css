@@ -44,6 +44,7 @@
 
 .kpi-card__info {
   min-width: 0;
+  flex: 1 1 auto;
 
   display: flex;
   flex-direction: column;
@@ -54,17 +55,19 @@
 .kpi-card__value {
   color: var(--text-primary, #ffffff);
 
-  font-size: 27px;
+  font-size: clamp(20px, 1.6vw, 27px);
   font-weight: 700;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .kpi-card__label {
   color: var(--text-secondary, #c5d9ed);
 
-  font-size: 15px;
+  font-size: clamp(12px, 0.9vw, 15px);
   font-weight: 400;
   line-height: 1.2;
+  word-break: break-word;
 }
 
 /* KPI DESTACADO: INTELIGENCIA ARTIFICIAL */
@@ -79,22 +82,56 @@
 
 /* RESPONSIVE */
 
-@media (max-width: 480px) {
+@media (max-width: 900px) {
   .kpi-card {
-    padding: 12px 16px;
+    padding: 12px 18px;
     gap: 14px;
   }
 
   .kpi-card__icon {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .kpi-card__image {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 680px) {
+  .kpi-card {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .kpi-card__icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .kpi-card__image {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-card {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .kpi-card__icon {
+    width: 46px;
+    height: 46px;
   }
 
   .kpi-card__value {
-    font-size: 24px;
+    font-size: clamp(20px, 7vw, 24px);
   }
 
   .kpi-card__label {
-    font-size: 14px;
+    font-size: clamp(12px, 3.6vw, 14px);
   }
 }
