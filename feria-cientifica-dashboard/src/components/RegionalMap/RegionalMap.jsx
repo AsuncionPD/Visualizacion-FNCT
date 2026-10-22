@@ -17,6 +17,12 @@ import './RegionalMap.css'
 
 function RegionalMap({ data, theme = 'dark' }) {
   const svgRef = useRef(null)
+  const viewportRef = useRef(null)
+
+  const [dimensions, setDimensions] = useState({
+    width: 0,
+    height: 0,
+  })
 
   const [tooltip, setTooltip] = useState(null)
 
@@ -25,27 +31,65 @@ function RegionalMap({ data, theme = 'dark' }) {
     max: 0,
   })
 
+  // ========================================
+  // 1. MEDIR EL CONTENEDOR
+  // ========================================
+
   useEffect(() => {
-    const width = 700
-    const height = 420
+    const viewport = viewportRef.current
+
+    if (!viewport) return
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+
+      if (!entry) return
+
+      const width = Math.round(entry.contentRect.width)
+      const height = Math.round(entry.contentRect.height)
+
+      if (width <= 0 || height <= 0) return
+
+      setDimensions((previous) => {
+        if (
+          previous.width === width &&
+          previous.height === height
+        ) {
+          return previous
+        }
+
+        return { width, height }
+      })
+    })
+
+    observer.observe(viewport)
+
+    return () => observer.disconnect()
+  }, [])
+
+  // ========================================
+  // 2. DIBUJAR MAPA
+  // ========================================
+
+  useEffect(() => {
+    const { width, height } = dimensions
+
+    if (!svgRef.current || width <= 0 || height <= 0) {
+      return
+    }
 
     const svg = d3.select(svgRef.current)
 
     svg.selectAll('*').remove()
-    setTooltip(null)
-
-    if (!data) return
-
-    // ========================================
-    // 1. SVG
-    // ========================================
 
     svg
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('preserveAspectRatio', 'xMidYMid meet')
 
+    if (!Array.isArray(data)) return
+
     // ========================================
-    // 2. AGRUPACIÓN POR REGIONAL
+    // 3. PROYECTOS POR REGIONAL
     // ========================================
 
     const projectsByRegional =
@@ -68,15 +112,22 @@ function RegionalMap({ data, theme = 'dark' }) {
     }
 
     // ========================================
-    // 3. PROYECCIÓN
+    // 4. PROYECCIÓN RESPONSIVA
     // ========================================
+
+    const isMobile = window.innerWidth <= 600
+
+    const padding = isMobile ? 12 : 20
 
     const projection = d3
       .geoMercator()
       .fitExtent(
         [
-          [20, 20],
-          [width - 20, height - 20],
+          [padding, padding],
+          [
+            Math.max(padding + 1, width - padding),
+            Math.max(padding + 1, height - padding),
+          ],
         ],
         regionalesData
       )
@@ -86,7 +137,7 @@ function RegionalMap({ data, theme = 'dark' }) {
       .projection(projection)
 
     // ========================================
-    // 4. VALORES
+    // 5. VALORES
     // ========================================
 
     const values = regionalesData.features.map(
@@ -104,13 +155,22 @@ function RegionalMap({ data, theme = 'dark' }) {
     const maxProjects =
       d3.max(positiveValues) ?? 0
 
-    setRange({
-      min: minProjects,
-      max: maxProjects,
+    setRange((previous) => {
+      if (
+        previous.min === minProjects &&
+        previous.max === maxProjects
+      ) {
+        return previous
+      }
+
+      return {
+        min: minProjects,
+        max: maxProjects,
+      }
     })
 
     // ========================================
-    // 5. ESCALA DE COLOR
+    // 6. ESCALA DE COLOR
     // ========================================
 
     const colorScale = d3
@@ -141,15 +201,10 @@ function RegionalMap({ data, theme = 'dark' }) {
     }
 
     // ========================================
-    // 6. TOOLTIP RESPONSIVO
+    // 7. TOOLTIP
     // ========================================
 
     const updateTooltip = (event, feature) => {
-      const tooltipWidth = 230
-      const tooltipHeight = 115
-      const offset = 16
-      const padding = 12
-
       const nombre =
         feature.properties.NOMBRE_DRE
 
@@ -159,6 +214,15 @@ function RegionalMap({ data, theme = 'dark' }) {
       const porcentaje = data.length > 0
         ? (cantidad / data.length) * 100
         : 0
+
+      const tooltipWidth = Math.min(
+        230,
+        window.innerWidth - 24
+      )
+
+      const tooltipHeight = 115
+      const offset = 16
+      const padding = 12
 
       let x = event.clientX + offset
       let y = event.clientY - tooltipHeight / 2
@@ -196,7 +260,7 @@ function RegionalMap({ data, theme = 'dark' }) {
     }
 
     // ========================================
-    // 7. DIBUJAR REGIONES
+    // 8. REGIONES
     // ========================================
 
     svg
@@ -221,8 +285,7 @@ function RegionalMap({ data, theme = 'dark' }) {
     return () => {
       svg.selectAll('*').remove()
     }
-
-  }, [data, theme])
+  }, [data, theme, dimensions])
 
   return (
     <div className="regional-map">
@@ -231,7 +294,10 @@ function RegionalMap({ data, theme = 'dark' }) {
           MAPA
       ======================================== */}
 
-      <div className="regional-map__viewport">
+      <div
+        ref={viewportRef}
+        className="regional-map__viewport"
+      >
         <svg
           ref={svgRef}
           className="regional-map__svg"
@@ -279,9 +345,7 @@ function RegionalMap({ data, theme = 'dark' }) {
             top: tooltip.y,
           }}
         >
-          <strong>
-            {tooltip.nombre}
-          </strong>
+          <strong>{tooltip.nombre}</strong>
 
           <span className="regional-map__tooltip-count">
             <span className="regional-map__tooltip-dot" />
@@ -296,7 +360,6 @@ function RegionalMap({ data, theme = 'dark' }) {
             {tooltip.porcentaje.toFixed(1)}%
             {' '}del total de proyectos
           </span>
-
         </div>,
         document.body
       )}

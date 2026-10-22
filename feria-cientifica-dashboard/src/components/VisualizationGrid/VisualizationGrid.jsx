@@ -5,6 +5,9 @@ import AreaSexChart from '../AreaSexChart/AreaSexChart.jsx'
 import AreaModalityHeatMap from '../AreaModalityHeatMap/AreaModalityHeatMap.jsx'
 
 import ubicacionIcon from '../../assets/imgs/ubicacion.png'
+import sexoIcon from '../../assets/imgs/sexo.png'
+import cerebroIcon from '../../assets/imgs/cerebro.png'
+import educacionIcon from '../../assets/imgs/educacion.png'
 
 import './VisualizationGrid.css'
 
@@ -76,7 +79,7 @@ function VisualizationGrid({ data, theme = 'dark' }) {
         <div className="chart-card__heading">
           <img
             src={ubicacionIcon}
-            alt=""
+            alt="Icono de Ubicación"
             aria-hidden="true"
             className="chart-card__heading-icon"
           />
@@ -116,6 +119,14 @@ function VisualizationGrid({ data, theme = 'dark' }) {
 
         <section className="chart-card visualization-grid__heatmap">
 
+           <div className="chart-card__heading">
+              <img
+                src={educacionIcon}
+                alt="Icono de Educación"
+                aria-hidden="true"
+                className="chart-card__heading-icon"
+              />
+
           <div className="chart-card__header">
             <h2>Área temática × Modalidad</h2>
 
@@ -151,6 +162,8 @@ function VisualizationGrid({ data, theme = 'dark' }) {
             )}
           </div>
 
+          </div>
+
           <div className="chart-card__content">
             {hasData ? (
               <AreaModalityHeatMap
@@ -176,17 +189,26 @@ function VisualizationGrid({ data, theme = 'dark' }) {
 
           <section className="chart-card visualization-grid__sex">
 
+            <div className="chart-card__heading">
+
+              <img
+                src={sexoIcon}
+                alt="Icono de sexo o género"
+                aria-hidden="true"
+                className="chart-card__heading-icon"
+              />
+
             <div className="chart-card__header">
               <h2>Área temática × Sexo</h2>
 
-              <p>
-                Barras horizontales apiladas que muestran
-                la distribución de estudiantes por sexo
-                y área temática. Eje Y: áreas temáticas.
-                Eje X: total de estudiantes.
-              </p>
+                <p>
+                  Barras horizontales apiladas que muestran
+                  la distribución de estudiantes por sexo
+                  y área temática. Eje Y: áreas temáticas.
+                  Eje X: total de estudiantes.
+                </p>
 
-              {hasData && (
+                {hasData && (
                 <div className="chart-card_squares">
 
                   <span
@@ -209,8 +231,10 @@ function VisualizationGrid({ data, theme = 'dark' }) {
 
                 </div>
               )}
-            </div>
 
+              </div>
+            </div>
+             
             <div className="chart-card__content">
               {hasData ? (
                 <AreaSexChart data={data} />
@@ -227,15 +251,24 @@ function VisualizationGrid({ data, theme = 'dark' }) {
 
           <section className="chart-card visualization-grid__ai">
 
-            <div className="chart-card__header">
-              <h2>IA × Modalidad</h2>
+            <div className="chart-card__heading">
+              <img
+                src={cerebroIcon}
+                alt="Icono de Cerebro"
+                aria-hidden="true"
+                className="chart-card__heading-icon"
+              />
 
-              <p>
-                Mapa de árbol donde el tamaño de cada
-                rectángulo es proporcional a la cantidad
-                de proyectos que utilizan inteligencia
-                artificial en cada modalidad educativa.
-              </p>
+              <div className="chart-card__header">
+                <h2>IA × Modalidad</h2>
+
+                <p>
+                  Mapa de árbol donde el tamaño de cada
+                  rectángulo es proporcional a la cantidad
+                  de proyectos que utilizan inteligencia
+                  artificial en cada modalidad educativa.
+                </p>
+              </div>
             </div>
 
             <div className="chart-card__content">
