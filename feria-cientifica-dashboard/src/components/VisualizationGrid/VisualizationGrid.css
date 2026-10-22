@@ -315,7 +315,7 @@ html[data-theme="light"] .chart-empty p {
   }
 
   .visualization-grid__map {
-    min-height: 520px;
+    min-height: clamp(430px, 92vw, 920px);
   }
 
   .visualization-grid__right {

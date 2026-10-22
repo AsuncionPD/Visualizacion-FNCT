@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import * as d3 from 'd3'
 
@@ -15,6 +15,54 @@ import {
 
 import './RegionalMap.css'
 
+// ========================================
+// LÍMITES DE ESCALADO
+// ========================================
+
+// La tarjeta puede crecer mucho en pantallas muy anchas.
+// El mapa se centra dentro del espacio disponible, pero su
+// dibujo deja de crecer al alcanzar estos límites.
+const MAX_FIT_WIDTH = 1100
+const MAX_FIT_HEIGHT = 920
+
+// Isla del Coco (aprox. 5.5° N) forma parte de la DRE Puntarenas,
+// pero está muy lejos del territorio continental. Si se incluye
+// al calcular fitExtent(), alarga el área de ajuste y reduce el
+// mapa continental a una porción mínima de la tarjeta.
+// Se excluye únicamente del cálculo de la proyección; la geometría
+// y los datos de las 27 DRE se siguen renderizando completos.
+const FIT_MIN_LATITUDE = 8
+
+const fitData = {
+  ...regionalesData,
+
+  features: regionalesData.features.map((feature) => {
+    if (feature.geometry.type !== 'MultiPolygon') {
+      return feature
+    }
+
+    const coordinates = feature.geometry.coordinates.filter(
+      (polygon) => {
+        const [[, minLatitude]] = d3.geoBounds({
+          type: 'Polygon',
+          coordinates: polygon,
+        })
+
+        return minLatitude >= FIT_MIN_LATITUDE
+      }
+    )
+
+    return {
+      ...feature,
+
+      geometry: {
+        ...feature.geometry,
+        coordinates,
+      },
+    }
+  }),
+}
+
 function RegionalMap({ data, theme = 'dark' }) {
   const svgRef = useRef(null)
   const viewportRef = useRef(null)
@@ -26,13 +74,45 @@ function RegionalMap({ data, theme = 'dark' }) {
 
   const [tooltip, setTooltip] = useState(null)
 
-  const [range, setRange] = useState({
-    min: 0,
-    max: 0,
-  })
+  // ========================================
+  // 1. RANGO DE PROYECTOS (LEYENDA)
+  // ========================================
+
+  const range = useMemo(() => {
+    if (!Array.isArray(data)) {
+      return { min: 0, max: 0 }
+    }
+
+    const projectsByRegional = getProjectsByRegional(data)
+
+    const normalizedCounts = new Map(
+      Object.entries(projectsByRegional).map(
+        ([name, count]) => [
+          normalizeRegionalName(name),
+          count,
+        ]
+      )
+    )
+
+    const positiveValues = regionalesData.features
+      .map(
+        (feature) =>
+          normalizedCounts.get(
+            normalizeRegionalName(
+              feature.properties.NOMBRE_DRE
+            )
+          ) ?? 0
+      )
+      .filter((value) => value > 0)
+
+    return {
+      min: d3.min(positiveValues) ?? 0,
+      max: d3.max(positiveValues) ?? 0,
+    }
+  }, [data])
 
   // ========================================
-  // 1. MEDIR EL CONTENEDOR
+  // 2. MEDIR EL CONTENEDOR
   // ========================================
 
   useEffect(() => {
@@ -40,13 +120,11 @@ function RegionalMap({ data, theme = 'dark' }) {
 
     if (!viewport) return
 
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0]
+    const measure = () => {
+      const rect = viewport.getBoundingClientRect()
 
-      if (!entry) return
-
-      const width = Math.round(entry.contentRect.width)
-      const height = Math.round(entry.contentRect.height)
+      const width = Math.round(rect.width)
+      const height = Math.round(rect.height)
 
       if (width <= 0 || height <= 0) return
 
@@ -60,7 +138,13 @@ function RegionalMap({ data, theme = 'dark' }) {
 
         return { width, height }
       })
-    })
+    }
+
+    // Medición inicial para evitar que el SVG espere al primer
+    // callback del ResizeObserver.
+    measure()
+
+    const observer = new ResizeObserver(measure)
 
     observer.observe(viewport)
 
@@ -115,21 +199,34 @@ function RegionalMap({ data, theme = 'dark' }) {
     // 4. PROYECCIÓN RESPONSIVA
     // ========================================
 
-    const isMobile = window.innerWidth <= 600
+    // El SVG ocupa exactamente el viewport medido. La proyección
+    // se ajusta a ese mismo espacio (1 unidad SVG = 1 px CSS), así
+    // que D3 y CSS no aplican dos escalados distintos.
+    const fitWidth = Math.min(width, MAX_FIT_WIDTH)
+    const fitHeight = Math.min(height, MAX_FIT_HEIGHT)
 
-    const padding = isMobile ? 12 : 20
+    const offsetX = (width - fitWidth) / 2
+    const offsetY = (height - fitHeight) / 2
+
+    const padding = Math.max(
+      12,
+      Math.min(26, Math.min(fitWidth, fitHeight) * 0.03)
+    )
 
     const projection = d3
       .geoMercator()
       .fitExtent(
         [
-          [padding, padding],
           [
-            Math.max(padding + 1, width - padding),
-            Math.max(padding + 1, height - padding),
+            offsetX + padding,
+            offsetY + padding,
+          ],
+          [
+            offsetX + fitWidth - padding,
+            offsetY + fitHeight - padding,
           ],
         ],
-        regionalesData
+        fitData
       )
 
     const path = d3
@@ -140,34 +237,10 @@ function RegionalMap({ data, theme = 'dark' }) {
     // 5. VALORES
     // ========================================
 
-    const values = regionalesData.features.map(
-      (feature) =>
-        getProjectCount(feature.properties.NOMBRE_DRE)
-    )
-
-    const positiveValues = values.filter(
-      (value) => value > 0
-    )
-
-    const minProjects =
-      d3.min(positiveValues) ?? 0
-
-    const maxProjects =
-      d3.max(positiveValues) ?? 0
-
-    setRange((previous) => {
-      if (
-        previous.min === minProjects &&
-        previous.max === maxProjects
-      ) {
-        return previous
-      }
-
-      return {
-        min: minProjects,
-        max: maxProjects,
-      }
-    })
+    const {
+      min: minProjects,
+      max: maxProjects,
+    } = range
 
     // ========================================
     // 6. ESCALA DE COLOR
@@ -285,7 +358,7 @@ function RegionalMap({ data, theme = 'dark' }) {
     return () => {
       svg.selectAll('*').remove()
     }
-  }, [data, theme, dimensions])
+  }, [data, theme, dimensions.width, dimensions.height, range.min, range.max])
 
   return (
     <div className="regional-map">
