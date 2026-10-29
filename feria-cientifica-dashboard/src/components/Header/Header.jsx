@@ -1,3 +1,4 @@
+
 import logoClaro from '../../assets/imgs/Logo-14cm-Blanco.png'
 import logoOscuro from '../../assets/imgs/Logo-14cm-Full-Color.png'
 
@@ -7,6 +8,7 @@ function Header({
   children,
   theme = 'dark',
   onToggleTheme,
+  year,
 }) {
   const isDark = theme === 'dark'
 
@@ -29,7 +31,7 @@ function Header({
           </h1>
 
           <p className="header__subtitle">
-            Visualización interactiva · FNCT 2025
+            Visualización interactiva · FNCT {year ?? '—'}
           </p>
         </div>
 

@@ -1,5 +1,5 @@
 
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import * as d3 from 'd3'
 
@@ -7,8 +7,73 @@ import './AITreemap.css'
 
 function AITreemap({ data }) {
   const svgRef = useRef(null)
+  const containerRef = useRef(null)
+  const tooltipRef = useRef(null)
   const clipPrefix = useId().replace(/:/g, '')
   const [tooltip, setTooltip] = useState(null)
+  const [size, setSize] = useState({ width: 0, height: 0 })
+
+  // Posicionar el tooltip usando sus dimensiones reales, antes de pintar.
+  // Así se muestra arriba del cursor cuando no cabe debajo.
+  useLayoutEffect(() => {
+    if (!tooltip || !tooltipRef.current) return
+
+    const element = tooltipRef.current
+    const rect = element.getBoundingClientRect()
+    const gap = 14
+    const padding = 12
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+
+    const x = Math.max(
+      padding,
+      Math.min(
+        tooltip.clientX + gap + rect.width <= viewportWidth - padding
+          ? tooltip.clientX + gap
+          : tooltip.clientX - rect.width - gap,
+        viewportWidth - rect.width - padding
+      )
+    )
+
+    const below = tooltip.clientY + gap
+    const above = tooltip.clientY - rect.height - gap
+    const y = below + rect.height <= viewportHeight - padding
+      ? below
+      : above >= padding
+        ? above
+        : Math.max(padding, Math.min(above, viewportHeight - rect.height - padding))
+
+    element.style.left = `${x}px`
+    element.style.top = `${y}px`
+    element.style.visibility = 'visible'
+  }, [tooltip])
+
+  // Medir el contenedor real para dibujar el treemap a escala 1:1.
+  useEffect(() => {
+    const element = containerRef.current
+    if (!element) return
+
+    const measure = () => {
+      const rect = element.getBoundingClientRect()
+      const width = Math.round(rect.width)
+      const height = Math.round(rect.height)
+
+      if (width <= 0 || height <= 0) return
+
+      setSize((previous) =>
+        previous.width === width && previous.height === height
+          ? previous
+          : { width, height }
+      )
+    }
+
+    measure()
+
+    const observer = new ResizeObserver(measure)
+    observer.observe(element)
+
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const svg = d3.select(svgRef.current)
@@ -19,12 +84,16 @@ function AITreemap({ data }) {
       return
     }
 
+    if (!size.width || !size.height) {
+      return
+    }
+
     // ========================================
-    // 1. DIMENSIONES ORIGINALES
+    // 1. DIMENSIONES DINÁMICAS
     // ========================================
 
-    const width = 600
-    const height = 360
+    const width = size.width
+    const height = size.height
 
     // ========================================
     // 2. FILTRAR PROYECTOS CON IA
@@ -126,48 +195,12 @@ function AITreemap({ data }) {
     // ========================================
 
     const updateTooltip = (event, d) => {
-      const tooltipWidth = Math.min(
-        260,
-        window.innerWidth - 24
-      )
-
-      const tooltipHeight = 115
-      const offset = 16
-      const padding = 12
-
-      let x = event.clientX + offset
-      let y = event.clientY - 35
-
-      if (
-        x + tooltipWidth >
-        window.innerWidth - padding
-      ) {
-        x = event.clientX - tooltipWidth - offset
-      }
-
-      x = Math.max(
-        padding,
-        Math.min(
-          x,
-          window.innerWidth - tooltipWidth - padding
-        )
-      )
-
-      y = Math.max(
-        padding,
-        Math.min(
-          y,
-          window.innerHeight - tooltipHeight - padding
-        )
-      )
-
       setTooltip({
         modalidad: d.data.modalidad,
         cantidad: d.data.cantidad,
-        porcentaje:
-          (d.data.cantidad / proyectosIA.length) * 100,
-        x,
-        y,
+        porcentaje: (d.data.cantidad / proyectosIA.length) * 100,
+        clientX: event.clientX,
+        clientY: event.clientY,
       })
     }
 
@@ -230,11 +263,28 @@ function AITreemap({ data }) {
         .append('g')
         .attr('clip-path', `url(#${clipId})`)
 
+      const compact =
+        rectangleWidth < 70 || rectangleHeight < 52
+
+      // Tipografía proporcional al bloque, con mínimos legibles.
+      const valueFontSize = compact
+        ? Math.max(
+            10,
+            Math.min(
+              18,
+              Math.min(rectangleWidth / 7, rectangleHeight / 5)
+            )
+          )
+        : Math.max(
+            13,
+            Math.min(
+              24,
+              Math.min(rectangleWidth / 6, rectangleHeight / 5)
+            )
+          )
+
       // Bloques pequeños: solo cantidad
-      if (
-        rectangleWidth < 75 ||
-        rectangleHeight < 55
-      ) {
+      if (compact) {
         content
           .append('text')
           .attr(
@@ -245,21 +295,34 @@ function AITreemap({ data }) {
           .attr('y', rectangleHeight / 2)
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'middle')
+          .style('font-size', `${valueFontSize}px`)
           .text(cantidad)
 
         return
       }
 
-      const padding = 10
-      const fontSize = 14
-      const lineHeight = 16
+      const labelFontSize = Math.max(
+        10,
+        Math.min(
+          17,
+          Math.min(rectangleWidth / 11, rectangleHeight / 7)
+        )
+      )
+
+      const padding = Math.max(
+        6,
+        Math.min(12, rectangleWidth * 0.06)
+      )
+      const lineHeight = labelFontSize * 1.15
 
       const availableTextWidth =
         rectangleWidth - padding * 2
 
       // Reservar espacio para el número inferior
       const availableTextHeight =
-        rectangleHeight - padding * 2 - 30
+        rectangleHeight -
+        padding * 2 -
+        valueFontSize * 1.8
 
       const maxLines = Math.max(
         1,
@@ -275,7 +338,8 @@ function AITreemap({ data }) {
         .append('text')
         .attr('class', 'treemap-label')
         .attr('x', padding)
-        .attr('y', padding + fontSize)
+        .attr('y', padding + labelFontSize)
+        .style('font-size', `${labelFontSize}px`)
 
       // Medir el ancho real del texto SVG
       const measure = (value) => {
@@ -348,7 +412,8 @@ function AITreemap({ data }) {
         .append('text')
         .attr('class', 'treemap-value')
         .attr('x', padding)
-        .attr('y', rectangleHeight - 10)
+        .attr('y', rectangleHeight - padding)
+        .style('font-size', `${valueFontSize}px`)
         .text(cantidad)
     })
 
@@ -356,10 +421,10 @@ function AITreemap({ data }) {
       svg.selectAll('*').remove()
     }
 
-  }, [data])
+  }, [data, size])
 
   return (
-    <div className="treemap">
+    <div ref={containerRef} className="treemap">
 
       <svg
         ref={svgRef}
@@ -370,10 +435,12 @@ function AITreemap({ data }) {
 
       {tooltip && createPortal(
         <div
+          ref={tooltipRef}
           className="treemap-tooltip"
           style={{
-            left: tooltip.x,
-            top: tooltip.y,
+            left: 0,
+            top: 0,
+            visibility: 'hidden',
           }}
         >
           <strong>{tooltip.modalidad}</strong>

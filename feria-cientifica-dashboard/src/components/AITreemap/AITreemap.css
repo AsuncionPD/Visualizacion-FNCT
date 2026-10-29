@@ -1,53 +1,33 @@
-
 /* ========================================
-   CONTENEDOR
+   CONTENEDOR Y SVG
 ======================================== */
-
 .treemap {
   position: relative;
-
   width: 100%;
   height: 100%;
-
   min-width: 0;
   min-height: 0;
-
   overflow: visible;
 }
 
-/* ========================================
-   SVG
-======================================== */
-
 .treemap__svg {
   display: block;
-
   width: 100%;
   height: 100%;
-
   min-width: 0;
   min-height: 0;
-
   overflow: visible;
 }
 
 /* ========================================
    RECTÁNGULOS
 ======================================== */
-
-.treemap-node {
-  cursor: pointer;
-}
-
+.treemap-node { cursor: pointer; }
 .treemap-rect {
   stroke: var(--bg-card, #0b2a50);
   stroke-width: 1.5;
-
-  transition:
-    opacity 0.2s ease,
-    stroke 0.2s ease;
+  transition: opacity 0.2s ease, stroke 0.2s ease;
 }
-
 .treemap-node:hover .treemap-rect {
   stroke: var(--text-primary, #ffffff);
   stroke-width: 2;
@@ -55,124 +35,71 @@
 }
 
 /* ========================================
-   ETIQUETAS
+   ETIQUETAS Y CANTIDADES
 ======================================== */
-
 .treemap-label {
   fill: #ffffff;
-
   font-size: 14px;
   font-weight: 700;
-
   paint-order: stroke;
   stroke: rgba(105, 43, 5, 0.35);
   stroke-width: 1.5px;
   stroke-linejoin: round;
-
   pointer-events: none;
 }
-
-/* ========================================
-   CANTIDADES
-======================================== */
-
 .treemap-value {
   fill: #ffffff;
-
   font-size: 22px;
   font-weight: 700;
-
   paint-order: stroke;
   stroke: rgba(105, 43, 5, 0.4);
   stroke-width: 1.5px;
   stroke-linejoin: round;
-
   pointer-events: none;
 }
-
-.treemap-value--small {
-  font-size: 16px;
-}
-
-/* ========================================
-   SIN DATOS
-======================================== */
-
+.treemap-value--small { font-size: 16px; }
 .treemap-empty {
   fill: var(--text-secondary, #c5d9ed);
-
   font-size: 17px;
   font-weight: 500;
 }
 
 /* ========================================
-   TOOLTIP
+   TOOLTIP: POSICIÓN CALCULADA EN JSX
 ======================================== */
-
 .treemap-tooltip {
   position: fixed;
-
   z-index: 99999;
-
   box-sizing: border-box;
-
   width: max-content;
   min-width: 190px;
   max-width: min(260px, calc(100vw - 24px));
-
   display: flex;
   flex-direction: column;
-
   gap: 7px;
-
   padding: 13px 15px;
-
   color: var(--tooltip-text, #ffffff);
   background: var(--tooltip-bg, #082449);
-
   border: 1px solid var(--color-accent, #ff891f);
   border-radius: 10px;
-
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.3);
-
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   font-size: 13px;
-
   pointer-events: none;
-
   overflow-wrap: anywhere;
 }
-
-/* ========================================
-   TÍTULO DEL TOOLTIP
-======================================== */
-
 .treemap-tooltip strong {
   color: var(--text-primary, #ffffff);
-
   font-size: 14px;
   font-weight: 700;
   line-height: 1.35;
 }
-
-/* ========================================
-   DESCRIPCIÓN
-======================================== */
-
 .treemap-tooltip span {
   color: var(--text-secondary, #c5d9ed);
-
   font-size: 12px;
   line-height: 1.4;
 }
-
-/* ========================================
-   PORCENTAJE
-======================================== */
-
 .treemap-tooltip .treemap-tooltip__percentage {
   color: var(--color-accent, #ff891f);
-
   font-size: 12px;
   font-weight: 700;
 }
@@ -180,103 +107,47 @@
 /* ========================================
    MODO CLARO
 ======================================== */
-
 [data-theme="light"] .treemap-rect {
   stroke: #ffffff;
   stroke-width: 2;
 }
-
 [data-theme="light"] .treemap-node:hover .treemap-rect {
   stroke: #082449;
   stroke-width: 2;
 }
-
 [data-theme="light"] .treemap-tooltip {
   background: #ffffff;
   color: #082449;
-
   border-color: #f3b27b;
-
-  box-shadow:
-    0 8px 24px rgba(8, 36, 73, 0.16);
+  box-shadow: 0 8px 24px rgba(8, 36, 73, 0.16);
 }
-
-[data-theme="light"] .treemap-tooltip strong {
-  color: #082449;
-}
-
-[data-theme="light"] .treemap-tooltip span {
-  color: #466481;
-}
-
-[data-theme="light"]
-.treemap-tooltip .treemap-tooltip__percentage {
-  color: #ff891f;
-}
+[data-theme="light"] .treemap-tooltip strong { color: #082449; }
+[data-theme="light"] .treemap-tooltip span { color: #466481; }
+[data-theme="light"] .treemap-tooltip .treemap-tooltip__percentage { color: #ff891f; }
 
 /* ========================================
    RESPONSIVE
 ======================================== */
-
 @media (max-width: 1100px) {
-  .treemap {
-    height: 100%;
-    min-height: 200px;
-  }
-
-  .treemap__svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  .treemap-label {
-    font-size: clamp(9px, 0.8vw, 12px);
-  }
-
-  .treemap-value {
-    font-size: clamp(12px, 1vw, 18px);
-  }
-
-  .treemap-value--small {
-    font-size: clamp(10px, 0.9vw, 14px);
-  }
+  .treemap { height: 100%; min-height: 200px; }
+  .treemap__svg { width: 100%; height: 100%; }
+  .treemap-label { font-size: clamp(9px, 0.8vw, 12px); }
+  .treemap-value { font-size: clamp(12px, 1vw, 18px); }
+  .treemap-value--small { font-size: clamp(10px, 0.9vw, 14px); }
 }
-
 @media (max-width: 768px) {
-  .treemap {
-    min-height: 220px;
-  }
-
-  .treemap-label {
-    font-size: clamp(8px, 0.9vw, 11px);
-  }
-
-  .treemap-value {
-    font-size: clamp(11px, 1vw, 16px);
-  }
-
-  .treemap-value--small {
-    font-size: clamp(9px, 0.9vw, 12px);
-  }
+  .treemap { min-height: 220px; }
+  .treemap-label { font-size: clamp(8px, 0.9vw, 11px); }
+  .treemap-value { font-size: clamp(11px, 1vw, 16px); }
+  .treemap-value--small { font-size: clamp(9px, 0.9vw, 12px); }
 }
-
 @media (max-width: 600px) {
   .treemap-tooltip {
     min-width: 150px;
     max-width: min(240px, calc(100vw - 24px));
-
     padding: 10px 12px;
   }
-
-  .treemap-label {
-    font-size: clamp(9px, 2vw, 12px);
-  }
-
-  .treemap-value {
-    font-size: clamp(12px, 3vw, 18px);
-  }
-
-  .treemap-value--small {
-    font-size: clamp(11px, 2.6vw, 14px);
-  }
+  .treemap-label { font-size: clamp(9px, 2vw, 12px); }
+  .treemap-value { font-size: clamp(12px, 3vw, 18px); }
+  .treemap-value--small { font-size: clamp(11px, 2.6vw, 14px); }
 }

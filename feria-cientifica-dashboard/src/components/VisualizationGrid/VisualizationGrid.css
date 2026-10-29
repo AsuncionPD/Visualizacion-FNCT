@@ -347,7 +347,7 @@ html[data-theme="light"] .chart-empty p {
     min-height: 320px;
   }
 
-  /* Permitir que los dos heatmaps crezcan */
+  /* Permitir crecimiento vertical para los heatmaps */
   .visualization-grid__heatmap {
     height: auto;
     min-height: 0;

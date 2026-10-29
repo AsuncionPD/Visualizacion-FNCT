@@ -8,7 +8,8 @@ import ActiveFilters from './components/ActiveFilters/ActiveFilters.jsx'
 import KpiSection from './components/KpiSection/KpiSection.jsx'
 import VisualizationGrid from './components/VisualizationGrid/VisualizationGrid.jsx'
 
-import proyectosUrl from './data/proyectos.csv?url'
+// Archivo CSV activo
+import proyectosUrl from './data/proyectos_FNCT_2026.csv?url'
 
 import './App.css'
 
@@ -86,6 +87,35 @@ function App() {
         )
       })
   }, [])
+
+  // ==========================================
+  // OBTENER AÑO DE LA EDICIÓN
+  // ==========================================
+
+  const fnctYear = useMemo(() => {
+    const years = Array.from(
+      new Set(
+        data
+          .map((row) =>
+            String(row['Año FNCT'] ?? '').trim()
+          )
+          .filter((value) => /^\d{4}$/.test(value))
+      )
+    )
+
+    if (years.length === 1) {
+      return years[0]
+    }
+
+    if (years.length > 1) {
+      console.warn(
+        'El CSV contiene diferentes años FNCT:',
+        years
+      )
+    }
+
+    return null
+  }, [data])
 
   // ==========================================
   // OPCIONES DE DIRECCIÓN REGIONAL
@@ -206,6 +236,7 @@ function App() {
       <Header
         theme={theme}
         onToggleTheme={toggleTheme}
+        year={fnctYear}
       >
         <Filters
           regionalOptions={regionalOptions}

@@ -283,13 +283,13 @@ function AreaModalityHeatmap({ data, theme = 'dark' }) {
 
     modalityGroups.forEach((groupModalities, index) => {
       const width = isMobile ? 760 : 1200
-      const height = 360
+      const height = 380
 
       const margin = {
         top: 65,
         right: 15,
         bottom: 15,
-        left: isMobile ? 190 : 190,
+        left: isMobile ? 190 : 150,
       }
 
       const innerWidth =

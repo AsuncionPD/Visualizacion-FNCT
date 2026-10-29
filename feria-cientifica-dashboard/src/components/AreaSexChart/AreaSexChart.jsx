@@ -309,11 +309,7 @@ function AreaSexChart({ data }) {
         setTooltip(null)
       })
 
-    // ==========================================
-    // 12. NOMBRES DE ÁREAS
-    // ==========================================
-
-    
+   
     // ==========================================
     // 12. NOMBRES DE ÁREAS EN DOS LÍNEAS
     // ==========================================
@@ -398,6 +394,7 @@ function AreaSexChart({ data }) {
 
     return () => {
       svg.selectAll('*').remove()
+      
     }
 
   }, [data])
