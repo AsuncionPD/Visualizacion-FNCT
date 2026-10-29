@@ -1,361 +1,67 @@
-
-/* ========================================
-   GRID PRINCIPAL
-======================================== */
-
+/* GRID PRINCIPAL */
 .visualization-grid {
-  width: 100%;
-  height: 100%;
-
-  min-width: 0;
-  min-height: 0;
-
-  display: grid;
-
-  grid-template-columns:
-    minmax(0, 0.7fr)
-    minmax(0, 1fr);
-
-  gap: 12px;
+  width: 100%; height: 100%; min-width: 0; min-height: 0;
+  display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1fr); gap: 12px;
 }
-
-/* ========================================
-   TARJETAS
-======================================== */
-
+/* TARJETAS */
 .chart-card {
-  min-width: 0;
-  min-height: 0;
-
-  display: flex;
-  flex-direction: column;
-
-  overflow: hidden;
-
+  min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden;
   background: var(--bg-card, #0b2a50);
-
   border: 1px solid var(--border-color, #27557d);
   border-radius: var(--radius-card, 14px);
-
-  transition:
-    background-color 0.25s ease,
-    border-color 0.25s ease,
-    color 0.25s ease;
+  transition: background-color .25s ease, border-color .25s ease, color .25s ease;
 }
-
-/* ========================================
-   ENCABEZADOS
-======================================== */
-
-.chart-card__header {
-  flex-shrink: 0;
-  min-width: 0;
-
-  padding: 12px 14px 5px;
-}
-
-/* ========================================
-   FILA: ÍCONO + TÍTULO
-======================================== */
-
-.chart-card__title-row {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  min-width: 0;
-}
-
+/* ENCABEZADOS */
+.chart-card__header { flex-shrink: 0; min-width: 0; padding: 12px 14px 5px; }
+.chart-card__title-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .chart-card__title-row h2 {
-  margin: 0;
-
-  color: var(--text-primary, #ffffff);
-
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.25;
+  margin: 0; min-width: 0; color: var(--text-primary, #fff);
+  font-size: 15px; font-weight: 700; line-height: 1.25;
 }
-
-/* ========================================
-   ÍCONOS
-======================================== */
-
-.chart-card__heading-icon {
-  width: 25px;
-  height: 25px;
-
-  flex-shrink: 0;
-
-  margin: 0;
-
-  object-fit: contain;
+.chart-card__heading-icon { width: 25px; height: 25px; flex-shrink: 0; margin: 0; object-fit: contain; }
+.chart-card__header p { margin: 4px 0 0; color: var(--text-secondary, #c5d9ed); font-size: 11px; line-height: 1.35; }
+/* BOTÓN DE AMPLIAR */
+.chart-card__expand {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; margin-left: auto; flex-shrink: 0;
+  border: 1px solid transparent; border-radius: 8px;
+  background: transparent; color: var(--text-secondary, #c5d9ed);
+  cursor: pointer;
 }
-
-/* ========================================
-   SUBTÍTULOS
-======================================== */
-
-.chart-card__header p {
-  margin: 4px 0 0;
-
-  color: var(--text-secondary, #c5d9ed);
-
-  font-size: 11px;
-  line-height: 1.35;
-}
-
-/* ========================================
-   CONTENIDO
-======================================== */
-
-.chart-card__content {
-  flex: 1;
-
-  min-width: 0;
-  min-height: 0;
-
-  padding: 5px 10px 10px;
-
-  overflow: visible;
-}
-
-/* ========================================
-   LEYENDAS
-======================================== */
-
-.chart-card_squares {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-
-  gap: 6px 10px;
-
-  margin-top: 6px;
-
-  color: var(--text-secondary, #c5d9ed);
-  font-size: 11px;
-}
-
-.square {
-  display: inline-block;
-
-  width: 10px;
-  height: 10px;
-
-  flex-shrink: 0;
-  border-radius: 3px;
-}
-
-/* ========================================
-   MODO CLARO: LEYENDAS
-======================================== */
-
-[data-theme="light"] .chart-card_squares {
-  color: #466481;
-}
-
-[data-theme="light"] .chart-card_squares .square {
-  border: 1px solid rgba(8, 36, 73, 0.08);
-}
-
-/* ========================================
-   MAPA
-======================================== */
-
-.visualization-grid__map {
-  min-width: 0;
-  min-height: 0;
-  height: 100%;
-}
-
-/* ========================================
-   COLUMNA DERECHA
-======================================== */
-
-.visualization-grid__right {
-  min-width: 0;
-  min-height: 0;
-
-  display: grid;
-
-  grid-template-rows:
-    minmax(0, 1.05fr)
-    minmax(0, 0.95fr);
-
-  gap: 10px;
-}
-
-/* ========================================
-   HEATMAP
-======================================== */
-
-.visualization-grid__heatmap {
-  min-width: 0;
-  min-height: 0;
-  height: 100%;
-}
-
-/* ========================================
-   PARTE INFERIOR
-======================================== */
-
-.visualization-grid__bottom {
-  min-width: 0;
-  min-height: 0;
-
-  display: grid;
-
-  grid-template-columns:
-    minmax(0, 1fr)
-    minmax(0, 1fr);
-
-  gap: 10px;
-}
-
-/* ========================================
-   ÁREA × SEXO
-======================================== */
-
-.visualization-grid__sex {
-  min-width: 0;
-  min-height: 0;
-}
-
-/* ========================================
-   IA × MODALIDAD
-======================================== */
-
-.visualization-grid__ai {
-  min-width: 0;
-  min-height: 0;
-}
-
-/* ========================================
-   ESTADO VACÍO
-======================================== */
-
-.chart-empty {
-  width: 100%;
-  height: 100%;
-  min-height: 120px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 9px;
-  padding: 20px;
-
-  color: var(--text-primary, #ffffff);
-  text-align: center;
-}
-
-.chart-empty__icon {
-  width: 36px;
-  height: 36px;
-
-  flex-shrink: 0;
-
-  color: var(--text-muted, #9cb8d1);
-  opacity: 0.85;
-}
-
-.chart-empty strong {
-  color: var(--text-primary, #ffffff);
-
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.4;
-}
-
-.chart-empty p {
-  max-width: 290px;
-  margin: 0;
-
-  color: var(--text-secondary, #c5d9ed);
-
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-/* ========================================
-   ESTADO VACÍO - MODO CLARO
-======================================== */
-
-html[data-theme="light"] .chart-empty {
-  color: #082449;
-}
-
-html[data-theme="light"] .chart-empty__icon {
-  color: #66829c;
-}
-
-html[data-theme="light"] .chart-empty strong {
-  color: #082449;
-}
-
-html[data-theme="light"] .chart-empty p {
-  color: #466481;
-}
-
-html[data-theme="light"] .chart-empty p {
-  color: #466481;
-}
-
-/* ========================================
-   RESPONSIVE: TABLETS
-======================================== */
-
+.chart-card__expand:hover { background: var(--border-color, #27557d); color: var(--text-primary, #fff); }
+.chart-card__expand:focus-visible { outline: 2px solid var(--color-secondary, #13bdf0); outline-offset: 2px; }
+/* CONTENIDO */
+.chart-card__content { flex: 1; min-width: 0; min-height: 0; padding: 5px 10px 10px; overflow: visible; }
+/* LEYENDAS */
+.chart-card_squares { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin-top: 6px; color: var(--text-secondary, #c5d9ed); font-size: 11px; }
+.square { display: inline-block; width: 10px; height: 10px; flex-shrink: 0; border-radius: 3px; }
+[data-theme="light"] .chart-card_squares { color: #466481; }
+[data-theme="light"] .chart-card_squares .square { border: 1px solid rgba(8,36,73,.08); }
+/* DISTRIBUCIÓN */
+.visualization-grid__map { min-width: 0; min-height: 0; height: 100%; }
+.visualization-grid__right { min-width: 0; min-height: 0; display: grid; grid-template-rows: minmax(0,1.05fr) minmax(0,.95fr); gap: 10px; }
+.visualization-grid__heatmap { min-width: 0; min-height: 0; height: 100%; }
+.visualization-grid__bottom { min-width: 0; min-height: 0; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+.visualization-grid__sex, .visualization-grid__ai { min-width: 0; min-height: 0; }
+/* SIN DATOS */
+.chart-empty { width: 100%; height: 100%; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; padding: 20px; color: var(--text-primary,#fff); text-align: center; }
+.chart-empty__icon { width: 36px; height: 36px; flex-shrink: 0; color: var(--text-muted,#9cb8d1); opacity: .85; }
+.chart-empty strong { color: var(--text-primary,#fff); font-size: 14px; font-weight: 700; line-height: 1.4; }
+.chart-empty p { max-width: 290px; margin: 0; color: var(--text-secondary,#c5d9ed); font-size: 12px; line-height: 1.5; }
+html[data-theme="light"] .chart-empty { color: #082449; }
+html[data-theme="light"] .chart-empty__icon { color: #66829c; }
+html[data-theme="light"] .chart-empty strong { color: #082449; }
+html[data-theme="light"] .chart-empty p { color: #466481; }
 @media (max-width: 1100px) {
-  .visualization-grid {
-    height: auto;
-    grid-template-columns: 1fr;
-    margin-top: 12px;
-    flex: 1 0 auto;
-  }
-
-  .visualization-grid__map {
-    min-height: clamp(430px, 92vw, 920px);
-  }
-
-  .visualization-grid__right {
-    grid-template-rows: auto auto;
-  }
-
-  .visualization-grid__heatmap {
-    min-height: 430px;
-  }
-
-  .visualization-grid__bottom {
-    min-height: 350px;
-  }
+  .visualization-grid { height: auto; grid-template-columns: 1fr; margin-top: 12px; flex: 1 0 auto; }
+  .visualization-grid__map { min-height: clamp(430px,92vw,920px); }
+  .visualization-grid__right { grid-template-rows: auto auto; }
+  .visualization-grid__heatmap { min-height: 430px; }
+  .visualization-grid__bottom { min-height: 350px; }
 }
-
-/* ========================================
-   RESPONSIVE: CELULARES
-======================================== */
-
 @media (max-width: 700px) {
-  .visualization-grid__bottom {
-    grid-template-columns: 1fr;
-  }
-
-  .visualization-grid__sex,
-  .visualization-grid__ai {
-    min-height: 320px;
-  }
-
-  /* Permitir crecimiento vertical para los heatmaps */
-  .visualization-grid__heatmap {
-    height: auto;
-    min-height: 0;
-  }
-
-  .visualization-grid__heatmap .chart-card__content {
-    flex: 0 0 auto;
-    min-height: 0;
-    overflow: visible;
-  }
+  .visualization-grid__bottom { grid-template-columns: 1fr; }
+  .visualization-grid__sex, .visualization-grid__ai { min-height: 320px; }
+  .visualization-grid__heatmap { height: auto; min-height: 0; }
+  .visualization-grid__heatmap .chart-card__content { flex: 0 0 auto; min-height: 0; overflow: visible; }
 }

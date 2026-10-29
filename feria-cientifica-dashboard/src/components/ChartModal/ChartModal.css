@@ -1,0 +1,165 @@
+.chart-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2vh 2vw;
+  background: rgba(2, 12, 27, 0.78);
+  backdrop-filter: blur(5px);
+}
+.chart-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(1500px, 96vw);
+  height: min(940px, 96dvh);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color, #27557d);
+  border-radius: 16px;
+  background: var(--bg-card, #0b2a50);
+  color: var(--text-primary, #fff);
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.45);
+}
+.chart-modal__header {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 18px 9px;
+  border-bottom: 1px solid var(--border-color, #27557d);
+}
+.chart-modal__heading { min-width: 0; }
+.chart-modal__heading h2 { margin: 0; font-size: 19px; line-height: 1.35; }
+.chart-modal__heading p { margin: 4px 0 0; color: var(--text-secondary, #c5d9ed); font-size: 12px; line-height: 1.4; }
+.chart-modal__close {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border-color, #27557d);
+  border-radius: 9px;
+  background: transparent;
+  color: inherit;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+.chart-modal__toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 18px;
+}
+.chart-modal__toolbar button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--border-color, #27557d);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.chart-modal__toolbar button:disabled { opacity: .4; cursor: not-allowed; }
+.chart-modal__toolbar output { min-width: 48px; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
+.chart-modal__toolbar button:not(:disabled):hover,
+.chart-modal__close:hover { background: var(--border-color, #27557d); }
+.chart-modal__viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  margin: 0 12px 12px;
+  border-radius: 8px;
+}
+.chart-modal__transform {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  transform-origin: center center;
+  will-change: transform;
+}
+.chart-modal__chart { width: 100%; height: 100%; min-width: 0; min-height: 0; }
+.chart-modal__chart > * { width: 100%; height: 100%; min-width: 0; min-height: 0; }
+.chart-modal__chart .area-modality-heatmap__blocks { overflow: auto; }
+.chart-modal__chart .area-modality-heatmap { min-height: 0; }
+.chart-modal__close:focus-visible,
+.chart-modal__toolbar button:focus-visible { outline: 2px solid var(--color-secondary, #13bdf0); outline-offset: 2px; }
+@media (max-width: 700px) {
+  .chart-modal__backdrop { padding: 0; }
+  .chart-modal { width: 100vw; height: 100dvh; border: 0; border-radius: 0; }
+  .chart-modal__header { padding: 12px 14px 8px; }
+  .chart-modal__heading h2 { font-size: 16px; }
+  .chart-modal__toolbar { padding: 7px 14px; }
+  .chart-modal__viewport { margin: 0 8px 8px; }
+  .chart-modal__chart .area-modality-heatmap { height: auto; }
+  .chart-modal__chart .area-modality-heatmap__blocks { height: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chart-modal__transform { will-change: auto; }
+}
+
+/* ========================================
+   TOOLTIPS DE LOS CUATRO GRÁFICOS
+   ========================================
+   Los gráficos crean sus tooltips con createPortal(..., document.body).
+   Por eso NO son descendientes de .chart-modal y su z-index original
+   (99999) los deja detrás del backdrop (100000).
+   Se corrige la capa sin modificar D3, SVG, colores ni datos.
+*/
+.regional-map__tooltip,
+.heatmap-tooltip,
+.area-sex-tooltip,
+.treemap-tooltip {
+  z-index: 100002 !important;
+  pointer-events: none;
+}
+
+/* ========================================
+   LEYENDAS DEL MODAL
+======================================== */
+.chart-modal__legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 9px;
+  color: var(--text-secondary, #c5d9ed);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.chart-modal__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chart-modal__legend-swatch {
+  display: inline-block;
+  flex: 0 0 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+html[data-theme="light"] {
+  --modal-heatmap-min: #edf8ff;
+}
+html[data-theme="light"] .chart-modal__legend {
+  color: #466481;
+}
+html[data-theme="light"] .chart-modal__legend-swatch {
+  border: 1px solid rgba(8, 36, 73, 0.08);
+}
+@media (max-width: 700px) {
+  .chart-modal__legend { gap: 5px 10px; font-size: 10px; }
+}
