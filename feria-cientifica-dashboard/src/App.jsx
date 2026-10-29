@@ -7,6 +7,7 @@ import Filters from './components/Filters/Filters.jsx'
 import ActiveFilters from './components/ActiveFilters/ActiveFilters.jsx'
 import KpiSection from './components/KpiSection/KpiSection.jsx'
 import VisualizationGrid from './components/VisualizationGrid/VisualizationGrid.jsx'
+import Footer from './components/Footer/Footer.jsx'
 
 // Archivo CSV activo
 import proyectosUrl from './data/proyectos_FNCT_2026.csv?url'
@@ -279,6 +280,8 @@ function App() {
         />
 
       </main>
+
+      <Footer />
 
     </div>
   )
