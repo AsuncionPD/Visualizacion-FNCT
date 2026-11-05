@@ -265,7 +265,7 @@ export default function AreaModalityBubbleMatrix({ data, theme = 'dark', interac
                 textAnchor="end"
                 fontSize={areaFont}
                 fill={textColor}
-                fontWeight="600"
+                fontWeight="700"
               >
                 <title>{area}</title>
                 {lines.map((t, i) => <tspan key={i} x={left - 9} dy={i ? areaLineHeight : 0}>{t}</tspan>)}
@@ -322,7 +322,34 @@ export default function AreaModalityBubbleMatrix({ data, theme = 'dark', interac
       </svg>
     </div>
     {tooltip && createPortal(<div className="bubble-matrix__tooltip" ref={tooltipRef} role="status" style={{ left: 0, top: 0, visibility: 'hidden', borderColor: tooltip.color }}>
-      <strong>{tooltip.area}</strong><span>{tooltip.modality}</span><span>{tooltip.category}</span><b>{tooltip.count} {tooltip.count === 1 ? 'proyecto' : 'proyectos'}</b>
+      <strong>{tooltip.area}</strong>
+
+<span>{tooltip.modality}</span>
+
+<span
+  style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  }}
+>
+  <span
+    aria-hidden="true"
+    style={{
+      width: '10px',
+      height: '10px',
+      minWidth: '10px',
+      borderRadius: '50%',
+      backgroundColor: tooltip.color,
+    }}
+  />
+
+  {tooltip.category}
+</span>
+
+<b>
+  {tooltip.count} {tooltip.count === 1 ? 'proyecto' : 'proyectos'}
+</b>
     </div>, document.body)}
   </div>
 }
