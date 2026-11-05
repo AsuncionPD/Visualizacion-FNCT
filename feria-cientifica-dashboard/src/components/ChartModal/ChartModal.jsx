@@ -6,7 +6,7 @@ const MIN_ZOOM = 1
 const MAX_ZOOM = 3
 const STEP = 0.25
 
-export default function ChartModal({ title, description, children, onClose}) {
+export default function ChartModal({ title, description, children, onClose, disableZoom = false }) {
   const titleId = useId()
   const descriptionId = useId()
   const dialogRef = useRef(null)
@@ -17,7 +17,7 @@ export default function ChartModal({ title, description, children, onClose}) {
   const [offset, setOffset] = useState({ x: 0, y: 0 })
 
   const normalizedTitle = String(title ?? '').toLowerCase()
-  const isHeatmap = normalizedTitle.includes('modalidad') && normalizedTitle.includes('área')
+  const isHeatmap = normalizedTitle.includes('modalidad') && normalizedTitle.includes('área') && !normalizedTitle.includes('categoría')
   const isSexChart = normalizedTitle.includes('sexo')
   const legend = isHeatmap
     ? [
@@ -117,14 +117,14 @@ export default function ChartModal({ title, description, children, onClose}) {
       >
         <header className="chart-modal__header">
           <div className="chart-modal__heading">
-            <h2 id={titleId} style={{ fontSize: '1.5em' }}>{title}</h2>
-            <p id={descriptionId} style={{ fontSize: '1em' }}> {description}</p>
+            <h2 id={titleId}>{title}</h2>
+            <p id={descriptionId}>{description}</p>
             {legend.length > 0 && (
               <div className="chart-modal__legend" aria-label="Leyenda de colores">
                 {legend.map(({ label, color }) => (
                   <span className="chart-modal__legend-item" key={label}>
-                    <span className="chart-modal__legend-swatch" style={{ backgroundColor: color}} aria-hidden="true" />
-                    <span style={{ fontSize: '1.2em' }}>{label}</span>
+                    <span className="chart-modal__legend-swatch" style={{ backgroundColor: color }} aria-hidden="true" />
+                    <span>{label}</span>
                   </span>
                 ))}
               </div>
@@ -132,12 +132,12 @@ export default function ChartModal({ title, description, children, onClose}) {
           </div>
           <button type="button" className="chart-modal__close" onClick={onClose} aria-label="Cerrar visualización ampliada" title="Cerrar (Esc)">×</button>
         </header>
-        <div className="chart-modal__toolbar" aria-label="Controles de ampliación">
+        {!disableZoom && <div className="chart-modal__toolbar" aria-label="Controles de ampliación">
           <button type="button" onClick={() => changeZoom(-STEP)} disabled={zoom <= MIN_ZOOM} aria-label="Alejar">−</button>
           <output aria-live="polite">{Math.round(zoom * 100)}%</output>
           <button type="button" onClick={() => changeZoom(STEP)} disabled={zoom >= MAX_ZOOM} aria-label="Acercar">+</button>
           <button type="button" onClick={reset} disabled={zoom === 1 && offset.x === 0 && offset.y === 0} className="chart-modal__reset">Restablecer</button>
-        </div>
+        </div>}
         <div
           className="chart-modal__viewport"
           ref={viewportRef}

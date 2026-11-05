@@ -1,0 +1,31 @@
+.bubble-matrix{display:flex;flex-direction:column;gap:7px;width:100%;height:100%;min-width:0;min-height:0}
+.bubble-matrix__legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;flex-shrink:0;color:var(--text-secondary,#c5d9ed);font-size:10.5px;line-height:1.3}
+.bubble-matrix__legend-item{display:inline-flex;align-items:center;gap:5px}
+.bubble-matrix__legend-dot{width:9px;height:9px;flex-shrink:0;border-radius:50%}
+.bubble-matrix__size-hint{font-style:italic;opacity:.8}
+.bubble-matrix__canvas{position:relative;flex:1 1 auto;display:flex;min-width:0;min-height:0;width:100%;align-items:stretch;justify-content:stretch;overflow:hidden}
+/* Fuera del flujo para que el viewBox medido no determine la altura del panel. */
+.bubble-matrix__svg{position:absolute;inset:0;display:block;width:100%;height:100%;min-width:0;min-height:0}
+.bubble-matrix--interactive .bubble-matrix__svg{cursor:grab;touch-action:none}
+.bubble-matrix--interactive .bubble-matrix__svg:active{cursor:grabbing}
+.bubble-matrix__toolbar{display:flex;flex-shrink:0;justify-content:flex-end;align-items:center;gap:7px;color:var(--text-secondary,#c5d9ed);font-size:11px}
+.bubble-matrix__toolbar>span{margin-right:auto}
+.bubble-matrix__toolbar button{background:transparent;border:1px solid var(--border-color,#27557d);border-radius:7px;padding:5px 9px;color:var(--text-primary,#fff);cursor:pointer}
+.bubble-matrix__toolbar button:disabled{opacity:.38;cursor:default}
+.bubble-matrix__toolbar output{min-width:44px;text-align:center;font-variant-numeric:tabular-nums}
+.bubble-matrix__tooltip{position:fixed;z-index:100003;pointer-events:none;display:flex;flex-direction:column;gap:6px;width:max-content;max-width:min(315px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-wrap:anywhere;padding:12px 14px;border-radius:10px;background:var(--bg-card,#0b2a50);color:var(--text-primary,#fff);border:1px solid var(--border-color,#27557d);box-shadow:0 10px 32px #0003;font-size:12px}
+.bubble-matrix__tooltip span{color:var(--text-secondary,#c5d9ed)}
+.bubble-matrix__empty{display:grid;place-items:center;height:100%;color:var(--text-secondary,#c5d9ed)}
+html[data-theme='light'] .bubble-matrix__tooltip{background:#fff;color:#082449;border-color:#c7d8e7;box-shadow:0 10px 32px #08244922}
+html[data-theme='light'] .bubble-matrix__tooltip span,html[data-theme='light'] .bubble-matrix__legend{color:#466481}
+html[data-theme='light'] .bubble-matrix__toolbar button{color:#082449}
+@media(max-width:700px){
+  .bubble-matrix__toolbar{flex-wrap:wrap}
+  .bubble-matrix__toolbar>span{flex-basis:100%}
+}
+/* En teléfonos la matriz conserva columnas legibles y se desplaza en horizontal
+   dentro de su propia tarjeta; nunca desborda la página. */
+@media(max-width:560px){
+  .bubble-matrix--preview .bubble-matrix__canvas{overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:thin}
+  .bubble-matrix--preview .bubble-matrix__svg{min-width:540px}
+}

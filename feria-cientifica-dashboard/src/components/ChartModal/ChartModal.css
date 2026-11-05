@@ -92,8 +92,9 @@
 }
 .chart-modal__chart { width: 100%; height: 100%; min-width: 0; min-height: 0; }
 .chart-modal__chart > * { width: 100%; height: 100%; min-width: 0; min-height: 0; }
-.chart-modal__chart .area-modality-heatmap__blocks { overflow: auto; }
-.chart-modal__chart .area-modality-heatmap { min-height: 0; }
+/* La matriz de burbujas usa su propio zoom D3 dentro del modal. */
+.chart-modal__chart .bubble-matrix { min-height: 0; }
+.chart-modal__chart .bubble-matrix__canvas { min-height: 220px; }
 .chart-modal__close:focus-visible,
 .chart-modal__toolbar button:focus-visible { outline: 2px solid var(--color-secondary, #13bdf0); outline-offset: 2px; }
 @media (max-width: 700px) {
@@ -103,8 +104,7 @@
   .chart-modal__heading h2 { font-size: 16px; }
   .chart-modal__toolbar { padding: 7px 14px; }
   .chart-modal__viewport { margin: 0 8px 8px; }
-  .chart-modal__chart .area-modality-heatmap { height: auto; }
-  .chart-modal__chart .area-modality-heatmap__blocks { height: auto; }
+  .chart-modal__chart .bubble-matrix__canvas { min-height: 260px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .chart-modal__transform { will-change: auto; }

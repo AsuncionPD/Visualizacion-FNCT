@@ -2,12 +2,14 @@ import { useCallback, useState } from 'react'
 import AITreemap from '../AITreemap/AITreemap.jsx'
 import RegionalMap from '../RegionalMap/RegionalMap.jsx'
 import AreaSexChart from '../AreaSexChart/AreaSexChart.jsx'
-import AreaModalityHeatMap from '../AreaModalityHeatMap/AreaModalityHeatMap.jsx'
+import AreaModalityBubbleMatrix from '../AreaModalityBubbleMatrix/AreaModalityBubbleMatrix.jsx'
 import ChartModal from '../ChartModal/ChartModal.jsx'
+
 import ubicacionIcon from '../../assets/imgs/ubicacion.png'
 import sexoIcon from '../../assets/imgs/sexo.png'
 import cerebroIcon from '../../assets/imgs/cerebro.png'
 import educacionIcon from '../../assets/imgs/educacion.png'
+
 import './VisualizationGrid.css'
 
 const CHARTS = {
@@ -17,8 +19,8 @@ const CHARTS = {
     icon: ubicacionIcon,
   },
   heatmap: {
-    title: 'Área temática × Modalidad',
-    description: 'Mapa de calor que presenta la cantidad de proyectos por área temática y modalidad educativa. Eje Y: áreas temáticas. Eje X: modalidad educativa.',
+    title: 'Área temática × Modalidad × Categoría',
+    description: 'Matriz de burbujas: eje Y, área temática; eje X, modalidad educativa; color, categoría; tamaño del círculo, cantidad de proyectos.',
     icon: educacionIcon,
   },
   sex: {
@@ -31,6 +33,30 @@ const CHARTS = {
     description: 'Mapa de árbol donde el tamaño de cada rectángulo es proporcional a la cantidad de proyectos que utilizan inteligencia artificial en cada modalidad educativa.',
     icon: cerebroIcon,
   },
+}
+
+// Colores compartidos con AreaModalityBubbleMatrix.jsx.
+const BUBBLE_CATEGORIES = [
+  { full: 'Quehacer científico y tecnológico (Primaria)', short: 'Quehacer científico (Primaria)', color: '#13bdf0' },
+  { full: 'Proyecto de investigación científica', short: 'Investigación científica', color: '#ff891f' },
+  { full: 'Proyecto de investigación y desarrollo tecnológico', short: 'Investigación y desarrollo tecnológico', color: '#9b7bea' },
+  { full: 'Subcategoría sumando experiencias científicas', short: 'Sumando experiencias', color: '#23b889' },
+  { full: 'Demostraciones científicas y tecnológicas', short: 'Demostraciones científicas', color: '#e05b96' },
+]
+
+function BubbleLegend({ data }) {
+  const available = new Set(data.map((row) => String(row['Categoría'] ?? '').trim()))
+  return (
+    <div className="chart-card__category-legend" aria-label="Categorías de proyectos">
+      {BUBBLE_CATEGORIES.filter((item) => available.has(item.full)).map((item) => (
+        <span key={item.full} className="chart-card__category-item" title={item.full}>
+          <span className="chart-card__category-dot" style={{ backgroundColor: item.color }} />
+          <span>{item.short}</span>
+        </span>
+      ))}
+      <span className="chart-card__size-hint">Tamaño del círculo = cantidad de proyectos</span>
+    </div>
+  )
 }
 
 function EmptyChart() {
@@ -54,7 +80,13 @@ function ChartHeader({ icon, title, description, children, onExpand, canExpand }
         <img src={icon} alt="" aria-hidden="true" className="chart-card__heading-icon" />
         <h2>{title}</h2>
         {canExpand && (
-          <button type="button" className="chart-card__expand" onClick={onExpand} aria-label={`Ampliar ${title}`} title="Ampliar visualización">
+          <button
+            type="button"
+            className="chart-card__expand"
+            onClick={onExpand}
+            aria-label={`Ampliar ${title}`}
+            title="Ampliar visualización"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3M21 16v3a2 2 0 0 1-2 2h-3" />
             </svg>
@@ -67,13 +99,18 @@ function ChartHeader({ icon, title, description, children, onExpand, canExpand }
   )
 }
 
-function ChartContent({ chart, data, theme }) {
+function ChartContent({ chart, data, theme, interactiveZoom = false }) {
   switch (chart) {
-    case 'map': return <RegionalMap data={data} theme={theme} />
-    case 'heatmap': return <AreaModalityHeatMap data={data} theme={theme} />
-    case 'sex': return <AreaSexChart data={data} />
-    case 'ai': return <AITreemap data={data} />
-    default: return null
+    case 'map':
+      return <RegionalMap data={data} theme={theme} />
+    case 'heatmap':
+      return <AreaModalityBubbleMatrix data={data} theme={theme} interactiveZoom={interactiveZoom} />
+    case 'sex':
+      return <AreaSexChart data={data} />
+    case 'ai':
+      return <AITreemap data={data} />
+    default:
+      return null
   }
 }
 
@@ -81,7 +118,6 @@ function VisualizationGrid({ data, theme = 'dark' }) {
   const [expanded, setExpanded] = useState(null)
   const closeModal = useCallback(() => setExpanded(null), [])
   const hasData = Array.isArray(data) && data.length > 0
-  const isLight = theme === 'light'
 
   const header = (chart, children) => (
     <ChartHeader
@@ -97,7 +133,9 @@ function VisualizationGrid({ data, theme = 'dark' }) {
 
   const content = (chart) => (
     <div className="chart-card__content">
-      {hasData ? <ChartContent chart={chart} data={data} theme={theme} /> : <EmptyChart />}
+      {hasData
+        ? <ChartContent chart={chart} data={data} theme={theme} />
+        : <EmptyChart />}
     </div>
   )
 
@@ -109,37 +147,34 @@ function VisualizationGrid({ data, theme = 'dark' }) {
           {content('map')}
         </section>
 
+        {/* A la derecha: Bubble Matrix y Sexo a la izquierda; IA a toda altura a la derecha. */}
         <div className="visualization-grid__right">
           <section className="chart-card visualization-grid__heatmap">
-            {header('heatmap', hasData && (
-              <div className="chart-card_squares">
-                <span className="square" style={{ backgroundColor: '#0754a3' }} />
-                <span>Mayor cantidad de proyectos</span>
-                <span className="square" style={{ backgroundColor: isLight ? '#edf8ff' : '#c9f1ff' }} />
-                <span>Menor cantidad de proyectos</span>
-              </div>
-            ))}
+            {header('heatmap')}
             {content('heatmap')}
+            {hasData && (
+              <aside className="chart-card__bubble-sidebar" aria-label="Leyenda de categorías">
+                <BubbleLegend data={data} />
+              </aside>
+            )}
           </section>
 
-          <div className="visualization-grid__bottom">
-            <section className="chart-card visualization-grid__sex">
-              {header('sex', hasData && (
-                <div className="chart-card_squares">
-                  <span className="square" style={{ backgroundColor: 'var(--color-accent, #ff891f)' }} />
-                  <span>Mujeres</span>
-                  <span className="square" style={{ backgroundColor: 'var(--color-secondary, #13bdf0)' }} />
-                  <span>Hombres</span>
-                </div>
-              ))}
-              {content('sex')}
-            </section>
+          <section className="chart-card visualization-grid__sex">
+            {header('sex', hasData && (
+              <div className="chart-card_squares">
+                <span className="square" style={{ backgroundColor: 'var(--color-accent, #ff891f)' }} />
+                <span>Mujeres</span>
+                <span className="square" style={{ backgroundColor: 'var(--color-secondary, #13bdf0)' }} />
+                <span>Hombres</span>
+              </div>
+            ))}
+            {content('sex')}
+          </section>
 
-            <section className="chart-card visualization-grid__ai">
-              {header('ai')}
-              {content('ai')}
-            </section>
-          </div>
+          <section className="chart-card visualization-grid__ai">
+            {header('ai')}
+            {content('ai')}
+          </section>
         </div>
       </section>
 
@@ -149,8 +184,14 @@ function VisualizationGrid({ data, theme = 'dark' }) {
           title={CHARTS[expanded].title}
           description={CHARTS[expanded].description}
           onClose={closeModal}
+          disableZoom={expanded === 'heatmap'}
         >
-          <ChartContent chart={expanded} data={data} theme={theme} />
+          <ChartContent
+            chart={expanded}
+            data={data}
+            theme={theme}
+            interactiveZoom={expanded === 'heatmap'}
+          />
         </ChartModal>
       )}
     </>

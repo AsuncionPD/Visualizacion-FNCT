@@ -37,9 +37,7 @@ function Footer() {
             <span>{EMAIL}</span>
           </a>
 
-          </div>
-
-          <a
+            <a
             className="dashboard-footer__contact-link"
             href={GOOGLE_MAPS_URL}
             target="_blank"
@@ -49,6 +47,9 @@ function Footer() {
             <img src={ubicacionIcon} alt="" aria-hidden="true" className="dashboard-footer__icon" />
             <span>{ADDRESS}</span>
           </a>
+
+          </div>
+
         </div>
 
         <div className="dashboard-footer__source">

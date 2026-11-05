@@ -1,67 +1,179 @@
-/* GRID PRINCIPAL */
-.visualization-grid {
-  width: 100%; height: 100%; min-width: 0; min-height: 0;
-  display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1fr); gap: 12px;
+/* FNCT 2026 — mapa protagonista, panel central legible y treemap vertical */
+.visualization-grid{
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.48fr);
+  gap:12px;
 }
-/* TARJETAS */
-.chart-card {
-  min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden;
-  background: var(--bg-card, #0b2a50);
-  border: 1px solid var(--border-color, #27557d);
-  border-radius: var(--radius-card, 14px);
-  transition: background-color .25s ease, border-color .25s ease, color .25s ease;
+.chart-card{
+  min-width:0;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  background:var(--bg-card,#0b2a50);
+  border:1px solid var(--border-color,#27557d);
+  border-radius:var(--radius-card,14px);
+  transition:background-color .25s,border-color .25s,color .25s;
 }
-/* ENCABEZADOS */
-.chart-card__header { flex-shrink: 0; min-width: 0; padding: 12px 14px 5px; }
-.chart-card__title-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.chart-card__title-row h2 {
-  margin: 0; min-width: 0; color: var(--text-primary, #fff);
-  font-size: 15px; font-weight: 700; line-height: 1.25;
+.chart-card__header{flex-shrink:0;min-width:0;padding:10px 13px 6px}
+.chart-card__title-row{display:flex;align-items:center;gap:8px;min-width:0}
+.chart-card__title-row h2{
+  margin:0;
+  min-width:0;
+  color:var(--text-primary,#fff);
+  font-size:14px;
+  font-weight:700;
+  line-height:1.3;
+  overflow-wrap:anywhere;
 }
-.chart-card__heading-icon { width: 25px; height: 25px; flex-shrink: 0; margin: 0; object-fit: contain; }
-.chart-card__header p { margin: 4px 0 0; color: var(--text-secondary, #c5d9ed); font-size: 11px; line-height: 1.35; }
-/* BOTÓN DE AMPLIAR */
-.chart-card__expand {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 30px; height: 30px; margin-left: auto; flex-shrink: 0;
-  border: 1px solid transparent; border-radius: 8px;
-  background: transparent; color: var(--text-secondary, #c5d9ed);
-  cursor: pointer;
+.chart-card__heading-icon{width:24px;height:24px;flex-shrink:0;object-fit:contain}
+.chart-card__header p{
+  margin:3px 0 0;
+  color:var(--text-secondary,#c5d9ed);
+  font-size:10.5px;
+  line-height:1.35;
+  overflow-wrap:anywhere;
 }
-.chart-card__expand:hover { background: var(--border-color, #27557d); color: var(--text-primary, #fff); }
-.chart-card__expand:focus-visible { outline: 2px solid var(--color-secondary, #13bdf0); outline-offset: 2px; }
-/* CONTENIDO */
-.chart-card__content { flex: 1; min-width: 0; min-height: 0; padding: 5px 10px 10px; overflow: visible; }
-/* LEYENDAS */
-.chart-card_squares { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin-top: 6px; color: var(--text-secondary, #c5d9ed); font-size: 11px; }
-.square { display: inline-block; width: 10px; height: 10px; flex-shrink: 0; border-radius: 3px; }
-[data-theme="light"] .chart-card_squares { color: #466481; }
-[data-theme="light"] .chart-card_squares .square { border: 1px solid rgba(8,36,73,.08); }
-/* DISTRIBUCIÓN */
-.visualization-grid__map { min-width: 0; min-height: 0; height: 100%; }
-.visualization-grid__right { min-width: 0; min-height: 0; display: grid; grid-template-rows: minmax(0,1.05fr) minmax(0,.95fr); gap: 10px; }
-.visualization-grid__heatmap { min-width: 0; min-height: 0; height: 100%; }
-.visualization-grid__bottom { min-width: 0; min-height: 0; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
-.visualization-grid__sex, .visualization-grid__ai { min-width: 0; min-height: 0; }
-/* SIN DATOS */
-.chart-empty { width: 100%; height: 100%; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; padding: 20px; color: var(--text-primary,#fff); text-align: center; }
-.chart-empty__icon { width: 36px; height: 36px; flex-shrink: 0; color: var(--text-muted,#9cb8d1); opacity: .85; }
-.chart-empty strong { color: var(--text-primary,#fff); font-size: 14px; font-weight: 700; line-height: 1.4; }
-.chart-empty p { max-width: 290px; margin: 0; color: var(--text-secondary,#c5d9ed); font-size: 12px; line-height: 1.5; }
-html[data-theme="light"] .chart-empty { color: #082449; }
-html[data-theme="light"] .chart-empty__icon { color: #66829c; }
-html[data-theme="light"] .chart-empty strong { color: #082449; }
-html[data-theme="light"] .chart-empty p { color: #466481; }
-@media (max-width: 1100px) {
-  .visualization-grid { height: auto; grid-template-columns: 1fr; margin-top: 12px; flex: 1 0 auto; }
-  .visualization-grid__map { min-height: clamp(430px,92vw,920px); }
-  .visualization-grid__right { grid-template-rows: auto auto; }
-  .visualization-grid__heatmap { min-height: 430px; }
-  .visualization-grid__bottom { min-height: 350px; }
+.chart-card__expand{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  margin-left:auto;
+  flex-shrink:0;
+  border:1px solid transparent;
+  border-radius:7px;
+  background:transparent;
+  color:var(--text-secondary,#c5d9ed);
+  cursor:pointer;
 }
-@media (max-width: 700px) {
-  .visualization-grid__bottom { grid-template-columns: 1fr; }
-  .visualization-grid__sex, .visualization-grid__ai { min-height: 320px; }
-  .visualization-grid__heatmap { height: auto; min-height: 0; }
-  .visualization-grid__heatmap .chart-card__content { flex: 0 0 auto; min-height: 0; overflow: visible; }
+.chart-card__expand:hover{background:var(--border-color,#27557d);color:var(--text-primary,#fff)}
+.chart-card__expand:focus-visible{outline:2px solid var(--color-secondary,#13bdf0);outline-offset:2px}
+.chart-card__content{flex:1 1 auto;min-height:0;min-width:0;padding:4px 10px 10px;overflow:hidden}
+.visualization-grid__map{height:100%;min-height:0;min-width:0}
+.visualization-grid__map .chart-card__title-row h2{font-size:16px}
+.visualization-grid__map .chart-card__content{flex:1;min-height:0}
+
+/* Panel derecho: Bubble Matrix arriba, Sexo abajo y Treemap a toda altura. */
+.visualization-grid__right{
+  display:grid;
+  min-width:0;
+  min-height:0;
+  grid-template-columns:minmax(0,2.45fr) minmax(210px,.8fr);
+  grid-template-rows:minmax(0,1.06fr) minmax(0,.94fr);
+  gap:10px;
+}
+.visualization-grid__heatmap{
+  grid-column:1;
+  grid-row:1;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) clamp(120px,21%,168px);
+  grid-template-rows:auto minmax(0,1fr);
+  gap:0;
+}
+.visualization-grid__heatmap>.chart-card__header{grid-column:1/-1;grid-row:1}
+.visualization-grid__heatmap>.chart-card__content{grid-column:1;grid-row:2;padding:3px 4px 10px 8px}
+.visualization-grid__heatmap>.chart-card__bubble-sidebar{
+  grid-column:2;
+  grid-row:2;
+  min-width:0;
+  min-height:0;
+  padding:9px 10px 10px 6px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  border-left:1px solid var(--border-color,#27557d);
+}
+.chart-card__category-legend{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  color:var(--text-secondary,#c5d9ed);
+  font-size:10.5px;
+  line-height:1.3;
+}
+.chart-card__category-item{display:flex;align-items:flex-start;gap:6px;overflow-wrap:anywhere}
+.chart-card__category-dot{display:block;flex:0 0 9px;width:9px;height:9px;border-radius:50%;margin-top:2px}
+.chart-card__size-hint{font-size:10px;font-style:italic;opacity:.8;margin-top:2px}
+
+/* La vista previa usa la leyenda lateral; la del modal se queda dentro del gráfico. */
+.visualization-grid__heatmap .bubble-matrix--preview>.bubble-matrix__legend{display:none}
+.visualization-grid__sex{grid-column:1;grid-row:2;min-height:0}
+.visualization-grid__sex>.chart-card__header{padding-bottom:2px}
+.visualization-grid__sex>.chart-card__content{padding:1px 10px 10px;min-height:0}
+.visualization-grid__ai{grid-column:2;grid-row:1/3;min-height:0}
+.visualization-grid__ai>.chart-card__content{min-height:0}
+.chart-card_squares{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:5px 10px;
+  margin-top:4px;
+  color:var(--text-secondary,#c5d9ed);
+  font-size:10.5px;
+}
+.square{display:inline-block;width:10px;height:10px;flex-shrink:0;border-radius:3px}
+[data-theme='light'] .chart-card_squares,[data-theme='light'] .chart-card__category-legend{color:#466481}
+[data-theme='light'] .chart-card__category-dot{border:1px solid rgba(8,36,73,.08)}
+.chart-empty{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  width:100%;
+  height:100%;
+  min-height:120px;
+  padding:20px;
+  gap:9px;
+  color:var(--text-primary,#fff);
+  text-align:center;
+}
+.chart-empty__icon{width:36px;height:36px;color:var(--text-muted,#9cb8d1)}
+.chart-empty strong{font-size:14px}
+.chart-empty p{max-width:290px;margin:0;font-size:12px;color:var(--text-secondary,#c5d9ed);line-height:1.5}
+
+/* Tablet ancho: el mapa pasa arriba y el panel derecho ocupa todo el ancho. */
+@media(max-width:1250px){
+  .visualization-grid{height:auto;grid-template-columns:1fr;margin-top:12px;flex:1 0 auto}
+  .visualization-grid__map{height:auto;min-height:clamp(430px,60vw,780px)}
+  .visualization-grid__right{
+    grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);
+    grid-template-rows:minmax(440px,auto) minmax(430px,auto);
+  }
+  .visualization-grid__heatmap{
+    grid-column:1/-1;
+    grid-row:1;
+    grid-template-columns:minmax(0,1fr) 180px;
+    min-height:440px;
+  }
+  .visualization-grid__sex{grid-column:1;grid-row:2;min-height:430px}
+  .visualization-grid__ai{grid-column:2;grid-row:2;min-height:430px}
+}
+
+/* Móvil/tablet estrecha: una sola columna con altura suficiente para las etiquetas. */
+@media(max-width:760px){
+  .visualization-grid__map{min-height:clamp(390px,95vw,650px)}
+  .visualization-grid__right{display:flex;flex-direction:column;gap:10px}
+  .visualization-grid__heatmap{min-height:500px}
+  .visualization-grid__sex{min-height:440px}
+  .visualization-grid__ai{min-height:400px}
+}
+
+/* La leyenda pasa debajo para liberar ancho real de la matriz. */
+@media(max-width:700px){
+  .visualization-grid__heatmap{display:flex;flex-direction:column;min-height:530px}
+  .visualization-grid__heatmap>.chart-card__content{flex:1 1 auto;min-height:310px;padding:4px 8px}
+  .visualization-grid__heatmap>.chart-card__bubble-sidebar{
+    border-left:0;
+    border-top:1px solid var(--border-color,#27557d);
+    padding:8px 12px 12px;
+    overflow:visible;
+  }
+  .chart-card__category-legend{flex-direction:row;flex-wrap:wrap;gap:5px 12px;font-size:9.5px}
+  .chart-card__size-hint{width:100%;margin:0}
 }

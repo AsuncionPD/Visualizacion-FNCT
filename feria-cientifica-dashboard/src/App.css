@@ -149,10 +149,37 @@ body {
 
 
 /* ==========================================
-   TABLETS Y MÓVILES
-========================================== */
+   ESCRITORIO DE POCA ALTURA
+   ==========================================
+   Antes de comprimir los ejes se permite desplazamiento
+   vertical dentro del dashboard. El encabezado y el pie
+   permanecen en el flujo normal de la página. */
 
-@media (max-width: 1100px) {
+@media (min-width: 1251px) and (max-height: 1000px) {
+  .dashboard {
+    grid-template-rows:
+      auto
+      minmax(720px, 1fr);
+
+    align-content: start;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  .visualization-grid {
+    min-height: 720px;
+  }
+}
+
+/* ==========================================
+   TABLETS Y MÓVILES
+   ==========================================
+   La rejilla de visualizaciones se apila a 1250px,
+   por lo que el documento también debe poder crecer
+   y desplazarse a partir de ese mismo ancho. */
+
+@media (max-width: 1250px) {
   html,
   body,
   #root {
