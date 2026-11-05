@@ -13,7 +13,7 @@
 .bubble-matrix__toolbar button{background:transparent;border:1px solid var(--border-color,#27557d);border-radius:7px;padding:5px 9px;color:var(--text-primary,#fff);cursor:pointer}
 .bubble-matrix__toolbar button:disabled{opacity:.38;cursor:default}
 .bubble-matrix__toolbar output{min-width:44px;text-align:center;font-variant-numeric:tabular-nums}
-.bubble-matrix__tooltip{position:fixed;z-index:100003;pointer-events:none;display:flex;flex-direction:column;gap:6px;width:max-content;max-width:min(315px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-wrap:anywhere;padding:12px 14px;border-radius:10px;background:var(--bg-card,#0b2a50);color:var(--text-primary,#fff);border:1px solid var(--border-color,#27557d);box-shadow:0 10px 32px #0003;font-size:12px}
+.bubble-matrix__tooltip{position:fixed;z-index:100003;pointer-events:none;display:flex;flex-direction:column;gap:6px;width:max-content;max-width:min(315px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow-wrap:anywhere;padding:12px 14px;border-radius:10px;background:var(--bg-card,#0b2a50);color:var(--text-primary,#fff);border:1px solid var(--border-color, #27557d);box-shadow:0 10px 32px #0003;font-size:12px}
 .bubble-matrix__tooltip span{color:var(--text-secondary,#c5d9ed)}
 .bubble-matrix__empty{display:grid;place-items:center;height:100%;color:var(--text-secondary,#c5d9ed)}
 html[data-theme='light'] .bubble-matrix__tooltip{background:#fff;color:#082449;border-color:#c7d8e7;box-shadow:0 10px 32px #08244922}

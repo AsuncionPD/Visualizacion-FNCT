@@ -195,8 +195,20 @@ export default function AreaModalityBubbleMatrix({ data, theme = 'dark', interac
     if (svgRef.current && zoomRef.current)
       d3.select(svgRef.current).transition().duration(160).call(zoomRef.current.transform, d3.zoomIdentity)
   }
-  const tooltipFor = (event, area, modality, category, count) =>
-    setTooltip({ area, modality, category, count, x: event.clientX, y: event.clientY })
+  const tooltipFor = (event, area, modality, category, count) => {
+  const categoryIndex = CATEGORIES.indexOf(category)
+  const color = COLORS[categoryIndex >= 0 ? categoryIndex : 0]
+
+    setTooltip({
+      area,
+      modality,
+      category,
+      count,
+      color,
+      x: event.clientX,
+      y: event.clientY,
+    })
+  }
 
   if (!areas.length || !modalities.length) return <div className="bubble-matrix__empty">No hay datos para mostrar</div>
 
@@ -309,7 +321,7 @@ export default function AreaModalityBubbleMatrix({ data, theme = 'dark', interac
         </g>
       </svg>
     </div>
-    {tooltip && createPortal(<div className="bubble-matrix__tooltip" ref={tooltipRef} role="status" style={{ left: 0, top: 0, visibility: 'hidden' }}>
+    {tooltip && createPortal(<div className="bubble-matrix__tooltip" ref={tooltipRef} role="status" style={{ left: 0, top: 0, visibility: 'hidden', borderColor: tooltip.color }}>
       <strong>{tooltip.area}</strong><span>{tooltip.modality}</span><span>{tooltip.category}</span><b>{tooltip.count} {tooltip.count === 1 ? 'proyecto' : 'proyectos'}</b>
     </div>, document.body)}
   </div>

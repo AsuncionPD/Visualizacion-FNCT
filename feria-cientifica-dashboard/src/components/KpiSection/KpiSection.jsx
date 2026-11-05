@@ -60,9 +60,11 @@ function KpiSection({ data }) {
         value={`${totalAIProjects} (${aiPercentage}%)`}
         label="Proyectos con IA"
         highlight
+        tooltip
       />
 
     </section>
+
   )
 }
 

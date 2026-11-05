@@ -80,6 +80,63 @@
   color: var(--color-accent, #ff891f);
 }
 
+/* Tooltip del indicador de IA */
+
+.kpi-card__tooltip-container {
+  position: relative;
+  margin-left: auto;
+  align-self: center;
+}
+
+.kpi-card__tooltip-button {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary, #c5d9ed);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.kpi-card__tooltip {
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  top: calc(100% + 10px);
+  right: 0;
+
+  width: 300px;
+  max-width: calc(100vw - 32px);
+  padding: 15px;
+
+  background: var(--bg-card, #0b2a50);
+  color: var(--text-primary, #fff);
+
+  border: 1px solid var(--border-color, #27557d);
+  border-radius: 10px;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.kpi-card__tooltip p {
+  margin: 8px 0;
+}
+
+.kpi-card__tooltip ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.kpi-card__tooltip li {
+  margin-bottom: 5px;
+}
+
+.kpi-card__tooltip-container:hover .kpi-card__tooltip,
+.kpi-card__tooltip-container:focus-within .kpi-card__tooltip {
+  display: block;
+}
+
 /* RESPONSIVE */
 
 @media (max-width: 900px) {

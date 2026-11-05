@@ -186,7 +186,7 @@ function AreaSexChart({ data }) {
 
   return <div className="area-sex-chart" ref={containerRef}>
     <svg ref={svgRef} className="area-sex-chart__svg" role="img" aria-label="Estudiantes por área temática y sexo"/>
-    {tooltip && createPortal(<div ref={tooltipRef} className="area-sex-tooltip" style={{ left: 0, top: 0, visibility: 'hidden' }} role="status">
+    {tooltip && createPortal(<div ref={tooltipRef} className="area-sex-tooltip" style={{ left: 0, top: 0, visibility: 'hidden', borderColor: tooltip.sex === 'Femenino' ? '#ff891f' : tooltip.sex === 'Masculino' ? '#13bdf0' : '#9cb8d1'}} role="status">
       <strong>{tooltip.area}</strong>
       <div className="area-sex-tooltip__category"><span className="area-sex-tooltip__dot" style={{ background: tooltip.sex === 'Femenino' ? '#ff891f' : tooltip.sex === 'Masculino' ? '#13bdf0' : '#9cb8d1' }}/><span>{tooltip.sex}</span></div>
       <span className="area-sex-tooltip__value">{tooltip.count} {tooltip.count === 1 ? 'estudiante' : 'estudiantes'}</span>
