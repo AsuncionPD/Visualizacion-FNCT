@@ -16,7 +16,7 @@ function Footer() {
         <div className="dashboard-footer__info">
           <h3>Contacto</h3>
 
-          <div style={{ display: 'flex', gap: '1rem' }}>
+          <div className="dashboard-footer__contacts">
             <a
             className="dashboard-footer__contact-link"
             href={`https://wa.me/${WHATSAPP_NUMBER}`}

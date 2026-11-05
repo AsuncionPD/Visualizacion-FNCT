@@ -69,34 +69,38 @@ function FilterSelect({
         </label>
 
         <Select
-          inputId={id}
-          instanceId={id}
-          className="filter-select"
-          classNamePrefix="filter-select"
-          options={selectOptions}
-          value={selectedOption}
-          onChange={(option) => {
-            onChange(option?.value ?? 'Todas')
-          }}
-          isSearchable
-          isClearable={false}
-          isMulti={false}
-          menuPortalTarget={
-            typeof document !== 'undefined'
-              ? document.body
-              : undefined
-          }
-          menuPosition="fixed"
-          menuPlacement="auto"
-          maxMenuHeight={240}
-          noOptionsMessage={() =>
-            'No se encontraron resultados'
-          }
-          placeholder="Seleccionar..."
-          openMenuOnFocus={false}
-          blurInputOnSelect
-          unstyled
-        />
+        inputId={id}
+        instanceId={id}
+        className="filter-select"
+        classNamePrefix="filter-select"
+        options={selectOptions}
+        value={selectedOption}
+        onChange={(option) => {
+          onChange(option?.value ?? 'Todas')
+        }}
+        isSearchable
+        isClearable={false}
+        isMulti={false}
+        menuPortalTarget={
+          typeof document !== 'undefined'
+            ? document.body
+            : undefined
+        }
+        menuPosition="fixed"
+        menuPlacement="auto"
+        maxMenuHeight={240}
+        styles={{
+          menuPortal: (base) => ({
+            ...base,
+            zIndex: 999999,
+          }),
+        }}
+        noOptionsMessage={() => 'No se encontraron resultados'}
+        placeholder="Seleccionar..."
+        openMenuOnFocus={false}
+        blurInputOnSelect
+        unstyled
+      />
 
       </div>
 

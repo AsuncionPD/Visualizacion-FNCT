@@ -155,24 +155,44 @@ function AreaSexChart({ data }) {
       .attr('x', d => x(d.total) + 5).attr('y', d => y(d.area) + y.bandwidth() / 2)
       .attr('dominant-baseline', 'middle').text(d => d.total)
 
-    // Las cantidades dentro de la barra solo aparecen cuando caben de verdad.
-    const valueFontSize = clamp(y.bandwidth() * .55, 9, 11)
-    series.forEach((s, index) => {
-      group.selectAll(`.area-sex-value-${index}`).data(s).join('text')
-        .attr('class', `area-sex-value-${index}`)
-        .attr('x', d => x(d[0]) + (x(d[1]) - x(d[0])) / 2)
-        .attr('y', d => y(d.data.area) + y.bandwidth() / 2)
-        .attr('dominant-baseline', 'middle').attr('text-anchor', 'middle')
-        .attr('font-size', valueFontSize).attr('font-weight', 700)
-        .attr('fill', '#fff').attr('pointer-events', 'none')
-        .text(d => {
-          const value = d[1] - d[0]
-          const segment = x(d[1]) - x(d[0])
-          return value > 0 && y.bandwidth() >= 16 && segment >= String(value).length * valueFontSize * .62 + 8 ? value : ''
-        })
+   // Mostrar las cantidades dentro de las barras cuando haya espacio.
+const valueFontSize = clamp(y.bandwidth() * .55, 9, 11)
+
+series.forEach((s, index) => {
+  group
+    .selectAll(`.area-sex-value-${index}`)
+    .data(s)
+    .join('text')
+    .attr('class', `area-sex-value-${index}`)
+    .attr('x', d => x(d[0]) + (x(d[1]) - x(d[0])) / 2)
+    .attr('y', d => y(d.data.area) + y.bandwidth() / 2)
+    .attr('dominant-baseline', 'middle')
+    .attr('text-anchor', 'middle')
+    .attr('font-size', d => {
+      const segment = x(d[1]) - x(d[0])
+      return segment < 20 ? 8 : valueFontSize
     })
-    return () => svg.selectAll('*').remove()
-  }, [data, size.width, size.height])
+    .attr('font-weight', 700)
+    .attr('fill', '#fff')
+    .attr('pointer-events', 'none')
+    .text(d => {
+      const value = d[1] - d[0]
+      const segment = x(d[1]) - x(d[0])
+
+      if (value <= 0) return ''
+
+      const fontSize = segment < 20 ? 8 : valueFontSize
+      const estimatedWidth = String(value).length * fontSize * 0.6 + 2
+
+      return segment >= estimatedWidth &&
+        y.bandwidth() >= fontSize + 2
+          ? value
+          : ''
+    })
+})
+
+return () => svg.selectAll('*').remove()
+}, [data, size.width, size.height])
 
   useLayoutEffect(() => {
     if (!tooltip || !tooltipRef.current) return

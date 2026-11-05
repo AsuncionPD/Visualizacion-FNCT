@@ -328,7 +328,8 @@
 ========================================== */
 
 .filter-select__menu-portal {
-  z-index: 99999;
+  position: relative;
+  z-index: 999999 !important;
 }
 
 /* ==========================================

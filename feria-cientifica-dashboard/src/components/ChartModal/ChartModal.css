@@ -34,7 +34,7 @@
 }
 .chart-modal__heading { min-width: 0; }
 .chart-modal__heading h2 { margin: 0; font-size: 19px; line-height: 1.35; }
-.chart-modal__heading p { margin: 4px 0 0; color: var(--text-secondary, #c5d9ed); font-size: 12px; line-height: 1.4; }
+.chart-modal__heading p { margin: 4px 0 0; color: var(--text-secondary, #c5d9ed); font-size: 16px; line-height: 1.4; }
 .chart-modal__close {
   flex: 0 0 auto;
   display: grid;
