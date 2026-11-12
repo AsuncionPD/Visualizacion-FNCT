@@ -38,22 +38,46 @@
   line-height:1.35;
   overflow-wrap:anywhere;
 }
-.chart-card__expand{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:28px;
-  height:28px;
-  margin-left:auto;
-  flex-shrink:0;
-  border:1px solid transparent;
-  border-radius:7px;
-  background:transparent;
-  color:var(--text-secondary,#c5d9ed);
-  cursor:pointer;
+/* BOTÓN DE EXPANSIÓN */
+
+.chart-card__expand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  flex-shrink: 0;
+
+  padding: 0;
+
+  background: var(--bg-hover);
+  color: var(--color-secondary);
+
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
 }
-.chart-card__expand:hover{background:var(--border-color,#27557d);color:var(--text-primary,#fff)}
-.chart-card__expand:focus-visible{outline:2px solid var(--color-secondary,#13bdf0);outline-offset:2px}
+
+.chart-card__expand:hover {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  color: #082449;
+
+  transform: scale(1.08);
+}
+
+.chart-card__expand:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
 .chart-card__content{flex:1 1 auto;min-height:0;min-width:0;padding:4px 10px 10px;overflow:hidden}
 .visualization-grid__map{height:100%;min-height:0;min-width:0}
 .visualization-grid__map .chart-card__title-row h2{font-size:16px}

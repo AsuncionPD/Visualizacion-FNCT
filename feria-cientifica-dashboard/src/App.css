@@ -24,11 +24,11 @@
 }
 * { box-sizing: border-box; }
 html,body,#root { width:100%;height:100%;margin:0; }
-body { background:var(--bg-page);color:var(--text-primary);transition:background-color .25s,color .25s; }
+body { background:var(--bg-page);color:var(--text-primary);transition:background-color .12s,color .12s; }
 .app { width:100%;height:100dvh;min-height:0;display:flex;flex-direction:column;background:var(--bg-page);color:var(--text-primary);transition:background-color .25s,color .25s; }
 /* Los KPI ya están en el Header: el dashboard solo contiene los gráficos. */
 .dashboard { flex:1 1 auto;min-height:0;display:grid;grid-template-rows:minmax(0,1fr);gap:0;padding:10px 24px 12px; }
-.header,.kpi-card,.chart-card,.filter-box { transition:background-color .25s,border-color .25s,color .25s; }
+.header,.kpi-card,.chart-card,.filter-box { transition:background-color .12s,border-color .12s,color .12s; }
 /* Evitar que una pantalla de poca altura haga ilegibles los gráficos. */
 @media (min-width:1251px) and (max-height:800px) {
   .dashboard { grid-template-rows:minmax(600px,1fr);align-content:start;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin; }

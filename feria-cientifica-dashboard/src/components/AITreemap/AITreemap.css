@@ -58,12 +58,49 @@
   pointer-events: none;
 }
 .treemap-value--small { font-size: 16px; }
+/* ========================================
+   ESTADO SIN PROYECTOS CON IA
+======================================== */
+
 .treemap-empty {
-  fill: var(--text-secondary, #c5d9ed);
-  font-size: 17px;
-  font-weight: 500;
+  fill: var(--text-primary, #ffffff);
+  font-size: 13px;
+  font-weight: 700;
 }
 
+.treemap-empty-description {
+  fill: var(--text-secondary, #c5d9ed);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.treemap-empty-group {
+  pointer-events: none;
+}
+
+/* Ícono de estado vacío: mismo estilo que los demás gráficos */
+
+.treemap-empty-icon {
+  color: var(--text-muted, #9cb8d1);
+}
+
+.treemap-empty-icon rect,
+.treemap-empty-icon path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.treemap-empty-icon__dot {
+  fill: currentColor;
+  stroke: none;
+}
+
+[data-theme="light"] .treemap-empty-icon {
+  color: #66829c;
+}
 /* ========================================
    TOOLTIP: POSICIÓN CALCULADA EN JSX
 ======================================== */

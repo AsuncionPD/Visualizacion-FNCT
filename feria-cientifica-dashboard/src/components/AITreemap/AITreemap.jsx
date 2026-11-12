@@ -116,13 +116,58 @@ function AITreemap({ data }) {
       .attr('preserveAspectRatio', 'xMidYMid meet')
 
     if (proyectosIA.length === 0) {
-      svg
+      const emptyGroup = svg
+        .append('g')
+        .attr('class', 'treemap-empty-group')
+        .attr('transform', `translate(${width / 2}, ${height / 2})`)
+
+      // Ícono informativo cuando no hay proyectos con IA
+      const emptyIcon = emptyGroup
+        .append('g')
+        .attr('class', 'treemap-empty-icon')
+        .attr('transform', 'translate(0, -53)')
+
+      // Ícono de estado vacío, similar al de los demás gráficos.
+      emptyIcon
+        .append('rect')
+        .attr('x', -12)
+        .attr('y', -12)
+        .attr('width', 24)
+        .attr('height', 24)
+        .attr('rx', 3)
+
+      emptyIcon
+        .append('path')
+        .attr('d', 'M-7 6 L-3 2 L1 4 L7 -4')
+
+      emptyIcon
+        .append('circle')
+        .attr('class', 'treemap-empty-icon__dot')
+        .attr('cx', -5)
+        .attr('cy', -5)
+        .attr('r', 1)
+
+      // Textos informativos
+      emptyGroup
         .append('text')
         .attr('class', 'treemap-empty')
-        .attr('x', width / 2)
-        .attr('y', height / 2)
         .attr('text-anchor', 'middle')
-        .text('No hay proyectos con IA para estos filtros')
+        .attr('y', -12)
+        .text('Sin proyectos con IA')
+
+      emptyGroup
+        .append('text')
+        .attr('class', 'treemap-empty-description')
+        .attr('text-anchor', 'middle')
+        .attr('y', 12)
+        .text('No se registró uso de IA')
+
+      emptyGroup
+        .append('text')
+        .attr('class', 'treemap-empty-description')
+        .attr('text-anchor', 'middle')
+        .attr('y', 28)
+        .text('con los filtros seleccionados.')
 
       return
     }

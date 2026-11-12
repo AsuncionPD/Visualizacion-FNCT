@@ -28,7 +28,13 @@
 .header__kpis .kpi-card__label { font-size: clamp(10px, .73vw, 12px); line-height: 1.2; }
 .header__kpis .kpi-card__tooltip-container { margin-left: 0; }
 .header__kpis .kpi-card__tooltip-button { font-size: 16px; padding: 2px; }
-.header__actions { display: flex; align-items: center; justify-content: flex-end; }
+.header__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 0;
+}
 .header__menu-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 43px; padding: 8px 13px; border: 1px solid var(--border-input); border-radius: 10px; background: var(--color-primary); color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .header__menu-button:hover { filter: brightness(1.16); }
 .header__active-indicator { width: 9px; height: 9px; border-radius: 50%; background: var(--color-accent); }
@@ -45,7 +51,7 @@
 .theme-switch__sun, .theme-switch__moon { position: absolute; top: 7px; width: 16px; height: 16px; z-index: 1; pointer-events: none; }
 .theme-switch__sun { left: 7px; color: #ff891f; }
 .theme-switch__moon { right: 7px; color: #13bdf0; }
-.theme-switch__thumb { position: absolute; top: 3px; width: 24px; height: 24px; border-radius: 50%; box-shadow: 0 2px 6px #0004; transition: left .25s, background-color .25s; }
+.theme-switch__thumb { position: absolute; top: 3px; width: 24px; height: 24px; border-radius: 50%; box-shadow: 0 2px 6px #0004; transition: left 0.12s ease-out, background-color 0.12s ease-out; }
 .theme-switch__thumb--dark { left: 31px; background: #13bdf0; }
 .theme-switch__thumb--light { left: 3px; background: #ff891f; }
 .theme-switch:focus-visible { outline: 2px solid var(--color-secondary); outline-offset: 3px; }
@@ -106,3 +112,27 @@
 }
 html[data-theme='light'] .header__panel { background: #fff; }
 html[data-theme='dark'] .header__panel { background: #0b2a50; }
+
+/* ==========================================
+   SELECTOR DE TEMA FUERA DE LOS FILTROS
+========================================== */
+
+.header__actions > .theme-switch {
+  position: static;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .header__actions {
+    gap: 5px;
+  }
+
+  .header__actions > .theme-switch {
+    width: 52px;
+  }
+
+  .header__actions .theme-switch__track {
+    transform: scale(0.85);
+  }
+}
