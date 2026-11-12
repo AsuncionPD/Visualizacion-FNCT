@@ -7,6 +7,7 @@ import KpiSection from './components/KpiSection/KpiSection.jsx'
 import VisualizationGrid from './components/VisualizationGrid/VisualizationGrid.jsx'
 import Footer from './components/Footer/Footer.jsx'
 import proyectosUrl from './data/proyectos_FNCT_2026.csv?url'
+import useDashboardTour from './hooks/useDashboardTour'
 import './App.css'
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
   const [selectedRegional, setSelectedRegional] = useState('Todas')
   const [selectedModality, setSelectedModality] = useState('Todas')
   const [selectedArea, setSelectedArea] = useState('Todas')
+  const { startTour } = useDashboardTour(data.length > 0)
 
   useEffect(() => {
     d3.csv(proyectosUrl)
@@ -69,6 +71,7 @@ function App() {
         year={fnctYear}
         hasActiveFilters={hasActiveFilters}
         kpis={<KpiSection data={filteredData} />}
+        onStartTour={startTour}
       >
         <Filters
           regionalOptions={regionalOptions}

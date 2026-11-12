@@ -35,6 +35,9 @@
 }
 
 .active-filters__heading svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
   color: var(--color-secondary);
 }
 
@@ -144,17 +147,20 @@
   background: rgba(19, 189, 240, 0.12);
   border: none;
   border-radius: 5px;
-
   color: var(--color-secondary, #13bdf0);
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1;
 
   cursor: pointer;
 
   transition:
     background-color 0.15s ease,
     color 0.15s ease;
+}
+
+.active-filters__remove svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  stroke-width: 2.5;
 }
 
 .active-filters__remove:hover {

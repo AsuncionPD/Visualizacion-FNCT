@@ -1,0 +1,172 @@
+
+/* ==========================================
+   DRIVER.JS — RECORRIDO GUIADO FNCT
+========================================== */
+
+.driver-popover.fnct-tour-popover {
+  box-sizing: border-box;
+  width: min(320px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  padding: 16px;
+
+  background: #0d2b50;
+  border: 1px solid #23547c;
+  border-radius: 12px;
+
+  color: #ffffff;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.24);
+
+  font-family: inherit;
+}
+
+/* Título */
+
+.fnct-tour-popover .driver-popover-title {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Descripción */
+
+.fnct-tour-popover .driver-popover-description {
+  color: #d3e5f5;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Número de paso */
+
+.fnct-tour-popover .driver-popover-progress-text {
+  color: #9db9d2;
+  font-size: 11px;
+}
+
+/* Botones de navegación */
+
+.fnct-tour-popover .driver-popover-footer-btn {
+  padding: 7px 11px;
+  border-radius: 6px;
+  border: 1px solid #42627f;
+
+  background: transparent;
+  color: #ffffff;
+  text-shadow: none;
+
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fnct-tour-popover .driver-popover-footer-btn:hover {
+  background: #1d456b;
+  color: #ffffff;
+}
+
+/* Siguiente / Finalizar */
+
+.fnct-tour-popover .driver-popover-next-btn {
+  background: #13bdf0;
+  border-color: #13bdf0;
+  color: #082449;
+}
+
+.fnct-tour-popover .driver-popover-next-btn:hover {
+  background: #61d8fb;
+  border-color: #61d8fb;
+  color: #082449;
+}
+
+/* Cerrar recorrido */
+
+.fnct-tour-popover .driver-popover-close-btn {
+  color: #b9d2e8;
+}
+
+.fnct-tour-popover .driver-popover-close-btn:hover {
+  color: #ffffff;
+}
+
+/* Flechas del cuadro informativo */
+
+.fnct-tour-popover .driver-popover-arrow-side-left.driver-popover-arrow {
+  border-left-color: #0d2b50;
+}
+
+.fnct-tour-popover .driver-popover-arrow-side-right.driver-popover-arrow {
+  border-right-color: #0d2b50;
+}
+
+.fnct-tour-popover .driver-popover-arrow-side-top.driver-popover-arrow {
+  border-top-color: #0d2b50;
+}
+
+.fnct-tour-popover .driver-popover-arrow-side-bottom.driver-popover-arrow {
+  border-bottom-color: #0d2b50;
+}
+
+/* ==========================================
+   MODO CLARO
+========================================== */
+
+html[data-theme="light"] .driver-popover.fnct-tour-popover {
+  background: #ffffff;
+  border-color: #cbdfea;
+  color: #082449;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-title {
+  color: #082449;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-description {
+  color: #385574;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-progress-text {
+  color: #637d96;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-footer-btn {
+  border-color: #cbdfea;
+  color: #082449;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-footer-btn:hover {
+  background: #eaf8fe;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-next-btn {
+  background: #13bdf0;
+  border-color: #13bdf0;
+  color: #082449;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-next-btn:hover {
+  background: #61d8fb;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-close-btn {
+  color: #637d96;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-close-btn:hover {
+  color: #082449;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-arrow-side-left.driver-popover-arrow {
+  border-left-color: #ffffff;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-arrow-side-right.driver-popover-arrow {
+  border-right-color: #ffffff;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-arrow-side-top.driver-popover-arrow {
+  border-top-color: #ffffff;
+}
+
+html[data-theme="light"] .fnct-tour-popover .driver-popover-arrow-side-bottom.driver-popover-arrow {
+  border-bottom-color: #ffffff;
+}

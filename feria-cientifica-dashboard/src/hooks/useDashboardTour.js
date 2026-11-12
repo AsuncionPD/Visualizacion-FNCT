@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
+import './DashboardTour.css'
 
 const TOUR_KEY = 'fnct-dashboard-tour-v1'
 
@@ -10,7 +11,7 @@ export default function useDashboardTour(ready) {
   const startTour = useCallback(() => {
     if (!tourRef.current) return
 
-    tourRef.current.drive()
+    tourRef.current.drive(0)
   }, [])
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export default function useDashboardTour(ready) {
     const tour = driver({
       animate: true,
       duration: 250,
+      disableActiveInteraction: true,
       showProgress: true,
       progressText: 'Paso {{current}} de {{total}}',
       nextBtnText: 'Siguiente',

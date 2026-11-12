@@ -1,24 +1,50 @@
+
 import { useEffect, useRef, useState } from 'react'
 import logoClaro from '../../assets/imgs/Logo-14cm-Blanco.png'
 import logoOscuro from '../../assets/imgs/Logo-14cm-Full-Color.png'
+
+import {
+  QuestionMarkCircleIcon,
+  SunIcon,
+  MoonIcon,
+  FunnelIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
+
 import './Header.css'
 
-function Header({ children, kpis, theme = 'dark', onToggleTheme, year, hasActiveFilters = false }) {
+function Header({
+  children,
+  kpis,
+  theme = 'dark',
+  onToggleTheme,
+  year,
+  hasActiveFilters = false,
+  onStartTour,
+}) {
   const isDark = theme === 'dark'
+
   const [menuOpen, setMenuOpen] = useState(false)
+
   const headerRef = useRef(null)
   const menuButtonRef = useRef(null)
+
+  /* ==========================================
+     CERRAR EL MENÚ DE FILTROS
+  ========================================== */
 
   useEffect(() => {
     if (!menuOpen) return undefined
 
     const onPointerDown = (event) => {
-    const target = event.target
+      const target = event.target
 
       // No cerrar al seleccionar una opción de React Select.
       // Sus opciones se renderizan en un portal fuera del Header.
-      if (target instanceof Element &&
-          target.closest('.filter-select__menu-portal')) {
+      if (
+        target instanceof Element &&
+        target.closest('.filter-select__menu-portal')
+      ) {
         return
       }
 
@@ -26,14 +52,17 @@ function Header({ children, kpis, theme = 'dark', onToggleTheme, year, hasActive
         setMenuOpen(false)
       }
     }
+
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
         setMenuOpen(false)
         menuButtonRef.current?.focus()
       }
     }
+
     document.addEventListener('pointerdown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
+
     return () => {
       document.removeEventListener('pointerdown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
@@ -42,6 +71,11 @@ function Header({ children, kpis, theme = 'dark', onToggleTheme, year, hasActive
 
   return (
     <header className="header" ref={headerRef}>
+
+      {/* ==========================================
+          LOGO Y NOMBRE DEL DASHBOARD
+      ========================================== */}
+
       <div className="header__brand">
         <div className="header__logo-frame">
           <img
@@ -50,62 +84,68 @@ function Header({ children, kpis, theme = 'dark', onToggleTheme, year, hasActive
             className="header__icon"
           />
         </div>
+
         <div className="header__information">
-          <h1 className="header__title">Dashboard de proyectos científicos</h1>
-          <p className="header__subtitle">Visualización interactiva · FNCT {year ?? '—'}</p>
+          <h1 className="header__title">
+            Dashboard de proyectos científicos
+          </h1>
+
+          <p className="header__subtitle">
+            Visualización interactiva · FNCT {year ?? '—'}
+          </p>
         </div>
       </div>
 
-      <div className="header__kpis">{kpis}</div>
+      {/* ==========================================
+          INDICADORES KPI
+      ========================================== */}
+
+      <div className="header__kpis">
+        {kpis}
+      </div>
+
+      {/* ==========================================
+          CONTROLES DEL ENCABEZADO
+      ========================================== */}
 
       <div className="header__actions">
 
-        {/* Modo claro/oscuro siempre visible */}
+        {/* RECORRIDO GUIADO */}
+        <button
+          type="button"
+          className="header__tour-button"
+          onClick={onStartTour}
+          aria-label="Iniciar recorrido guiado"
+          title="¿Cómo utilizar el dashboard?"
+        >
+          <QuestionMarkCircleIcon aria-hidden="true" />
+        </button>
+
+        {/* CAMBIO DE TEMA */}
         <button
           type="button"
           className="theme-switch"
           onClick={onToggleTheme}
-          aria-label={isDark ? 'Activar modo claro' : 'Activar modo oscuro'}
+          aria-label={
+            isDark
+              ? 'Activar modo claro'
+              : 'Activar modo oscuro'
+          }
           aria-pressed={!isDark}
-          title={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+          title={
+            isDark
+              ? 'Cambiar a modo claro'
+              : 'Cambiar a modo oscuro'
+          }
         >
-          <span className="theme-switch__track" aria-hidden="true">
-            <svg
-              className="theme-switch__sun"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="4" />
-              <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" />
-            </svg>
-
-            <svg
-              className="theme-switch__moon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z" />
-            </svg>
-
-            <span
-              className={`theme-switch__thumb ${
-                isDark
-                  ? 'theme-switch__thumb--dark'
-                  : 'theme-switch__thumb--light'
-              }`}
-            />
-          </span>
+          {isDark ? (
+            <MoonIcon aria-hidden="true" />
+          ) : (
+            <SunIcon aria-hidden="true" />
+          )}
         </button>
 
-        {/* Botón de filtros original */}
+        {/* BOTÓN DE FILTROS */}
         <button
           ref={menuButtonRef}
           type="button"
@@ -114,20 +154,11 @@ function Header({ children, kpis, theme = 'dark', onToggleTheme, year, hasActive
           aria-controls="fnct-filters-panel"
           onClick={() => setMenuOpen((current) => !current)}
         >
-          <svg
-            viewBox="0 0 24 24"
-            width="19"
-            height="19"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            {menuOpen
-              ? <path d="M18 6 6 18M6 6l12 12" />
-              : <path d="M4 6h16M4 12h16M4 18h16" />}
-          </svg>
+          {menuOpen ? (
+            <XMarkIcon aria-hidden="true" />
+          ) : (
+            <FunnelIcon aria-hidden="true" />
+          )}
 
           <span>Filtros</span>
 
@@ -140,6 +171,10 @@ function Header({ children, kpis, theme = 'dark', onToggleTheme, year, hasActive
         </button>
 
       </div>
+
+      {/* ==========================================
+          PANEL DESPLEGABLE DE FILTROS
+      ========================================== */}
 
       {menuOpen && (
         <div
@@ -165,6 +200,7 @@ function Header({ children, kpis, theme = 'dark', onToggleTheme, year, hasActive
           </div>
         </div>
       )}
+
     </header>
   )
 }

@@ -89,11 +89,36 @@
 }
 
 .kpi-card__tooltip-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+  padding: 3px;
+
   border: none;
+  border-radius: 6px;
   background: transparent;
   color: var(--text-secondary, #c5d9ed);
-  font-size: 20px;
+
   cursor: pointer;
+}
+
+.kpi-card__tooltip-button svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.kpi-card__tooltip-button:hover {
+  color: var(--color-secondary, #13bdf0);
+  background: var(--bg-hover);
+}
+
+.kpi-card__tooltip-button:focus-visible {
+  outline: 2px solid var(--color-secondary, #13bdf0);
+  outline-offset: 2px;
 }
 
 .kpi-card__tooltip {
