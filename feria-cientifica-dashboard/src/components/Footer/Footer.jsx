@@ -59,7 +59,7 @@ function Footer() {
               Universidad de Costa Rica
             </a>
           </p>
-          <p>© Feria Nacional de Ciencia y Tecnología</p>
+          <p>© Feria Nacional de Ciencia y Tecnología | Desarrollado por Asunción Peña</p>
         </div>
       </div>
     </footer>

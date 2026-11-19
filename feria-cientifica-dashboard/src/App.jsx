@@ -42,6 +42,12 @@ function App() {
     return null
   }, [data])
 
+  useEffect(() => {
+  document.title = fnctYear
+    ? `Dashboard de Proyectos Científicos | FNCT ${fnctYear}`
+    : 'Dashboard de Proyectos Científicos | FNCT'
+  }, [fnctYear])
+
   const regionalOptions = useMemo(() => Array.from(new Set(data.map(row => row['Nombre de la dirección regional']?.trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'es')), [data])
   const modalityOptions = useMemo(() => Array.from(new Set(data.map(row => row.Modalidad?.trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'es')), [data])
   const areaOptions = useMemo(() => Array.from(new Set(data.map(row => row['Área temática']?.trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'es')), [data])
